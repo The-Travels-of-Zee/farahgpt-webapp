@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { motion } from "@/lib/motion";
 import { ChatSidebar } from "@/components/CourseChat/ChatSidebar";
 import { ChatArea } from "@/components/CourseChat/ChatArea";
 import { v4 as uuidv4 } from "uuid";

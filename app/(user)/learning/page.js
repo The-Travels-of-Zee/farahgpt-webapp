@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import CourseCard from "@/components/User/CourseCard";
 import { FilterBar } from "@/components/User/FilterBar";
-import Header from "@/components/User/Header";
+import Header from "@/components/User/LearningNavbar";
 
 // Course Grid Component
 const CourseGrid = ({ courses }) => {

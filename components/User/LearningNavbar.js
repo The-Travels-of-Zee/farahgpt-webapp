@@ -2,9 +2,9 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const Header = () => {
+const LearningNavbar = () => {
   const [activeTab, setActiveTab] = useState("All courses");
-  const tabs = ["All courses", "My Lists", "Wishlist", "Certifications", "Archived", "Learning tools"];
+  const tabs = ["All courses", "Wishlist", "Archived"];
 
   return (
     <div className="bg-slate-900 text-white px-4 py-6 sm:px-6 lg:px-8">
@@ -28,4 +28,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default LearningNavbar;

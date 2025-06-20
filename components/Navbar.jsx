@@ -16,6 +16,7 @@ import {
   LogOut,
   Globe,
 } from "lucide-react";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,16 +43,16 @@ const Navbar = () => {
     setIsUserDropdownOpen(false);
   };
 
-  const navigationItems = [
-    { label: "Explore", href: "#" },
-    { label: "My learning", href: "/learning", authRequired: true },
-  ];
+  // const navigationItems = [
+  //   { label: "Explore", href: "#" },
+  //   { label: "My learning", href: "/learning", authRequired: true },
+  // ];
 
   const dropdownLinks = [
     { icon: User, label: "My Profile", href: "/dashboard" },
     { icon: BookOpen, label: "My Learning", href: "/learning" },
     // { icon: Award, label: "My Certificates", href: "/dashboard" },
-    { icon: Settings, label: "Account Settings", href: "/dashboard" },
+    { icon: Settings, label: "Account Settings", href: "/user/account-settings" },
   ];
 
   return (
@@ -60,16 +61,18 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <motion.div className="flex-shrink-0 flex items-center" whileHover={{ scale: 1.05 }}>
-            <div className="flex items-center space-x-2 mr-4">
-              <div className="w-8 h-8">
-                <img src="./favicon/favicon.svg" width={64} height={64} alt="farahgpt-logo" className="inline" />
+            <Link href="/">
+              <div className="flex items-center space-x-2 mr-4">
+                <div className="w-8 h-8">
+                  <img src="/favicon/favicon.svg" width={64} height={64} alt="farahgpt-logo" className="inline" />
+                </div>
+                <span className="text-2xl font-bold text-gray-900">FarahGPT</span>
               </div>
-              <span className="text-2xl font-bold text-gray-900">FarahGPT</span>
-            </div>
+            </Link>
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          {/* <div className="hidden lg:flex items-center space-x-8">
             {navigationItems.map(
               (item) =>
                 (!item.authRequired || isLoggedIn) && (
@@ -83,7 +86,7 @@ const Navbar = () => {
                   </motion.a>
                 )
             )}
-          </div>
+          </div> */}
 
           {/* Search Bar */}
           <div className="flex-1 max-w-2xl mx-8 hidden md:block">
