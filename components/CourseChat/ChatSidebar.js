@@ -140,15 +140,6 @@ export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onTo
               </div>
             )}
           </div>
-
-          {/* Scroll Fade Effect */}
-          <div
-            className="
-            absolute bottom-0 left-0 right-0 h-6 
-            bg-gradient-to-t from-slate-50 to-transparent 
-            pointer-events-none
-          "
-          />
         </div>
       </motion.div>
     </>

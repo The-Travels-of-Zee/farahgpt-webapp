@@ -1,10 +1,27 @@
 "use client";
 
 import { motion, AnimatePresence } from "@/lib/motion";
-import { BellDotIcon, CircleArrowLeft, Crown, DollarSign, Lock, Pencil, Trash, User, X } from "lucide-react";
+import {
+  BellDotIcon,
+  CircleArrowLeft,
+  Crown,
+  DollarSign,
+  Lock,
+  Trash,
+  TrendingUp,
+  User,
+  Wallet,
+  X,
+} from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 const sidebarLinks = [
+  {
+    id: "profile-settings",
+    label: "Profile Settings",
+    icon: User,
+  },
   {
     id: "account-security",
     label: "Account Security",
@@ -14,6 +31,16 @@ const sidebarLinks = [
     id: "payment-settings",
     label: "Payment Settings",
     icon: DollarSign,
+  },
+  {
+    id: "payment-receive",
+    label: "Payment Receiving",
+    icon: TrendingUp,
+  },
+  {
+    id: "withdraw-funds",
+    label: "Withdraw Funds",
+    icon: Wallet,
   },
   {
     id: "notification-settings",
@@ -28,6 +55,11 @@ const sidebarLinks = [
 ];
 
 const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) => {
+  const [formData, setFormData] = useState({
+    firstName: "Shaheer",
+    lastName: "Mansoor",
+    profileImage: null,
+  });
   return (
     <>
       <AnimatePresence>
@@ -80,13 +112,16 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
 
           {/* User Info */}
           <div className="flex flex-col items-center gap-2 text-center">
-            <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center">
-              <User className="w-10 h-10 text-white" />
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center overflow-hidden">
+                {formData.profileImage ? (
+                  <img src={formData.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-12 h-12 text-white" />
+                )}
+              </div>
             </div>
-            <div className="flex items-center text-sm sm:text-base font-medium text-gray-800">
-              Shaheer Mansoor
-              <Pencil className="w-4 h-4 ml-1 text-gray-500" />
-            </div>
+            <div className="flex items-center text-sm sm:text-base font-medium text-gray-800">Shaheer Mansoor</div>
           </div>
         </div>
 

@@ -1,18 +1,17 @@
 "use client";
-import { AccountSecurity } from "@/components/Settings/AccountSecurity";
-import { CloseAccount } from "@/components/Settings/CloseAccount";
-import { NotificationSettings } from "@/components/Settings/NotificationSettings";
-import PaymentReceive from "@/components/Settings/PaymentReceive";
-import { PaymentSettings } from "@/components/Settings/PaymentSettings";
 import ProfileSettings from "@/components/Settings/ProfileSettings";
+import AccountSecurity from "@/components/Settings/AccountSecurity";
+import CloseAccount from "@/components/Settings/CloseAccount";
+import NotificationSettings from "@/components/Settings/NotificationSettings";
+import PaymentSettings from "@/components/Settings/PaymentSettings";
 import SettingsSidebar from "@/components/Settings/SettingsSidebar";
-import WithdrawFunds from "@/components/Settings/WithdrawFunds";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import WithdrawFunds from "@/components/Settings/WithdrawFunds";
 
 const AccountSettings = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("profile-settings");
+  const [activeSection, setActiveSection] = useState("profile-security");
 
   // Handle responsive behavior
   const handleToggleSidebar = () => {
@@ -51,7 +50,7 @@ const AccountSettings = () => {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen">
       {/* Sidebar */}
       <SettingsSidebar
         isOpen={isSidebarOpen}

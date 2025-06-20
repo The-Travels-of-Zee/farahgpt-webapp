@@ -49,7 +49,7 @@ const DashboardNavbar = () => {
     { icon: User, label: "My Profile", href: "/dashboard" },
     { icon: BookOpen, label: "My Learning", href: "/learning" },
     // { icon: Award, label: "My Certificates", href: "/dashboard" },
-    { icon: Settings, label: "Account Settings", href: "/dashboard" },
+    { icon: Settings, label: "Account Settings", href: "/instructor/account-settings" },
   ];
   return (
     <motion.header

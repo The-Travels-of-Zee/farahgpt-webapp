@@ -109,7 +109,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex h-screen bg-white overflow-hidden">
+    <div className="flex h-dvh bg-white overflow-hidden">
       {/* Sidebar */}
       <ChatSidebar
         onNewChat={handleNewChat}
