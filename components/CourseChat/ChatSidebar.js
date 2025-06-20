@@ -29,7 +29,7 @@ export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onTo
           fixed lg:static top-0 left-0 h-full
           w-[min(320px,85vw)] sm:w-80 
           bg-slate-50 border-r border-slate-200 
-          flex flex-col z-50
+          flex flex-col z-40
           lg:!transform-none lg:w-80
           ${isOpen ? "shadow-xl lg:shadow-none" : ""}
         `}
