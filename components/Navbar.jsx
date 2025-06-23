@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "@/lib/motion";
 import {
   Search,
@@ -17,14 +17,33 @@ import {
   Globe,
 } from "lucide-react";
 import Link from "next/link";
+import NotificationDropdown from "./Notification";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [cartItems] = useState(3); // Mock cart items
-  const [notifications] = useState(2); // Mock notifications
+  // const [cartItems] = useState(3); // Mock cart items
+  // const [notifications] = useState(2); // Mock notifications
+
+  const dropdownRef = useRef(null);
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+
+    if (isUserDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isUserDropdownOpen]);
 
   // Mock user data
   const user = {
@@ -118,7 +137,7 @@ const Navbar = () => {
                 </motion.button>
 
                 {/* Cart */}
-                <motion.button
+                {/* <motion.button
                   className="p-2 text-gray-600 hover:text-secondary transition-colors relative"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -129,25 +148,15 @@ const Navbar = () => {
                       {cartItems}
                     </span>
                   )}
-                </motion.button>
+                </motion.button> */}
 
                 {/* Notifications */}
-                <motion.button
-                  className="p-2 text-gray-600 hover:text-secondary transition-colors relative"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Bell className="h-6 w-6" />
-                  {notifications > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {notifications}
-                    </span>
-                  )}
-                </motion.button>
+                <NotificationDropdown />
 
                 {/* User Profile Dropdown */}
                 <div className="relative">
                   <motion.button
+                    ref={dropdownRef}
                     onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
                     className="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
                     whileHover={{ scale: 1.05 }}
@@ -177,7 +186,7 @@ const Navbar = () => {
                               key={item.label}
                               href={item.href}
                               className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                              whileHover={{ x: 4 }}
+                              whileHover={{ x: 0 }}
                             >
                               <item.icon className="h-4 w-4 mr-3 text-gray-400" />
                               {item.label}
@@ -189,7 +198,7 @@ const Navbar = () => {
                           <motion.button
                             onClick={handleLogout}
                             className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                            whileHover={{ x: 4 }}
+                            whileHover={{ x: 0 }}
                           >
                             <LogOut className="h-4 w-4 mr-3" />
                             Sign Out

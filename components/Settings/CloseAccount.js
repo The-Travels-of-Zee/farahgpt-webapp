@@ -1,4 +1,4 @@
-export const CloseAccount = () => {
+const CloseAccount = () => {
   return (
     <div className="p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
@@ -20,3 +20,5 @@ export const CloseAccount = () => {
     </div>
   );
 };
+
+export default CloseAccount;

@@ -88,20 +88,20 @@ const CourseCard = ({ course, index = 0 }) => {
               <Users className="w-4 h-4" />
               <span>{courseData.studentsEnrolled || 0} students</span>
             </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
+            {/* <div className="flex items-center space-x-2 text-sm text-gray-600">
               <DollarSign className="w-4 h-4" />
               <span>${courseData.price || 0}</span>
-            </div>
+            </div> */}
             <div className="flex items-center space-x-2 text-sm text-gray-600">
               <Star className="w-4 h-4" />
               <span>
                 {courseData.rating || 0} ({courseData.reviews || 0} reviews)
               </span>
             </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
+            {/* <div className="flex items-center space-x-2 text-sm text-gray-600">
               <Calendar className="w-4 h-4" />
               <span>{formatDate(courseData.createdAt)}</span>
-            </div>
+            </div> */}
           </div>
 
           {/* Progress */}
@@ -142,7 +142,7 @@ const CourseCard = ({ course, index = 0 }) => {
 export const dummyCourses = [
   {
     id: 1,
-    title: "React Masterclass: From Beginner to Pro",
+    title: "Visionaire: The Art of Dream Duas",
     description:
       "Complete guide to React development with hooks, context, and modern patterns. Build real-world projects and master component architecture.",
     thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=300&fit=crop",
@@ -172,7 +172,7 @@ export const dummyCourses = [
   },
   {
     id: 3,
-    title: "UI/UX Design Fundamentals",
+    title: "Dream Worldwide Arabic Workbook",
     description:
       "Master the principles of user interface and user experience design. Create stunning, user-friendly designs with industry best practices.",
     thumbnail: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=300&fit=crop",

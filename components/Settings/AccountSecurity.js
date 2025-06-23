@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Save } from "lucide-react";
 
-export const AccountSecurity = () => {
+const AccountSecurity = () => {
   const [passwords, setPasswords] = useState({
     currentPassword: "",
     newPassword: "",
@@ -117,3 +117,5 @@ export const AccountSecurity = () => {
     </div>
   );
 };
+
+export default AccountSecurity;

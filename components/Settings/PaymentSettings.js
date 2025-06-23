@@ -1,5 +1,5 @@
 // PaymentSettings.js
-export const PaymentSettings = () => {
+const PaymentSettings = () => {
   return (
     <div className="p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
@@ -31,3 +31,5 @@ export const PaymentSettings = () => {
     </div>
   );
 };
+
+export default PaymentSettings;
