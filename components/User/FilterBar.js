@@ -115,11 +115,11 @@ export const FilterBar = ({ searchQuery, setSearchQuery, filters, setFilters }) 
             label="Instructor"
             value={filters.instructor}
             options={[
-              "The Net Ninja",
-              "Muhammad Ahsan Pervaiz",
-              "Jonas Schmedtmann",
-              "Brad Traversy",
-              "Maximilian Schwarzmüller",
+              "Shaykh Muhammad Alshareef (rahimaullah)",
+              "Ustadh Nouman Ali Khan",
+              "Ustadh Yasir Qadhi",
+              "Ustadh Omar Suleiman",
+              "Sheikh Assim Al Hakeem",
             ]}
             placeholder="All Instructors"
             onChange={(value) => setFilters((prev) => ({ ...prev, instructor: value }))}

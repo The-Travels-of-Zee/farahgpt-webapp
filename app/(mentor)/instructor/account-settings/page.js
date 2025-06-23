@@ -1,9 +1,10 @@
 "use client";
 import ProfileSettings from "@/components/Settings/ProfileSettings";
+import PaymentReceive from "@/components/Settings/PaymentReceive";
 import AccountSecurity from "@/components/Settings/AccountSecurity";
-import CloseAccount from "@/components/Settings/CloseAccount";
-import NotificationSettings from "@/components/Settings/NotificationSettings";
 import PaymentSettings from "@/components/Settings/PaymentSettings";
+import NotificationSettings from "@/components/Settings/NotificationSettings";
+import CloseAccount from "@/components/Settings/CloseAccount";
 import SettingsSidebar from "@/components/Settings/SettingsSidebar";
 import { Menu } from "lucide-react";
 import { useState } from "react";
@@ -50,7 +51,7 @@ const AccountSettings = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       {/* Sidebar */}
       <SettingsSidebar
         isOpen={isSidebarOpen}

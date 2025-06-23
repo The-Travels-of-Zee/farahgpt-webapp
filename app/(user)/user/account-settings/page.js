@@ -1,9 +1,9 @@
 "use client";
-import { AccountSecurity } from "@/components/Settings/AccountSecurity";
-import { CloseAccount } from "@/components/Settings/CloseAccount";
-import { NotificationSettings } from "@/components/Settings/NotificationSettings";
+import AccountSecurity from "@/components/Settings/AccountSecurity";
+import CloseAccount from "@/components/Settings/CloseAccount";
+import NotificationSettings from "@/components/Settings/NotificationSettings";
 import PaymentReceive from "@/components/Settings/PaymentReceive";
-import { PaymentSettings } from "@/components/Settings/PaymentSettings";
+import PaymentSettings from "@/components/Settings/PaymentSettings";
 import ProfileSettings from "@/components/Settings/ProfileSettings";
 import SettingsSidebar from "@/components/Settings/SettingsSidebar";
 import WithdrawFunds from "@/components/Settings/WithdrawFunds";

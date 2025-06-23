@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import CourseCard from "@/components/User/CourseCard";
 import { FilterBar } from "@/components/User/FilterBar";
 import Header from "@/components/User/LearningNavbar";
+import { CoursesList } from "@/components/Dashboard/CourseCard";
 
 // Course Grid Component
 const CourseGrid = ({ courses }) => {
@@ -28,43 +29,43 @@ const LearningDashboard = () => {
   const courses = [
     {
       id: 1,
-      title: "Build Dynamic Web Apps with React & Firebase",
-      instructor: "The Net Ninja",
+      title: "Visionaire: The Art of Dream Duas",
+      instructor: "Shaykh Muhammad Alshareef (rahimaullah)",
       progress: 99,
       bgColor: "bg-gradient-to-br from-blue-400 to-blue-600",
-      icon: "⚛️",
+      icon: "🌙",
     },
     {
       id: 2,
-      title: "Modern JavaScript (Complete guide, from Novice to Ninja)",
-      instructor: "The Net Ninja",
+      title: "Dream Worldwide Arabic Workbook",
+      instructor: "Ustadh Nouman Ali Khan",
       progress: 100,
       bgColor: "bg-gradient-to-br from-red-400 to-pink-600",
-      icon: "JS",
+      icon: "🌴",
     },
     {
       id: 3,
-      title: "Learn Figma in 14 Days - Master UI Design and Prototyping",
-      instructor: "Muhammad Ahsan Pervaiz",
+      title: "Master the Arabic alphabet and start reading with confidence in just 21 days",
+      instructor: "Ustadh Yasir Qadhi",
       progress: 22,
       bgColor: "bg-gradient-to-br from-purple-400 to-indigo-600",
-      icon: "🎨",
+      icon: "⭐",
     },
     {
       id: 4,
-      title: "Freelancing for Designers and Developers - For Beginners",
-      instructor: "Muhammad Ahsan Pervaiz",
+      title: "Hadith Arabic: Learn the Language of the Prophet (ﷺ)",
+      instructor: "Ustadh Omar Suleiman",
       progress: 4,
       bgColor: "bg-gradient-to-br from-green-400 to-teal-600",
-      icon: "💼",
+      icon: "🤲",
     },
     {
       id: 5,
-      title: "Web Design for Web Developers: Build Beautiful Websites!",
-      instructor: "Jonas Schmedtmann",
+      title: "Tafsir Essentials: Understanding the meaning of the Quran",
+      instructor: "Sheikh Assim Al Hakeem",
       progress: 0,
       bgColor: "bg-gradient-to-br from-orange-400 to-red-600",
-      icon: "🌐",
+      icon: "📖",
     },
   ];
 
@@ -110,6 +111,7 @@ const LearningDashboard = () => {
           setFilters={setFilters}
         />
         <CourseGrid courses={filteredCourses} />
+        {/* <CoursesList /> */}
       </div>
     </div>
   );

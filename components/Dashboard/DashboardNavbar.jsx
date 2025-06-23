@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "@/lib/motion";
 import { Search, Bell, User, ChevronDown, BookOpen, Award, Settings, LogOut } from "lucide-react";
 import Button from "./Button";
 import Link from "next/link";
+import NotificationDropdown from "../Notification";
 
 // 🔐 Mock authentication hook (replace with real auth later)
 const useAuth = () => {
@@ -63,7 +64,12 @@ const DashboardNavbar = () => {
           {/* Left Side - Logo and Greeting */}
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-gray-900">FarahGPT</h1>
+              <div className="flex items-center space-x-2 mr-4">
+                <div className="w-8 h-8">
+                  <img src="/favicon/favicon.svg" width={64} height={64} alt="farahgpt-logo" className="inline" />
+                </div>
+                <span className="text-2xl font-bold text-gray-900">FarahGPT</span>
+              </div>
             </Link>
 
             {isLoggedIn && (
@@ -91,12 +97,14 @@ const DashboardNavbar = () => {
             {isLoggedIn && (
               <>
                 {/* Create Course */}
-                <Button variant="primary" size="sm">
-                  Create Course
-                </Button>
+                <Link href="/instructor/course-upload">
+                  <Button className="bg-gradient-to-r from-(--primary-light) to-secondary text-white" size="md">
+                    Create Course
+                  </Button>
+                </Link>
 
                 {/* Notifications */}
-                <motion.button
+                {/* <motion.button
                   className="p-2 text-gray-600 hover:text-secondary transition-colors relative"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -107,12 +115,14 @@ const DashboardNavbar = () => {
                       {notifications}
                     </span>
                   )}
-                </motion.button>
-
+                </motion.button> */}
+                <NotificationDropdown />
                 {/* Settings */}
-                <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
-                  <Settings className="h-6 w-6" />
-                </button>
+                <Link href="/instructor/account-settings">
+                  <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
+                    <Settings className="h-6 w-6" />
+                  </button>
+                </Link>
 
                 {/* User Profile Dropdown */}
                 <div className="relative" ref={dropdownRef}>
@@ -146,7 +156,7 @@ const DashboardNavbar = () => {
                               key={item.label}
                               href={item.href}
                               className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                              whileHover={{ x: 4 }}
+                              whileHover={{ x: 0 }}
                             >
                               <item.icon className="h-4 w-4 mr-3 text-gray-400" />
                               {item.label}
@@ -158,7 +168,7 @@ const DashboardNavbar = () => {
                           <motion.button
                             onClick={logout}
                             className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                            whileHover={{ x: 4 }}
+                            whileHover={{ x: 0}}
                           >
                             <LogOut className="h-4 w-4 mr-3" />
                             Sign Out
