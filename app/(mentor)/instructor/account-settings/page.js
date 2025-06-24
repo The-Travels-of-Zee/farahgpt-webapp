@@ -12,7 +12,7 @@ import WithdrawFunds from "@/components/Settings/WithdrawFunds";
 
 const AccountSettings = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("profile-security");
+  const [activeSection, setActiveSection] = useState("profile-settings");
 
   // Handle responsive behavior
   const handleToggleSidebar = () => {

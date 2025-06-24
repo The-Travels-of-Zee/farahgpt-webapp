@@ -1,10 +1,79 @@
+// components/courses/CourseCard.tsx
 import { motion } from "@/lib/motion";
-import { Users, DollarSign, Star, Calendar, MoreHorizontal, Edit, Trash2, Eye } from "lucide-react";
 import Button, { Badge } from "./Button";
+import { Users, DollarSign, Star, Calendar, MoreHorizontal, Eye, Edit, Trash2, Stars } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-const CourseCard = ({ course, index = 0 }) => {
-  // Default values in case course prop is undefined
-  const courseData = course || {};
+// Course Card component for admin dashboard
+export const AdminCourseCard = ({ course, index = 0, revenue = 0 }) => {
+  const pathname = usePathname();
+  const getStatusColor = (status) => {
+    const colors = {
+      published: "green",
+      draft: "yellow",
+      archived: "gray",
+      pending: "orange",
+    };
+    return colors[status] || "gray";
+  };
+
+  return (
+    <motion.div
+      className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow flex flex-col sm:flex-row h-full"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+    >
+      {/* Thumbnail */}
+      <div className="w-full sm:w-40 h-48 sm:h-auto bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
+        {course.thumbnail ? (
+          <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white text-3xl font-bold">
+            {course.title?.charAt(0) || "C"}
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 flex flex-col p-4 justify-between">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
+          <div className="min-w-0">
+            <div className="flex items-center space-x-2 mb-1">
+              <h3 className="text-lg font-semibold text-gray-900 truncate">{course.title || "Untitled Course"}</h3>
+              <Badge color={getStatusColor(course.status)}>{course.status || "draft"}</Badge>
+            </div>
+            <p className="text-sm text-gray-600 line-clamp-2">{course.description || "No description available"}</p>
+          </div>
+          <CourseCardMenu />
+        </div>
+
+        <CourseStats course={course} />
+        <CourseProgress completionRate={course.completionRate} />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="text-sm text-gray-600">
+            Revenue: <span className="font-semibold text-green-600">${revenue}</span>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Button variant="outline" size="sm" className="w-full sm:w-auto">
+              View Analytics
+            </Button>
+            <Button variant="primary" size="sm" className="w-full sm:w-auto">
+              Manage Course
+            </Button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// Course Card component for explore page
+export const ExploreCourseCard = ({ course, index = 0, view = "list" }) => {
+  const pathname = usePathname();
+  const isGrid = view === "grid";
 
   const getStatusColor = (status) => {
     const colors = {
@@ -16,121 +85,64 @@ const CourseCard = ({ course, index = 0 }) => {
     return colors[status] || "gray";
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
   return (
     <motion.div
-      className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+      className={`
+        bg-white border border-gray-200 rounded-lg overflow-hidden transition-shadow hover:shadow-md
+        ${isGrid ? "flex flex-col h-full" : "flex flex-col sm:flex-row h-full"}
+      `}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
     >
-      <div className="flex flex-col sm:flex-row">
-        {/* Course Image */}
-        <div className="w-full sm:w-24 h-48 sm:h-24 bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
-          {courseData.thumbnail ? (
-            <img src={courseData.thumbnail} alt={courseData.title || "Course"} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-white text-2xl font-bold">
-              {(courseData.title || "C").charAt(0)}
+      {/* Thumbnail */}
+      <div
+        className={`
+          ${isGrid ? "h-44 w-full" : "w-full sm:w-40 h-48 sm:h-auto"}
+          bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0
+        `}
+      >
+        {course.thumbnail ? (
+          <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white text-3xl font-bold">
+            {course.title?.charAt(0) || "C"}
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 flex flex-col p-4 justify-between">
+        {/* Header */}
+        <div
+          className={`flex ${
+            isGrid ? "flex-col gap-2 mb-2" : "flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2"
+          }`}
+        >
+          <div className="min-w-0">
+            <div className="flex items-center space-x-2 mb-1">
+              <h3 className="text-lg font-semibold text-gray-900 truncate">{course.title || "Untitled Course"}</h3>
             </div>
-          )}
+            <p className={`text-sm text-gray-600 line-clamp-2 ${isGrid ? "min-h-[40px]" : ""}`}>
+              {course.description || "No description available"}
+            </p>
+          </div>
         </div>
 
-        {/* Course Details */}
-        <div className="flex-1 p-4">
-          {/* Top Row */}
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2 gap-2">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2 mb-1">
-                <h3 className="text-lg font-semibold text-gray-900 truncate">
-                  {courseData.title || "Untitled Course"}
-                </h3>
-                <Badge color={getStatusColor(courseData.status)}>{courseData.status || "draft"}</Badge>
-              </div>
-              <p className="text-sm text-gray-600 line-clamp-2">
-                {courseData.description || "No description available"}
-              </p>
-            </div>
+        <CourseStats course={course} />
 
-            {/* Menu */}
-            <div className="relative group self-end sm:self-start">
-              <button className="p-1 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100">
-                <MoreHorizontal className="w-5 h-5" />
-              </button>
-              <div className="absolute right-0 top-8 w-48 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                  <Eye className="w-4 h-4" />
-                  <span>View Course</span>
-                </button>
-                <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                  <Edit className="w-4 h-4" />
-                  <span>Edit Course</span>
-                </button>
-                <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
-                  <Trash2 className="w-4 h-4" />
-                  <span>Delete Course</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4 mb-4">
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Users className="w-4 h-4" />
-              <span>{courseData.studentsEnrolled || 0} students</span>
-            </div>
-            {/* <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <DollarSign className="w-4 h-4" />
-              <span>${courseData.price || 0}</span>
-            </div> */}
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Star className="w-4 h-4" />
-              <span>
-                {courseData.rating || 0} ({courseData.reviews || 0} reviews)
-              </span>
-            </div>
-            {/* <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Calendar className="w-4 h-4" />
-              <span>{formatDate(courseData.createdAt)}</span>
-            </div> */}
-          </div>
-
-          {/* Progress */}
-          <div className="mb-4">
-            <div className="flex items-center justify-between text-sm mb-1">
-              <span className="text-gray-600">Course Progress</span>
-              <span className="font-medium text-gray-900">{courseData.completionRate || 0}%</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className="bg-blue-500 h-2 rounded-full transition-all"
-                style={{ width: `${courseData.completionRate || 0}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Footer Actions */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="text-sm text-gray-600">
-              Revenue: <span className="font-semibold text-green-600">${courseData.totalRevenue || 0}</span>
-            </div>
-            <div className="flex space-x-2">
-              <Button variant="outline" size="sm">
-                View Analytics
+        {/* Footer */}
+        <div
+          className={`flex ${
+            isGrid ? "flex-col gap-2 mt-2" : "flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+          }`}
+        >
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Link href={`${pathname}/../learning/${course.id}`}>
+              <Button variant="primary" size="sm" className={`w-full sm:w-auto ${isGrid ? "text-sm px-3 py-1.5" : ""}`}>
+                Start Learning
               </Button>
-              <Button variant="primary" size="sm">
-                Manage Course
-              </Button>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -138,14 +150,93 @@ const CourseCard = ({ course, index = 0 }) => {
   );
 };
 
-// Dummy data for testing
+// components/courses/CourseCardMenu.tsx
+export const CourseCardMenu = () => (
+  <div className="relative group self-end sm:self-start">
+    <button className="p-1 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100">
+      <MoreHorizontal className="w-5 h-5" />
+    </button>
+    <div className="absolute right-0 top-8 w-48 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+      <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+        <Eye className="w-4 h-4" />
+        <span>View Course</span>
+      </button>
+      <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+        <Edit className="w-4 h-4" />
+        <span>Edit Course</span>
+      </button>
+      <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+        <Trash2 className="w-4 h-4" />
+        <span>Delete Course</span>
+      </button>
+    </div>
+  </div>
+);
+
+// components/courses/CourseStats.tsx
+
+export const formatDate = (dateString) =>
+  new Date(dateString).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+const CourseStats = ({ course }) => (
+  <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4 text-sm text-gray-600">
+    <div className="flex items-center space-x-2">
+      <Users className="w-4 h-4" />
+      <span>{course.studentsEnrolled || 0} students</span>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Star className="w-4 h-4" />
+      <span>
+        {course.rating || 0} ({course.reviews || 0})
+      </span>
+    </div>
+    <div className="max-w-min flex items-center space-x-2 bg-yellow-200 py-1 px-2 rounded-full text-sm text-amber-600">
+      <Stars className="w-4 h-4" />
+      <span>Premium</span>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Calendar className="w-4 h-4" />
+      <span>{formatDate(course.createdAt)}</span>
+    </div>
+  </div>
+);
+
+// components/courses/CourseProgress.tsx
+export const CourseProgress = ({ completionRate = 0 }) => (
+  <div className="mb-4">
+    <div className="flex items-center justify-between text-sm mb-1">
+      <span className="text-gray-600">Course Progress</span>
+      <span className="font-medium text-gray-900">{completionRate}%</span>
+    </div>
+    <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="bg-blue-500 h-2 rounded-full transition-all" style={{ width: `${completionRate}%` }} />
+    </div>
+  </div>
+);
+
+// components/courses/CourseList.tsx
+// import CourseCard from "./CourseCard";
+
+export const CourseList = ({ courses }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    {courses.map((course, index) => (
+      <CourseCard key={course.id} course={course} index={index} />
+    ))}
+  </div>
+);
+
 export const dummyCourses = [
   {
     id: 1,
     title: "Visionaire: The Art of Dream Duas",
+    author: "Shaykh Muhammad Alshareef (rahimaullah)",
     description:
-      "Complete guide to React development with hooks, context, and modern patterns. Build real-world projects and master component architecture.",
-    thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=300&fit=crop",
+      "Unlock the secrets of effective dua with this comprehensive course. Learn how to make impactful supplications that resonate with your heart and mind.",
+    thumbnail: null,
     status: "published",
     studentsEnrolled: 1247,
     price: 149,
@@ -157,10 +248,11 @@ export const dummyCourses = [
   },
   {
     id: 2,
-    title: "Python for Data Science",
+    title: "Dream Worldwide Arabic Workbook",
+    author: "Ustadh Nouman Ali Khan",
     description:
-      "Learn Python programming with focus on data analysis, visualization, and machine learning using pandas, matplotlib, and scikit-learn.",
-    thumbnail: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=400&h=300&fit=crop",
+      "Enhance your Arabic language skills with our interactive workbook. Perfect for beginners and advanced learners alike, this course offers practical exercises and real-world applications.",
+    thumbnail: null,
     status: "published",
     studentsEnrolled: 892,
     price: 199,
@@ -172,10 +264,11 @@ export const dummyCourses = [
   },
   {
     id: 3,
-    title: "Dream Worldwide Arabic Workbook",
+    title: "Master the Arabic alphabet and start reading with confidence in just 21 Days",
+    author: "Ustadh Yasir Qadhi",
     description:
-      "Master the principles of user interface and user experience design. Create stunning, user-friendly designs with industry best practices.",
-    thumbnail: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=300&fit=crop",
+      "Learn the Arabic alphabet and basic reading skills in this intensive 21-day course. Ideal for beginners, this course provides a solid foundation for further Arabic studies.",
+    thumbnail: null,
     status: "draft",
     studentsEnrolled: 0,
     price: 129,
@@ -187,10 +280,11 @@ export const dummyCourses = [
   },
   {
     id: 4,
-    title: "Advanced JavaScript Concepts",
+    title: "Hadith Arabic: Learn the Language of the Prophet (ﷺ)",
+    author: "Ustadh Omar Suleiman",
     description:
-      "Deep dive into JavaScript with closures, prototypes, async programming, and ES6+ features. Perfect for intermediate developers.",
-    thumbnail: null, // This will show the first letter
+      "Dive into the language of Hadith with this specialized course. Understand the nuances of Arabic used in Hadith literature and enhance your comprehension of Islamic texts.",
+    thumbnail: null,
     status: "published",
     studentsEnrolled: 634,
     price: 179,
@@ -202,10 +296,11 @@ export const dummyCourses = [
   },
   {
     id: 5,
-    title: "Digital Marketing Strategy",
+    title: "Tafsir Essentials: Understanding the meaning of the Quran",
+    author: "Sheikh Assim Al Hakeem",
     description:
-      "Comprehensive guide to digital marketing including SEO, social media, content marketing, and paid advertising strategies.",
-    thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+      "Explore the essential concepts of Tafsir in this course. Gain a deeper understanding of the Quran's meanings and interpretations, enhancing your spiritual connection.",
+    thumbnail: null,
     status: "pending",
     studentsEnrolled: 23,
     price: 99,
@@ -217,10 +312,11 @@ export const dummyCourses = [
   },
   {
     id: 6,
-    title: "Photography Masterclass",
+    title: "Faith & Finances: Islamic Wealth Principles",
+    author: "Islamic Finance Faculty",
     description:
-      "Learn professional photography techniques, composition, lighting, and post-processing with Adobe Lightroom and Photoshop.",
-    thumbnail: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop",
+      "Learn how to manage your finances in accordance with Islamic principles. This course covers topics such as halal investments, zakat calculation, and ethical financial practices.",
+    thumbnail: null,
     status: "archived",
     studentsEnrolled: 445,
     price: 159,
@@ -230,49 +326,4 @@ export const dummyCourses = [
     completionRate: 71,
     totalRevenue: 70755,
   },
-  {
-    id: 7,
-    title: "Node.js Backend Development",
-    description:
-      "Build scalable backend applications with Node.js, Express, MongoDB, and authentication. Deploy to cloud platforms.",
-    thumbnail: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400&h=300&fit=crop",
-    status: "published",
-    studentsEnrolled: 756,
-    price: 189,
-    rating: 4.5,
-    reviews: 134,
-    createdAt: "2023-10-18",
-    completionRate: 69,
-    totalRevenue: 142884,
-  },
-  {
-    id: 8,
-    title: "Machine Learning Fundamentals",
-    description:
-      "Introduction to machine learning algorithms, supervised and unsupervised learning, and practical implementation with Python.",
-    thumbnail: null,
-    status: "draft",
-    studentsEnrolled: 0,
-    price: 249,
-    rating: 0,
-    reviews: 0,
-    createdAt: "2024-04-02",
-    completionRate: 25,
-    totalRevenue: 0,
-  },
 ];
-
-// Example usage component
-const CoursesList = () => {
-  return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">Courses Overview</h2>
-      {dummyCourses.map((course, index) => (
-        <CourseCard key={course.id} course={course} index={index} />
-      ))}
-    </div>
-  );
-};
-
-export { CourseCard, CoursesList };
-export default CourseCard;

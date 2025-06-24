@@ -68,7 +68,7 @@ const DashboardNavbar = () => {
                 <div className="w-8 h-8">
                   <img src="/favicon/favicon.svg" width={64} height={64} alt="farahgpt-logo" className="inline" />
                 </div>
-                <span className="text-2xl font-bold text-gray-900">FarahGPT</span>
+                <span className="hidden lg:inline text-2xl font-bold text-gray-900">FarahGPT</span>
               </div>
             </Link>
 
@@ -125,7 +125,7 @@ const DashboardNavbar = () => {
                 </Link>
 
                 {/* User Profile Dropdown */}
-                <div className="relative" ref={dropdownRef}>
+                <div className="relative hidden lg:block" ref={dropdownRef}>
                   <motion.button
                     onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
                     className="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
@@ -168,7 +168,7 @@ const DashboardNavbar = () => {
                           <motion.button
                             onClick={logout}
                             className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                            whileHover={{ x: 0}}
+                            whileHover={{ x: 0 }}
                           >
                             <LogOut className="h-4 w-4 mr-3" />
                             Sign Out

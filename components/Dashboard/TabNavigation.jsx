@@ -2,9 +2,13 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { DetailedStats } from "./StatCard";
+import Link from "next/link";
+import Button from "./Button";
+import { dummyCourses } from "./CourseCard";
+import { AdminCourseCard } from "./CourseCard";
 
 // Dynamic imports (with SSR disabled if needed)
-const CourseCard = dynamic(() => import("./CourseCard"), { ssr: false });
+// const AdminCourseCard = dynamic(() => import("./CourseCard").then((mod) => mod.AdminCourseCard), { ssr: false });
 const EarningsChart = dynamic(() => import("./EarningsChart"), { ssr: false });
 const StatCard = dynamic(() => import("./StatCard"), { ssr: false });
 const StudentCard = dynamic(() => import("./StudentCard"), { ssr: false });
@@ -52,7 +56,20 @@ const DashboardTabs = () => {
       case "students":
         return <StudentCard />;
       case "courses":
-        return <CourseCard />;
+        return (
+          <>
+            <Link href="/instructor/course-upload">
+              <Button className="bg-gradient-to-r mb-4 from-(--primary-light) to-secondary text-white" size="md">
+                Create Course
+              </Button>
+            </Link>
+            {dummyCourses.map((course) => (
+              <div key={course.id} className="mb-4">
+                <AdminCourseCard course={course} />
+              </div>
+            ))}
+          </>
+        );
       case "analytics":
         return (
           <div className="space-y-6">

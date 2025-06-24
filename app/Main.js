@@ -208,13 +208,15 @@ const Main = () => {
                     ))}
                   </div>
 
-                  <motion.button
-                    className="min-w-max p-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-medium transition-colors"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    Manage Subscription
-                  </motion.button>
+                  <Link href="/plans">
+                    <motion.button
+                      className="min-w-max p-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-medium transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      Manage Subscription
+                    </motion.button>
+                  </Link>
                 </div>
               </div>
             </motion.div>
