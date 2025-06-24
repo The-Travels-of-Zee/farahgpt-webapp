@@ -67,6 +67,14 @@ const LearningDashboard = () => {
       bgColor: "bg-gradient-to-br from-orange-400 to-red-600",
       icon: "📖",
     },
+    {
+      id: 6,
+      title: "Faith & Finances: Islamic Wealth Principles",
+      instructor: "Islamic Finance Faculty",
+      progress: 0,
+      bgColor: "bg-gradient-to-br from-orange-400 to-red-600",
+      icon: "💳",
+    },
   ];
 
   const filteredCourses = courses

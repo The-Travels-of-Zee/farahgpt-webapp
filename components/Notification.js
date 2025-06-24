@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "@/lib/motion";
 import { Bell, X, CheckCircle, AlertCircle, Info, Clock } from "lucide-react";
+import Link from "next/link";
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState(5);
@@ -92,10 +93,9 @@ const NotificationDropdown = () => {
   };
 
   return (
-    <div className="relative z-50">
+    <div className="relative z-50" ref={dropdownRef}>
       {/* Notification Bell Button */}
       <motion.button
-        ref={dropdownRef}
         onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
         className="p-2 text-gray-600 hover:text-blue-600 transition-colors relative"
         whileHover={{ scale: 1.1 }}
@@ -178,11 +178,13 @@ const NotificationDropdown = () => {
 
             {/* Footer */}
             {notificationList.length > 0 && (
-              <div className="p-3 border-t border-gray-100">
-                <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium py-2">
-                  View All Notifications
-                </button>
-              </div>
+              <Link href="/all-notifications">
+                <div className="p-3 border-t border-gray-100">
+                  <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium py-2">
+                    View All Notifications
+                  </button>
+                </div>
+              </Link>
             )}
           </motion.div>
         )}

@@ -1,4 +1,5 @@
 import DashboardHeader from "@/components/Dashboard/DashboardNavbar";
+import Navbar from "@/components/Navbar";
 
 export const metadata = {
   title: "Dashboard",
@@ -8,10 +9,9 @@ export const metadata = {
 const DashboardLayout = ({ children }) => {
   return (
     <div className="dashboard-layout">
-      <DashboardHeader />
-      <main className="dashboard-content">
-        {children}
-      </main>
+      {/* <DashboardHeader /> */}
+      <Navbar />
+      <main className="dashboard-content">{children}</main>
     </div>
   );
 };

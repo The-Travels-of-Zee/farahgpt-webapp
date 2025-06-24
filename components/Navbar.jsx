@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import NotificationDropdown from "./Notification";
+import Button from "./Dashboard/Button";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,6 +27,8 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   // const [cartItems] = useState(3); // Mock cart items
   // const [notifications] = useState(2); // Mock notifications
+
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "";
 
   const dropdownRef = useRef(null);
   // Close dropdown on outside click
@@ -47,10 +50,10 @@ const Navbar = () => {
 
   // Mock user data
   const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: "JD",
-    initials: "JD",
+    name: "Shaheer Mansoor",
+    email: "shaheer.mansoor@example.com",
+    avatar: "SM",
+    initials: "SM",
   };
 
   const handleLogin = () => {
@@ -62,10 +65,11 @@ const Navbar = () => {
     setIsUserDropdownOpen(false);
   };
 
-  // const navigationItems = [
-  //   { label: "Explore", href: "#" },
-  //   { label: "My learning", href: "/learning", authRequired: true },
-  // ];
+  const navigationItems = [
+    { icon: User, label: "My Profile", href: "/dashboard", authRequired: true },
+    { icon: BookOpen, label: "My learning", href: "/learning", authRequired: true },
+    { icon: Settings, label: "Account Settings", href: "/user/account-settings", authRequired: true },
+  ];
 
   const dropdownLinks = [
     { icon: User, label: "My Profile", href: "/dashboard" },
@@ -108,6 +112,19 @@ const Navbar = () => {
           </div> */}
 
           {/* Search Bar */}
+          <motion.a
+            href="/explore-courses"
+            className="flex items-center px-4 py-2 text-md text-gray-700 cursor-pointer"
+            whileHover={{ x: 0 }}
+          >
+            Explore
+          </motion.a>
+          {isLoggedIn && pathname === "/dashboard" && (
+            <div className="hidden md:block ml-4">
+              <h2 className="text-lg font-medium text-gray-900">Welcome back, {user.name.split(" ")[0]}!</h2>
+              <p className="text-sm text-gray-600">Here's what's happening with your courses today.</p>
+            </div>
+          )}
           <div className="flex-1 max-w-2xl mx-8 hidden md:block">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -154,9 +171,8 @@ const Navbar = () => {
                 <NotificationDropdown />
 
                 {/* User Profile Dropdown */}
-                <div className="relative">
+                <div className="relative hidden lg:block" ref={dropdownRef}>
                   <motion.button
-                    ref={dropdownRef}
                     onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
                     className="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
                     whileHover={{ scale: 1.05 }}
@@ -181,6 +197,16 @@ const Navbar = () => {
                         </div>
 
                         <div className="py-2">
+                          {isLoggedIn && (
+                            <Link href="/instructor/course-upload">
+                              <Button
+                                className="bg-gradient-to-r ml-4 mb-2 from-(--primary-light) to-secondary text-white"
+                                size="md"
+                              >
+                                Create Course
+                              </Button>
+                            </Link>
+                          )}
                           {dropdownLinks.map((item) => (
                             <motion.a
                               key={item.label}
@@ -211,7 +237,7 @@ const Navbar = () => {
               </>
             ) : (
               /* Login/Signup Buttons */
-              <div className="flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-2">
                 <motion.button
                   onClick={handleLogin}
                   className="px-4 py-2 text-gray-700 font-medium hover:text-secondary transition-colors"
@@ -277,6 +303,13 @@ const Navbar = () => {
             className="lg:hidden bg-white border-t border-gray-200"
           >
             <div className="px-4 py-4 space-y-4">
+              {isLoggedIn && (
+                <Link href="/instructor/course-upload">
+                  <Button className="bg-gradient-to-r mb-4 from-(--primary-light) to-secondary text-white" size="md">
+                    Create Course
+                  </Button>
+                </Link>
+              )}
               {navigationItems.map(
                 (item) =>
                   (!item.authRequired || isLoggedIn) && (
@@ -286,11 +319,21 @@ const Navbar = () => {
                       className="block text-gray-700 hover:text-secondary font-medium transition-colors"
                       whileHover={{ x: 4 }}
                     >
+                      <item.icon className="inline-block mr-2 h-5 w-5 text-gray-400" />
                       {item.label}
                     </motion.a>
                   )
               )}
-
+              {isLoggedIn && (
+                <motion.button
+                  onClick={handleLogout}
+                  className="flex items-center w-full pt-2 border-t-blue-100 border-t-1 text-red-600 hover:bg-red-50 transition-colors"
+                  whileHover={{ x: 0 }}
+                >
+                  <LogOut className="h-4 w-4 mr-3" />
+                  Sign Out
+                </motion.button>
+              )}
               {!isLoggedIn && (
                 <div className="pt-4 border-t border-gray-200 space-y-2">
                   <motion.button
