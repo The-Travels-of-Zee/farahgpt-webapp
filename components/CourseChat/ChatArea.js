@@ -1,4 +1,4 @@
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";

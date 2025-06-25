@@ -1,5 +1,5 @@
 // components/courses/CourseCard.tsx
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 import Button, { Badge } from "./Button";
 import { Users, DollarSign, Star, Calendar, MoreHorizontal, Eye, Edit, Trash2, Stars } from "lucide-react";
 import Link from "next/link";

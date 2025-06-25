@@ -2,91 +2,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, CheckCircle, AlertCircle, Info, Clock, Archive, ArchiveRestore, Trash2 } from "lucide-react";
+import { dummyNotifications } from "@/constants";
 
 const AllNotification = () => {
   const [activeTab, setActiveTab] = useState("notifications");
 
-  const [notificationList, setNotificationList] = useState([
-    {
-      id: 1,
-      type: "success",
-      title: "Order Completed",
-      message: "Your order #12345 has been successfully processed",
-      time: "2 min ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      type: "warning",
-      title: "Payment Reminder",
-      message: "Your subscription will expire in 3 days",
-      time: "1 hour ago",
-      unread: true,
-    },
-    {
-      id: 3,
-      type: "info",
-      title: "New Feature",
-      message: "Check out our latest dashboard updates",
-      time: "2 hours ago",
-      unread: false,
-    },
-    {
-      id: 4,
-      type: "alert",
-      title: "Security Alert",
-      message: "New login detected from unknown device",
-      time: "1 day ago",
-      unread: true,
-    },
-    {
-      id: 5,
-      type: "info",
-      title: "Welcome!",
-      message: "Thanks for joining our platform",
-      time: "2 days ago",
-      unread: false,
-    },
-  ]);
+  const [notificationList, setNotificationList] = useState(dummyNotifications);
 
-  const [archivedNotifications, setArchivedNotifications] = useState([
-    {
-      id: 101,
-      type: "success",
-      title: "Profile Updated",
-      message: "Your profile information has been successfully updated",
-      time: "3 days ago",
-      unread: false,
-      archivedAt: "3 days ago",
-    },
-    {
-      id: 102,
-      type: "info",
-      title: "System Maintenance",
-      message: "Scheduled maintenance completed successfully",
-      time: "1 week ago",
-      unread: false,
-      archivedAt: "5 days ago",
-    },
-    {
-      id: 103,
-      type: "warning",
-      title: "Password Changed",
-      message: "Your password was changed successfully",
-      time: "2 weeks ago",
-      unread: false,
-      archivedAt: "1 week ago",
-    },
-    {
-      id: 104,
-      type: "alert",
-      title: "Login Attempt",
-      message: "Failed login attempt from unknown location",
-      time: "3 weeks ago",
-      unread: false,
-      archivedAt: "2 weeks ago",
-    },
-  ]);
+  const [archivedNotifications, setArchivedNotifications] = useState(dummyNotifications.filter((n) => n.archivedAt));
 
   const getNotificationIcon = (type) => {
     switch (type) {

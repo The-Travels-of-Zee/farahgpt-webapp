@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 
 const EarningsChart = () => {

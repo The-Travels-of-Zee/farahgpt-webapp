@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 import { MoreHorizontal, Star } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

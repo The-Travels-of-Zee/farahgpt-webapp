@@ -1,5 +1,5 @@
 import { X, Plus, MessageCircle, Crown, CircleArrowLeft } from "lucide-react";
-import { motion, AnimatePresence } from "@/lib/motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onToggle }) => {

@@ -1,4 +1,4 @@
-import { easeIn, motion, useTransform } from "@/lib/motion";
+import { easeIn, motion, useTransform } from "framer-motion";
 
 function SVGBlob({ className, scrollYProgress }) {
   // const y = useTransform(scrollYProgress, [0.85, 1], ["0%", "-30%"], {

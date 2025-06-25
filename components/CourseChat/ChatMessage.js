@@ -1,4 +1,4 @@
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 
 export const ChatMessage = ({ message, isUser = false }) => {
   return (

@@ -1,4 +1,4 @@
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 import { Clock, Star, BookOpen, TrendingUp } from "lucide-react";
 import { Badge } from "./Button";
 

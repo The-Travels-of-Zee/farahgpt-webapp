@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
 export const metadata = {
@@ -10,6 +11,7 @@ const PlansLayout = ({ children }) => {
     <div>
       <Navbar />
       <main>{children}</main>
+      <Footer />
     </div>
   );
 };
