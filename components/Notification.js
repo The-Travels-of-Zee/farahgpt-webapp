@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "@/lib/motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Bell, X, CheckCircle, AlertCircle, Info, Clock } from "lucide-react";
 import Link from "next/link";
+import { dummyNotifications } from "@/constants";
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState(5);
@@ -26,48 +27,7 @@ const NotificationDropdown = () => {
     };
   }, [isUserDropdownOpen]);
 
-  const [notificationList, setNotificationList] = useState([
-    {
-      id: 1,
-      type: "success",
-      title: "Order Completed",
-      message: "Your order #12345 has been successfully processed",
-      time: "2 min ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      type: "warning",
-      title: "Payment Reminder",
-      message: "Your subscription will expire in 3 days",
-      time: "1 hour ago",
-      unread: true,
-    },
-    {
-      id: 3,
-      type: "info",
-      title: "New Feature",
-      message: "Check out our latest dashboard updates",
-      time: "2 hours ago",
-      unread: false,
-    },
-    {
-      id: 4,
-      type: "alert",
-      title: "Security Alert",
-      message: "New login detected from unknown device",
-      time: "1 day ago",
-      unread: true,
-    },
-    {
-      id: 5,
-      type: "info",
-      title: "Welcome!",
-      message: "Thanks for joining our platform",
-      time: "2 days ago",
-      unread: false,
-    },
-  ]);
+  const [notificationList, setNotificationList] = useState(dummyNotifications);
 
   const getNotificationIcon = (type) => {
     switch (type) {

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Send } from "lucide-react";
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 import { z } from "zod";
 
 const messageSchema = z.object({

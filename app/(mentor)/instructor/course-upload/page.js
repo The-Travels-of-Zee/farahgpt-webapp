@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { motion, AnimatePresence } from "@/lib/motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Upload, FileText, Check, ArrowRight, ArrowLeft, Edit3, RefreshCw } from "lucide-react";
 
 const screens = [

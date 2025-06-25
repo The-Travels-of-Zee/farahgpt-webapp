@@ -162,14 +162,14 @@ const ProfileAndSocialSettings = () => {
         <div className="flex justify-end gap-2 pt-4">
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-100 transition"
+            className="bg-gradient-to-r from-teal-200 to-teal-100 text-teal-700 shadow-sm px-4 py-2 text-sm rounded-md transition"
           >
             {isEditing ? "Cancel" : "Edit"}
           </button>
           {isEditing && (
             <button
               onClick={handleSave}
-              className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition flex items-center"
+              className="bg-gradient-to-r from-teal-200 to-teal-100 text-teal-700 shadow-sm px-4 py-2 text-sm rounded-md transition flex items-center"
             >
               <Save className="w-4 h-4 mr-2" />
               Save Changes
@@ -188,7 +188,7 @@ const ProfileAndSocialSettings = () => {
           <button
             onClick={addSocialLink}
             disabled={socialLinks.length >= socialPlatforms.length}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm flex items-center transition"
+            className="bg-gradient-to-r from-teal-200 to-teal-100 text-teal-700 shadow-sm px-4 py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed text-sm flex items-center transition"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Link

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "@/lib/motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   Heart,
@@ -21,7 +21,7 @@ import NotificationDropdown from "./Notification";
 import Button from "./Dashboard/Button";
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,7 +83,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <motion.div className="flex-shrink-0 flex items-center" whileHover={{ scale: 1.05 }}>
+          <motion.div className="flex-shrink-0 flex items-center">
             <Link href="/">
               <div className="flex items-center space-x-2 mr-4">
                 <div className="w-8 h-8">
@@ -92,6 +92,9 @@ const Navbar = () => {
                 <span className="text-2xl font-bold text-gray-900">FarahGPT</span>
               </div>
             </Link>
+            <Link href="/explore-courses" className="flex items-center px-4 py-2 text-md text-gray-700 cursor-pointer">
+              Explore
+            </Link>
           </motion.div>
 
           {/* Desktop Navigation */}
@@ -99,33 +102,26 @@ const Navbar = () => {
             {navigationItems.map(
               (item) =>
                 (!item.authRequired || isLoggedIn) && (
-                  <motion.a
+                  <Link
                     key={item.label}
                     href={item.href}
                     className="text-gray-700 hover:text-secondary font-medium transition-colors"
                     whileHover={{ y: -1 }}
                   >
                     {item.label}
-                  </motion.a>
+                  </Link>
                 )
             )}
           </div> */}
 
           {/* Search Bar */}
-          <motion.a
-            href="/explore-courses"
-            className="flex items-center px-4 py-2 text-md text-gray-700 cursor-pointer"
-            whileHover={{ x: 0 }}
-          >
-            Explore
-          </motion.a>
           {isLoggedIn && pathname === "/dashboard" && (
             <div className="hidden md:block ml-4">
               <h2 className="text-lg font-medium text-gray-900">Welcome back, {user.name.split(" ")[0]}!</h2>
               <p className="text-sm text-gray-600">Here's what's happening with your courses today.</p>
             </div>
           )}
-          <div className="flex-1 max-w-2xl mx-8 hidden md:block">
+          {/* <div className="flex-1 max-w-2xl mx-8 hidden md:block">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
@@ -138,20 +134,20 @@ const Navbar = () => {
                 placeholder="Search for anything"
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
             {isLoggedIn ? (
               <>
                 {/* Wishlist */}
-                <motion.button
+                {/* <motion.button
                   className="p-2 text-gray-600 hover:text-secondary transition-colors relative"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <Heart className="h-6 w-6" />
-                </motion.button>
+                </motion.button> */}
 
                 {/* Cart */}
                 {/* <motion.button
@@ -208,15 +204,14 @@ const Navbar = () => {
                             </Link>
                           )}
                           {dropdownLinks.map((item) => (
-                            <motion.a
+                            <Link
                               key={item.label}
                               href={item.href}
                               className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                              whileHover={{ x: 0 }}
                             >
                               <item.icon className="h-4 w-4 mr-3 text-gray-400" />
                               {item.label}
-                            </motion.a>
+                            </Link>
                           ))}
                         </div>
 
@@ -277,7 +272,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Search Bar */}
-        <div className="md:hidden pb-4">
+        {/* <div className="md:hidden pb-4">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
@@ -290,7 +285,7 @@ const Navbar = () => {
               placeholder="Search for anything"
             />
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Mobile Menu */}
@@ -313,15 +308,14 @@ const Navbar = () => {
               {navigationItems.map(
                 (item) =>
                   (!item.authRequired || isLoggedIn) && (
-                    <motion.a
+                    <Link
                       key={item.label}
                       href={item.href}
                       className="block text-gray-700 hover:text-secondary font-medium transition-colors"
-                      whileHover={{ x: 4 }}
                     >
                       <item.icon className="inline-block mr-2 h-5 w-5 text-gray-400" />
                       {item.label}
-                    </motion.a>
+                    </Link>
                   )
               )}
               {isLoggedIn && (

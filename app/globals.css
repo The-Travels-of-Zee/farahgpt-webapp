@@ -79,3 +79,8 @@ html {
   background-image: linear-gradient(rgba(200, 200, 200, 0.1) 1px, transparent 1px),
     linear-gradient(to right, rgba(200, 200, 200, 0.1) 1px, transparent 1px);
 }
+
+button {
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}

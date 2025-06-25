@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 import { Mail, ArrowLeft, CheckCircle } from "lucide-react";
 import { z } from "zod";
 import Link from "next/link";

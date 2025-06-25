@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 import { Search, Filter, Grid, List, SortAsc, Users, Star, DollarSign, Calendar, X, ChevronDown } from "lucide-react";
 import Button from "@/components/Dashboard/Button";
 import { ExploreCourseCard, dummyCourses } from "@/components/Dashboard/CourseCard";
+import { sortOptions, statusOptions } from "@/constants";
 
 const ExploreAllCourses = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,24 +56,6 @@ const ExploreAllCourses = () => {
 
     return filtered;
   }, [searchTerm, selectedStatus, sortBy, priceRange, minRating]);
-
-  const statusOptions = [
-    { value: "all", label: "All Courses" },
-    { value: "published", label: "Published" },
-    { value: "draft", label: "Draft" },
-    { value: "pending", label: "Pending Review" },
-    { value: "archived", label: "Archived" },
-  ];
-
-  const sortOptions = [
-    { value: "newest", label: "Newest First" },
-    { value: "oldest", label: "Oldest First" },
-    { value: "popular", label: "Most Popular" },
-    { value: "rating", label: "Highest Rated" },
-    { value: "price-low", label: "Price: Low to High" },
-    { value: "price-high", label: "Price: High to Low" },
-    { value: "alphabetical", label: "A-Z" },
-  ];
 
   const clearFilters = () => {
     setSearchTerm("");

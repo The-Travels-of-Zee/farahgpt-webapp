@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "@/lib/motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search, Bell, User, ChevronDown, BookOpen, Award, Settings, LogOut } from "lucide-react";
 import Button from "./Button";
 import Link from "next/link";

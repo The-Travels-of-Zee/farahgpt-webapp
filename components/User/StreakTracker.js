@@ -1,4 +1,4 @@
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 import { Target, CheckCircle } from "lucide-react";
 
 const StreakTracker = () => {

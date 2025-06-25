@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "@/lib/motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Check, Star } from "lucide-react";
 
 const SubscriptionPage = () => {
@@ -210,7 +210,6 @@ const SubscriptionPage = () => {
         {showUpgradeModal && (
           <div>
             <motion.div
-              ref={modalRef}
               className="fixed inset-0 bg-black/50 bg-opacity-20 backdrop-blur-sm z-40"
               variants={overlayVariants}
               initial="hidden"
@@ -225,7 +224,7 @@ const SubscriptionPage = () => {
               animate="visible"
               exit="exit"
             >
-              <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl">
+              <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl" ref={modalRef}>
                 <div className="text-center space-y-6">
                   <motion.div
                     className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center mx-auto shadow-lg"

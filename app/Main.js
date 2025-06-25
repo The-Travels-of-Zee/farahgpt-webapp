@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { motion } from "@/lib/motion";
+import { motion } from "framer-motion";
 import {
   Menu,
   X,
@@ -193,7 +193,7 @@ const Main = () => {
                     You have access to advanced courses, chat history and priority support
                   </p>
 
-                  <div className="grid md:grid-cols-3 gap-1 place-items-center mb-6">
+                  <div className="grid md:grid-cols-3 gap-2 place-items-start lg:place-items-center mb-6">
                     {["Advanced Islamic Courses", "Priority Support", "Chat History Access"].map((feature, index) => (
                       <motion.div
                         key={feature}
