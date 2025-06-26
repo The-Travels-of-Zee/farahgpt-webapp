@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Bell, User, ChevronDown, BookOpen, Award, Settings, LogOut } from "lucide-react";
-import Button from "./Button";
+import Button from "../ui/Button";
 import Link from "next/link";
 import NotificationDropdown from "../Notification";
 
@@ -47,7 +47,7 @@ const DashboardNavbar = () => {
   }, [isUserDropdownOpen]);
 
   const dropdownLinks = [
-    { icon: User, label: "My Profile", href: "/dashboard" },
+    { icon: User, label: "My Dashboard", href: "/dashboard" },
     { icon: BookOpen, label: "My Learning", href: "/learning" },
     // { icon: Award, label: "My Certificates", href: "/dashboard" },
     { icon: Settings, label: "Account Settings", href: "/instructor/account-settings" },

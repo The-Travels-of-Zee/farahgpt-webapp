@@ -28,8 +28,9 @@ import {
   Building,
   Globe,
   Copy,
-  ExternalLink
+  ExternalLink,
 } from "lucide-react";
+import Button from "../ui/button";
 
 const PaymentReceive = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -40,11 +41,11 @@ const PaymentReceive = () => {
 
   // Mock data for earnings
   const earningsData = {
-    total: 15420.50,
+    total: 15420.5,
     thisMonth: 3240.75,
     lastMonth: 2890.25,
-    pending: 485.60,
-    growth: 12.5
+    pending: 485.6,
+    growth: 12.5,
   };
 
   // Mock data for payment methods
@@ -56,7 +57,7 @@ const PaymentReceive = () => {
       details: "****1234 - Habib Bank Limited",
       isDefault: true,
       status: "verified",
-      country: "PK"
+      country: "PK",
     },
     {
       id: 2,
@@ -65,7 +66,7 @@ const PaymentReceive = () => {
       details: "shaheer@example.com",
       isDefault: false,
       status: "verified",
-      country: "US"
+      country: "US",
     },
     {
       id: 3,
@@ -74,8 +75,8 @@ const PaymentReceive = () => {
       details: "Connected Account",
       isDefault: false,
       status: "pending",
-      country: "US"
-    }
+      country: "US",
+    },
   ]);
 
   // Mock transaction data
@@ -83,51 +84,51 @@ const PaymentReceive = () => {
     {
       id: "TXN-001",
       date: "2024-06-18",
-      amount: 250.00,
+      amount: 250.0,
       currency: "USD",
       student: "Ahmed Hassan",
       course: "React Development Masterclass",
       status: "completed",
       paymentMethod: "Credit Card",
-      fee: 7.50,
-      net: 242.50
+      fee: 7.5,
+      net: 242.5,
     },
     {
       id: "TXN-002",
       date: "2024-06-17",
-      amount: 150.00,
+      amount: 150.0,
       currency: "USD",
       student: "Fatima Khan",
       course: "JavaScript Fundamentals",
       status: "completed",
       paymentMethod: "PayPal",
-      fee: 4.50,
-      net: 145.50
+      fee: 4.5,
+      net: 145.5,
     },
     {
       id: "TXN-003",
       date: "2024-06-16",
-      amount: 300.00,
+      amount: 300.0,
       currency: "USD",
       student: "Ali Raza",
       course: "Full Stack Development",
       status: "pending",
       paymentMethod: "Bank Transfer",
-      fee: 9.00,
-      net: 291.00
+      fee: 9.0,
+      net: 291.0,
     },
     {
       id: "TXN-004",
       date: "2024-06-15",
-      amount: 200.00,
+      amount: 200.0,
       currency: "USD",
       student: "Sara Ahmed",
       course: "UI/UX Design Basics",
       status: "completed",
       paymentMethod: "Credit Card",
-      fee: 6.00,
-      net: 194.00
-    }
+      fee: 6.0,
+      net: 194.0,
+    },
   ];
 
   const getStatusColor = (status) => {
@@ -162,23 +163,26 @@ const PaymentReceive = () => {
   };
 
   const handleRemovePaymentMethod = (id) => {
-    setPaymentMethods(prev => prev.filter(method => method.id !== id));
+    setPaymentMethods((prev) => prev.filter((method) => method.id !== id));
   };
 
   const handleSetDefault = (id) => {
-    setPaymentMethods(prev => prev.map(method => ({
-      ...method,
-      isDefault: method.id === id
-    })));
+    setPaymentMethods((prev) =>
+      prev.map((method) => ({
+        ...method,
+        isDefault: method.id === id,
+      }))
+    );
   };
 
-  const filteredTransactions = transactions.filter(transaction => {
-    const matchesSearch = transaction.student.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         transaction.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         transaction.id.toLowerCase().includes(searchTerm.toLowerCase());
-    
+  const filteredTransactions = transactions.filter((transaction) => {
+    const matchesSearch =
+      transaction.student.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.id.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesStatus = filterStatus === "all" || transaction.status === filterStatus;
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -196,7 +200,7 @@ const PaymentReceive = () => {
             onClick={() => setActiveTab("overview")}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "overview"
-                ? "border-blue-500 text-blue-600"
+                ? "border-secondary text-secondary"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -206,7 +210,7 @@ const PaymentReceive = () => {
             onClick={() => setActiveTab("transactions")}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "transactions"
-                ? "border-blue-500 text-blue-600"
+                ? "border-secondary text-secondary"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -216,7 +220,7 @@ const PaymentReceive = () => {
             onClick={() => setActiveTab("methods")}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "methods"
-                ? "border-blue-500 text-blue-600"
+                ? "border-secondary text-secondary"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -226,7 +230,7 @@ const PaymentReceive = () => {
             onClick={() => setActiveTab("analytics")}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "analytics"
-                ? "border-blue-500 text-blue-600"
+                ? "border-secondary text-secondary"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -319,7 +323,10 @@ const PaymentReceive = () => {
             <div className="p-6">
               <div className="space-y-4">
                 {transactions.slice(0, 5).map((transaction) => (
-                  <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div
+                    key={transaction.id}
+                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
+                  >
                     <div className="flex items-center space-x-4">
                       <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
                         <Users className="w-5 h-5 text-gray-600" />
@@ -331,7 +338,11 @@ const PaymentReceive = () => {
                     </div>
                     <div className="text-right">
                       <p className="font-medium text-gray-900">${transaction.amount}</p>
-                      <p className={`text-xs px-2 py-1 rounded-full inline-flex items-center ${getStatusColor(transaction.status)}`}>
+                      <p
+                        className={`text-xs px-2 py-1 rounded-full inline-flex items-center ${getStatusColor(
+                          transaction.status
+                        )}`}
+                      >
                         {getStatusIcon(transaction.status)}
                         <span className="ml-1 capitalize">{transaction.status}</span>
                       </p>
@@ -360,7 +371,7 @@ const PaymentReceive = () => {
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              
+
               <div className="flex space-x-4">
                 <select
                   value={filterStatus}
@@ -372,7 +383,7 @@ const PaymentReceive = () => {
                   <option value="pending">Pending</option>
                   <option value="failed">Failed</option>
                 </select>
-                
+
                 <select
                   value={selectedPeriod}
                   onChange={(e) => setSelectedPeriod(e.target.value)}
@@ -384,10 +395,10 @@ const PaymentReceive = () => {
                   <option value="1year">Last year</option>
                 </select>
 
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center">
+                <Button variant="outline">
                   <Download className="w-4 h-4 mr-2" />
                   Export
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -398,11 +409,11 @@ const PaymentReceive = () => {
               <div className="space-y-4">
                 {filteredTransactions.map((transaction) => (
                   <div key={transaction.id} className="border border-gray-200 rounded-lg">
-                    <div 
-                      className="p-4 cursor-pointer hover:bg-gray-50"
-                      onClick={() => setExpandedTransaction(
-                        expandedTransaction === transaction.id ? null : transaction.id
-                      )}
+                    <div
+                      className="p-4 hover:bg-gray-50"
+                      onClick={() =>
+                        setExpandedTransaction(expandedTransaction === transaction.id ? null : transaction.id)
+                      }
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
@@ -414,26 +425,31 @@ const PaymentReceive = () => {
                             <p className="text-sm text-gray-500">{transaction.course}</p>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center space-x-6">
                           <div className="text-right">
                             <p className="font-medium text-gray-900">${transaction.amount}</p>
                             <p className="text-sm text-gray-500">{transaction.date}</p>
                           </div>
-                          
-                          <div className={`px-3 py-1 rounded-full text-xs font-medium flex items-center ${getStatusColor(transaction.status)}`}>
+
+                          <div
+                            className={`px-3 py-1 rounded-full text-xs font-medium flex items-center ${getStatusColor(
+                              transaction.status
+                            )}`}
+                          >
                             {getStatusIcon(transaction.status)}
                             <span className="ml-1 capitalize">{transaction.status}</span>
                           </div>
-                          
-                          {expandedTransaction === transaction.id ? 
-                            <ChevronUp className="w-5 h-5 text-gray-400" /> : 
+
+                          {expandedTransaction === transaction.id ? (
+                            <ChevronUp className="w-5 h-5 text-gray-400" />
+                          ) : (
                             <ChevronDown className="w-5 h-5 text-gray-400" />
-                          }
+                          )}
                         </div>
                       </div>
                     </div>
-                    
+
                     {expandedTransaction === transaction.id && (
                       <div className="border-t border-gray-200 p-4 bg-gray-50">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -469,13 +485,10 @@ const PaymentReceive = () => {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-xl font-semibold">Payment Methods</h3>
-            <button
-              onClick={handleAddPaymentMethod}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
-            >
+            <Button variant="primarySettings" onClick={handleAddPaymentMethod}>
               <Plus className="w-4 h-4 mr-2" />
               Add Payment Method
-            </button>
+            </Button>
           </div>
 
           <div className="grid gap-6">
@@ -492,27 +505,27 @@ const PaymentReceive = () => {
                       <div className="flex items-center space-x-2">
                         <h4 className="font-medium text-gray-900">{method.name}</h4>
                         {method.isDefault && (
-                          <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                            Default
-                          </span>
+                          <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Default</span>
                         )}
                       </div>
                       <p className="text-sm text-gray-500">{method.details}</p>
                       <div className="flex items-center space-x-2 mt-1">
                         <Globe className="w-3 h-3 text-gray-400" />
                         <span className="text-xs text-gray-500">{method.country}</span>
-                        <div className={`w-2 h-2 rounded-full ${
-                          method.status === "verified" ? "bg-green-500" : "bg-yellow-500"
-                        }`}></div>
-                        <span className={`text-xs ${
-                          method.status === "verified" ? "text-green-600" : "text-yellow-600"
-                        }`}>
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            method.status === "verified" ? "bg-green-500" : "bg-yellow-500"
+                          }`}
+                        ></div>
+                        <span
+                          className={`text-xs ${method.status === "verified" ? "text-green-600" : "text-yellow-600"}`}
+                        >
                           {method.status === "verified" ? "Verified" : "Pending Verification"}
                         </span>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     {!method.isDefault && (
                       <button
@@ -525,7 +538,7 @@ const PaymentReceive = () => {
                     <button className="p-2 text-gray-400 hover:text-gray-600">
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleRemovePaymentMethod(method.id)}
                       className="p-2 text-red-400 hover:text-red-600"
                     >
@@ -542,20 +555,16 @@ const PaymentReceive = () => {
             <h4 className="text-lg font-semibold mb-4">Payout Schedule</h4>
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Payout Frequency
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Payout Frequency</label>
                 <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option value="weekly">Weekly</option>
                   <option value="monthly">Monthly</option>
                   <option value="manual">Manual</option>
                 </select>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Minimum Payout Amount
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Payout Amount</label>
                 <div className="relative">
                   <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
@@ -566,7 +575,7 @@ const PaymentReceive = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-800">
                 <Clock className="w-4 h-4 inline mr-1" />
@@ -604,7 +613,7 @@ const PaymentReceive = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="font-medium">JavaScript Fundamentals</p>

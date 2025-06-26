@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { DollarSign, CreditCard, Banknote, Send, Clock } from "lucide-react";
+import Button from "../ui/button";
 
 const WithdrawFunds = () => {
   const [amount, setAmount] = useState("");
@@ -32,7 +33,7 @@ const WithdrawFunds = () => {
               placeholder="Enter amount"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all"
             />
           </div>
         </div>
@@ -42,7 +43,7 @@ const WithdrawFunds = () => {
           <select
             value={method}
             onChange={(e) => setMethod(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all"
           >
             <option value="bank">Bank Transfer</option>
             <option value="paypal">PayPal</option>
@@ -50,10 +51,12 @@ const WithdrawFunds = () => {
           </select>
         </div>
 
-        <button
+        <Button
+          variant="primarySettings"
+          size="lg"
           onClick={handleWithdraw}
           disabled={!amount || isProcessing}
-          className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex justify-center items-center disabled:opacity-50"
+          className="w-full flex justify-center items-center disabled:opacity-50"
         >
           {isProcessing ? (
             <>
@@ -66,7 +69,7 @@ const WithdrawFunds = () => {
               Withdraw Now
             </>
           )}
-        </button>
+        </Button>
 
         <div className="text-sm text-gray-500 bg-blue-50 rounded-md p-4">
           Withdrawals may take up to 3–5 business days depending on your method.

@@ -1,13 +1,12 @@
 // components/courses/CourseCard.tsx
 import { motion } from "framer-motion";
-import Button, { Badge } from "./Button";
+import Button, { Badge } from "../ui/Button";
 import { Users, DollarSign, Star, Calendar, MoreHorizontal, Eye, Edit, Trash2, Stars } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 // Course Card component for admin dashboard
 export const AdminCourseCard = ({ course, index = 0, revenue = 0 }) => {
-  const pathname = usePathname();
   const getStatusColor = (status) => {
     const colors = {
       published: "green",
@@ -60,7 +59,7 @@ export const AdminCourseCard = ({ course, index = 0, revenue = 0 }) => {
             <Button variant="outline" size="sm" className="w-full sm:w-auto">
               View Analytics
             </Button>
-            <Button variant="primary" size="sm" className="w-full sm:w-auto">
+            <Button variant="blueToGreen" size="sm" className="w-full sm:w-auto">
               Manage Course
             </Button>
           </div>
@@ -139,7 +138,11 @@ export const ExploreCourseCard = ({ course, index = 0, view = "list" }) => {
         >
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <Link href={`${pathname}/../learning/${course.id}`}>
-              <Button variant="primary" size="sm" className={`w-full sm:w-auto ${isGrid ? "text-sm px-3 py-1.5" : ""}`}>
+              <Button
+                variant="gradientGreen"
+                size="sm"
+                className={`w-full sm:w-auto ${isGrid ? "text-sm px-3 py-1.5" : ""}`}
+              >
                 Start Learning
               </Button>
             </Link>
@@ -182,28 +185,33 @@ export const formatDate = (dateString) =>
     year: "numeric",
   });
 
-const CourseStats = ({ course }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4 text-sm text-gray-600">
-    <div className="flex items-center space-x-2">
-      <Users className="w-4 h-4" />
-      <span>{course.studentsEnrolled || 0} students</span>
+const CourseStats = ({ course }) => {
+  const pathname = usePathname();
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4 text-sm text-gray-600">
+      <div className="flex items-center space-x-2">
+        <Users className="w-4 h-4" />
+        <span>{course.studentsEnrolled || 0} students</span>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Star className="w-4 h-4" />
+        <span>
+          {course.rating || 0} ({course.reviews || 0})
+        </span>
+      </div>
+      <div className="max-w-min flex items-center space-x-2 bg-yellow-200 py-1 px-2 rounded-full text-sm text-amber-600">
+        <Stars className="w-4 h-4" />
+        <span>Premium</span>
+      </div>
+      {!pathname.includes("/explore-courses") && (
+        <div className="flex items-center space-x-2">
+          <Calendar className="w-4 h-4" />
+          <span>{formatDate(course.createdAt)}</span>
+        </div>
+      )}
     </div>
-    <div className="flex items-center space-x-2">
-      <Star className="w-4 h-4" />
-      <span>
-        {course.rating || 0} ({course.reviews || 0})
-      </span>
-    </div>
-    <div className="max-w-min flex items-center space-x-2 bg-yellow-200 py-1 px-2 rounded-full text-sm text-amber-600">
-      <Stars className="w-4 h-4" />
-      <span>Premium</span>
-    </div>
-    <div className="flex items-center space-x-2">
-      <Calendar className="w-4 h-4" />
-      <span>{formatDate(course.createdAt)}</span>
-    </div>
-  </div>
-);
+  );
+};
 
 // components/courses/CourseProgress.tsx
 export const CourseProgress = ({ completionRate = 0 }) => (

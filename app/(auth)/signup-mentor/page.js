@@ -113,7 +113,7 @@ export default function SignUpPage() {
               variants={itemVariants}
               className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-8 mx-auto lg:mx-0"
             >
-              <img src="./favicon/favicon.svg" width={64} height={64} alt="farahgpt-logo" className="inline" />
+              <img src="/favicon/favicon.svg" width={64} height={64} alt="farahgpt-logo" className="inline" />
             </motion.div>
 
             <motion.div variants={itemVariants} className="text-center lg:text-left">

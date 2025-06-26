@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Eye, EyeOff, Save } from "lucide-react";
+import Button from "../ui/button";
 
 const AccountSecurity = () => {
   const [passwords, setPasswords] = useState({
@@ -67,12 +68,12 @@ const AccountSecurity = () => {
                     name={field}
                     value={passwords[field]}
                     onChange={handlePasswordChange}
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => togglePasswordVisibility(fieldKey)}
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                   >
                     {showPasswords[fieldKey] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -81,13 +82,10 @@ const AccountSecurity = () => {
             );
           })}
 
-          <button
-            onClick={handleSubmit}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 font-medium"
-          >
+          <Button variant="primarySettings" onClick={handleSubmit}>
             <Save className="w-4 h-4 mr-2 inline" />
             Update Password
-          </button>
+          </Button>
         </div>
 
         <div className="mt-8 pt-6 border-t border-gray-200">
@@ -102,16 +100,13 @@ const AccountSecurity = () => {
         </div>
         <div className="mt-8 pt-6 border-t border-gray-200">
           <h4 className="text-md font-medium text-gray-900 mb-3">Two-Factor Authentication</h4>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 mb-4">
             Enable two-factor authentication for added security. This will require a verification code sent to your
             email or phone each time you log in.
           </p>
-          <button
-            className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 font-medium"
-            onClick={() => alert("Two-Factor Authentication is not implemented yet.")}
-          >
+          <Button variant="primarySettings" onClick={() => alert("Two-Factor Authentication is not implemented yet.")}>
             Enable 2FA
-          </button>
+          </Button>
         </div>
       </div>
     </div>

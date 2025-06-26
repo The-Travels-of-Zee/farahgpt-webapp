@@ -3,9 +3,10 @@ import { useState } from "react";
 import { Send, Mail, User, Target, MessageSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
+import Button from "./ui/Button";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -147,7 +148,7 @@ export default function ContactForm() {
                   value={input.value}
                   onChange={input.onChange}
                   required={input.required}
-                  className="pl-12 pr-8 py-6 text-base bg-muted border-2 border-gray-200 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all duration-300 hover:border-gray-300"
+                  className="pl-12 pr-8 py-6 text-base border-2 border-gray-200 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all duration-300 hover:border-gray-300"
                 />
                 {input.required && (
                   <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-400 text-lg">*</span>
@@ -168,7 +169,7 @@ export default function ContactForm() {
                 maxLength={500}
                 required
                 rows={5}
-                className="pl-12 pr-16 py-3 text-base bg-muted border-2 border-gray-200 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-gray-300 resize-none"
+                className="pl-12 pr-16 py-3 text-base border-2 border-gray-200 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-gray-300 resize-none"
               />
               <span className="absolute right-3 top-4 text-red-400 text-lg">*</span>
               <div className="absolute bottom-3 right-3 text-sm text-gray-400 bg-white px-1 rounded">
@@ -178,8 +179,10 @@ export default function ContactForm() {
 
             {/* Submit Button */}
             <Button
+              variant="blueToGreen"
+              size="lg"
               type="submit"
-              className="w-full text-white font-semibold py-6 px-6 text-base rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer bg-gradient-to-r from-primary to-secondary"
+              className="w-full shadow-lg hover:shadow-xl transform hover:scale-[1.01] active:scale-[0.98] "
             >
               <Send className="w-5 h-5 mr-3" />
               Send Message
