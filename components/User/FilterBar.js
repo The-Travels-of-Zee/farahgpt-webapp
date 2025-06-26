@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
-import Button from "../ui/Button";
+import Button from "@/components/ui/Button";
 
 export const FilterBar = ({ searchQuery, setSearchQuery, filters, setFilters }) => {
   const FilterDropdown = ({ label, value, options, placeholder, onChange, showClear = true }) => {

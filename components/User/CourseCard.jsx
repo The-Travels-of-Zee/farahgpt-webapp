@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { MoreHorizontal, Star } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Button from "../ui/button";
+import Button from "@/components/ui/Button";
 
 const CourseCard = ({ course, index }) => {
   const getProgressColor = (progress) => {

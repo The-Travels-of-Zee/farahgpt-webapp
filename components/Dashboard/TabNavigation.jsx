@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { DetailedStats } from "./StatCard";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
+import Button from "/components/ui/Button";
 import { dummyCourses } from "./CourseCard";
 import { AdminCourseCard } from "./CourseCard";
 import CouponGenerator from "./CouponGenerator";

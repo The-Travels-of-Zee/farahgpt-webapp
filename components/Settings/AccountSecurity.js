@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Eye, EyeOff, Save } from "lucide-react";
-import Button from "../ui/button";
+import Button from "@/components/ui/Button";
 
 const AccountSecurity = () => {
   const [passwords, setPasswords] = useState({

@@ -14,7 +14,7 @@ import {
   Trash2,
   Link as LinkIcon,
 } from "lucide-react";
-import Button from "../ui/Button";
+import Button from "@/components/ui/Button";
 
 const ProfileAndSocialSettings = () => {
   const [formData, setFormData] = useState({

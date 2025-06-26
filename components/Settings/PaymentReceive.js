@@ -30,7 +30,7 @@ import {
   Copy,
   ExternalLink,
 } from "lucide-react";
-import Button from "../ui/button";
+import Button from "@/components/ui/Button";
 
 const PaymentReceive = () => {
   const [activeTab, setActiveTab] = useState("overview");

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DollarSign, CreditCard, Banknote, Send, Clock } from "lucide-react";
-import Button from "../ui/button";
+import Button from "@/components/ui/Button";
 
 const WithdrawFunds = () => {
   const [amount, setAmount] = useState("");

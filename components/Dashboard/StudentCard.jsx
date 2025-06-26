@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Clock, Star, BookOpen, TrendingUp } from "lucide-react";
-import { Badge } from "../ui/Button";
+import { Badge } from "@/components/ui/Button";
 
 const StudentCard = ({ student, index = 0 }) => {
   const studentData = student || {};

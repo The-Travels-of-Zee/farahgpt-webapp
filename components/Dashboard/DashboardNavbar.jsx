@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Bell, User, ChevronDown, BookOpen, Award, Settings, LogOut } from "lucide-react";
-import Button from "../ui/Button";
+import Button from "@/components/ui/Button";
 import Link from "next/link";
 import NotificationDropdown from "../Notification";
 
