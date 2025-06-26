@@ -19,6 +19,47 @@ export const sortOptions = [
   { value: "alphabetical", label: "A-Z" },
 ];
 
+// SETTINGS PAGE
+import { BellDotIcon, DollarSign, Lock, Trash, TrendingUp, User, Wallet } from "lucide-react";
+
+export const sidebarLinks = [
+  {
+    id: "profile-settings",
+    label: "Profile Settings",
+    icon: User,
+  },
+  {
+    id: "account-security",
+    label: "Account Security",
+    icon: Lock,
+  },
+  {
+    id: "payment-settings",
+    label: "Payment Settings",
+    icon: DollarSign,
+  },
+  {
+    id: "payment-receive",
+    label: "Payment Receiving",
+    icon: TrendingUp,
+  },
+  {
+    id: "withdraw-funds",
+    label: "Withdraw Funds",
+    icon: Wallet,
+  },
+  {
+    id: "notification-settings",
+    label: "Notification Settings",
+    icon: BellDotIcon,
+  },
+  {
+    id: "close-account",
+    label: "Close Account",
+    icon: Trash,
+  },
+];
+
 // DUMMY NOTIFICATIONS
 export const dummyNotifications = [
   {

@@ -1,58 +1,10 @@
 "use client";
 
+import { sidebarLinks } from "@/constants";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  BellDotIcon,
-  CircleArrowLeft,
-  Crown,
-  DollarSign,
-  Lock,
-  Trash,
-  TrendingUp,
-  User,
-  Wallet,
-  X,
-} from "lucide-react";
+import { ArrowLeft, Crown, User, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-
-const sidebarLinks = [
-  {
-    id: "profile-settings",
-    label: "Profile Settings",
-    icon: User,
-  },
-  {
-    id: "account-security",
-    label: "Account Security",
-    icon: Lock,
-  },
-  {
-    id: "payment-settings",
-    label: "Payment Settings",
-    icon: DollarSign,
-  },
-  {
-    id: "payment-receive",
-    label: "Payment Receiving",
-    icon: TrendingUp,
-  },
-  {
-    id: "withdraw-funds",
-    label: "Withdraw Funds",
-    icon: Wallet,
-  },
-  {
-    id: "notification-settings",
-    label: "Notification Settings",
-    icon: BellDotIcon,
-  },
-  {
-    id: "close-account",
-    label: "Close Account",
-    icon: Trash,
-  },
-];
+import { useEffect, useState } from "react";
 
 const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) => {
   const [formData, setFormData] = useState({
@@ -60,6 +12,94 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
     lastName: "Mansoor",
     profileImage: null,
   });
+  const [activeTab, setActiveTab] = useState("profile-settings");
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+
+    // Check Url first for tab params
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabFromUrl = urlParams.get("tab");
+
+    // Check localStorage for previously selected tab
+    const savedTab = localStorage.getItem("settings-active-tab");
+
+    // Priority: URL > localStorage > default
+    const initialTab = tabFromUrl || savedTab || "profile-settings";
+
+    // Validate that the tab exists
+    const validTabs = [
+      "profile-settings",
+      "account-security",
+      "payment-settings",
+      "payment-receive",
+      "withdraw-funds",
+      "notification-settings",
+      "close-account",
+    ];
+
+    if (validTabs.includes(initialTab)) {
+      setActiveTab(initialTab);
+
+      // Make sure to also call onSectionChange to sync with parent component
+      onSectionChange(initialTab);
+    }
+  }, [onSectionChange]);
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    onSectionChange(tabId);
+
+    // Save to localStorage
+    localStorage.setItem("settings-active-tab", tabId);
+
+    // Update URL without page refresh
+    const url = new URL(window.location);
+    url.searchParams.set("tab", tabId);
+    window.history.replaceState({}, "", url);
+  };
+
+  const Navigations = () => {
+    if (!isClient) {
+      return (
+        <nav className="mt-4 flex-1 overflow-y-auto">
+          <ul className="px-4 space-y-1.5">
+            {sidebarLinks.map((item) => (
+              <li key={item.id}>
+                <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-teal-700">
+                  <item.icon className="w-5 h-5 shrink-0" />
+                  <span className="truncate">{item.label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      );
+    }
+    return (
+      <nav className="mt-4 flex-1 overflow-y-auto">
+        <ul className="px-4 space-y-1.5">
+          {sidebarLinks.map((item) => (
+            <li key={item.id}>
+              <button
+                onClick={() => handleTabChange(item.id)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out ${
+                  activeSection === item.id
+                    ? "bg-gradient-to-r from-teal-100 to-teal-50 text-teal-700 shadow-sm"
+                    : "hover:bg-teal-50 text-slate-700 hover:text-teal-700"
+                }`}
+              >
+                <item.icon className="w-5 h-5 shrink-0" />
+                <span className="truncate">{item.label}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  };
+
   return (
     <>
       <AnimatePresence>
@@ -92,7 +132,7 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
               className="w-8 h-8 bg-teal-50 rounded-full flex items-center justify-center hover:bg-teal-100 transition-colors"
               aria-label="Back to learning"
             >
-              <CircleArrowLeft className="w-5 h-5 text-teal-700" />
+              <ArrowLeft className="w-5 h-5 text-teal-700" />
             </Link>
 
             <div className="flex items-center gap-2">
@@ -126,25 +166,7 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
         </div>
 
         {/* Navigation */}
-        <nav className="mt-4 flex-1 overflow-y-auto">
-          <ul className="px-4 space-y-1.5">
-            {sidebarLinks.map((item) => (
-              <li key={item.id}>
-                <button
-                  onClick={() => onSectionChange(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out ${
-                    activeSection === item.id
-                      ? "bg-gradient-to-r from-teal-100 to-teal-50 text-teal-700 shadow-sm"
-                      : "hover:bg-teal-50 text-slate-700 hover:text-teal-700"
-                  }`}
-                >
-                  <item.icon className="w-5 h-5 shrink-0" />
-                  <span className="truncate">{item.label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <Navigations />
       </motion.div>
     </>
   );

@@ -153,7 +153,7 @@ export default function CourseUploadFlow() {
                   />
                   <label
                     htmlFor="image-upload"
-                    className="inline-flex items-center px-3 py-2 text-sm bg-gray-100 text-gray-900 rounded-md hover:bg-secondary cursor-pointer"
+                    className="inline-flex items-center px-3 py-2 text-sm bg-gray-100 text-gray-900 rounded-md hover:bg-secondary "
                   >
                     {formData.image ? "Change Image" : "Upload Image"}
                   </label>
@@ -228,7 +228,7 @@ export default function CourseUploadFlow() {
                   />
                   <label
                     htmlFor="file-upload"
-                    className="inline-flex items-center font-roboto px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 cursor-pointer"
+                    className="inline-flex items-center font-roboto px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 "
                   >
                     Choose File
                   </label>
@@ -308,7 +308,7 @@ export default function CourseUploadFlow() {
                           />
                           <label
                             htmlFor="image-upload-edit"
-                            className="inline-flex items-center px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded cursor-pointer hover:bg-gray-200"
+                            className="inline-flex items-center px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded  hover:bg-gray-200"
                           >
                             Change
                           </label>

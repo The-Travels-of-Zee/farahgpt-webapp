@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { MoreHorizontal, Star } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Button from "../ui/button";
 
 const CourseCard = ({ course, index }) => {
   const getProgressColor = (progress) => {
@@ -53,16 +54,16 @@ const CourseCard = ({ course, index }) => {
 
         {course.progress === 0 && (
           <Link href={`${pathname}/${course.id}`}>
-            <button className="w-full mt-4 px-4 py-2 border border-primary text-primary rounded-md hover:bg-purple-50 transition-colors">
+            <Button variant="gradientGreen" size="md" className="mt-4 w-full">
               START COURSE
-            </button>
+            </Button>
           </Link>
         )}
         {course.progress > 0 && (
           <Link href={`${pathname}/${course.id}`}>
-            <button className="w-full mt-4 px-4 py-2 border border-primary text-primary rounded-md hover:bg-purple-50 transition-colors">
+            <Button variant="gradientGreen" size="md" className="mt-4 w-full">
               CONTINUE
-            </button>
+            </Button>
           </Link>
         )}
       </div>

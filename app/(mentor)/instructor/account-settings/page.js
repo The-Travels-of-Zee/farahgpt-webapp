@@ -63,9 +63,9 @@ const AccountSettings = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 bg-slate-900 shadow">
-          <h1 className="text-xl text-white font-semibold">Account Settings</h1>
-          <button className="p-2 text-white hover:text-gray-300 lg:hidden" onClick={handleToggleSidebar}>
+        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-teal-200 to-teal-100 text-teal-700 shadow">
+          <h1 className="text-xl font-semibold">Account Settings</h1>
+          <button className="p-2 hover:text-gray-300 lg:hidden" onClick={handleToggleSidebar}>
             <Menu className="w-6 h-6" />
           </button>
         </div>

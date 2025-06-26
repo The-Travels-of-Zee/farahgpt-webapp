@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Clock, Star, BookOpen, TrendingUp } from "lucide-react";
-import { Badge } from "./Button";
+import { Badge } from "../ui/Button";
 
 const StudentCard = ({ student, index = 0 }) => {
   const studentData = student || {};
@@ -23,7 +23,7 @@ const StudentCard = ({ student, index = 0 }) => {
 
   return (
     <motion.div
-      className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors space-y-4 md:space-y-0 md:space-x-6"
+      className="flex flex-col md:flex-row md:items-center justify-between bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:bg-gray-100 transition-colors space-y-4 md:space-y-0 md:space-x-6"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.1 }}

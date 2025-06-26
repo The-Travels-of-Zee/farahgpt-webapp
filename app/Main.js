@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
+import Button from "@/components/ui/Button";
 
 const Main = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -167,7 +168,9 @@ const Main = () => {
           >
             {/* Header */}
             <motion.div className="mb-8 text-center" variants={itemVariants}>
-              <h1 className="text-4xl lg:text-5xl font-bold text-emerald-900 mb-2">FarahGPT</h1>
+              <h1 className="relative text-4xl lg:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-emerald-700 bg-clip-text text-transparent">
+                FarahGPT
+              </h1>
               <p className="text-lg text-emerald-700">Your AI-powered Islamic companion for learning and guidance</p>
             </motion.div>
 
@@ -209,13 +212,15 @@ const Main = () => {
                   </div>
 
                   <Link href="/plans">
-                    <motion.button
-                      className="min-w-max p-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-medium transition-colors"
+                    <Button
+                      variant="gradientGreen"
+                      size="lg"
+                      className="min-w-max"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
                       Manage Subscription
-                    </motion.button>
+                    </Button>
                   </Link>
                 </div>
               </div>
@@ -224,15 +229,17 @@ const Main = () => {
             {/* Start Chat Button */}
             <motion.div className="max-w-6xl mx-auto mb-12" variants={itemVariants}>
               <Link href="/learning/chat">
-                <motion.button
-                  className="min-w-max p-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-xl font-medium text-lg shadow-lg flex items-center justify-center space-x-3"
+                <Button
+                  variant="gradientGreen"
+                  size="lg"
+                  className="min-w-max p-4 text-xl flex items-center justify-center space-x-3"
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <MessageCircle size={24} />
                   <span>Start a Chat</span>
                   <ChevronRight size={20} />
-                </motion.button>
+                </Button>
               </Link>
             </motion.div>
 

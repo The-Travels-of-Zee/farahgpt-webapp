@@ -1,55 +1,80 @@
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva } from "class-variance-authority";
+import React from "react";
+import { motion } from "framer-motion";
 
-import { cn } from "@/lib/utils"
-
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-  {
-    variants: {
-      variant: {
-        default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-        outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
-        secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
-
-function Button({
-  className,
-  variant,
-  size,
-  asChild = false,
+const Button = ({
+  children,
+  variant = "primary",
+  size = "md",
+  onClick,
+  disabled = false,
+  className = "",
   ...props
-}) {
-  const Comp = asChild ? Slot : "button"
+}) => {
+  const baseClasses =
+    "inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+
+  const variants = {
+    primaryGreen: "bg-primary/70 text-white hover:bg-primary/90 focus:ring-primary/50",
+    gradientGreen:
+      "bg-gradient-to-r from-teal-600 to-teal-700 hover:from-emerald-700 hover:to-emerald-800 text-white focus:ring-emerald-500",
+    primarySettings:
+      "bg-gradient-to-r from-teal-200 to-teal-100 text-teal-700 shadow-sm hover:bg-primary/90 focus:ring-primary/50",
+    secondaryGreen: "bg-secondary/60 text-white hover:bg-secondary/60 focus:ring-secondary/50",
+    blueToGreen:
+      "bg-gradient-to-r from-(--primary-light) to-secondary text-white hover:from-secondary hover:to-primary/70 focus:ring-secondary/50",
+    primaryLight: "bg-(--primary-light)/90 text-white hover:bg-(--primary-light)/70 focus:ring-(--primary-light)/50",
+    secondary: "bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500",
+    outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500",
+    ghost: "text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
+    danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+  };
+
+  const sizes = {
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-4 py-2 text-sm",
+    lg: "px-6 py-3 text-base",
+  };
+
+  const classes = `${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`;
 
   return (
-    <Comp
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props} />
+    <motion.button
+      className={classes}
+      onClick={onClick}
+      disabled={disabled}
+      whileHover={{ scale: disabled ? 1 : 1.02 }}
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
+      {...props}
+    >
+      {children}
+    </motion.button>
   );
-}
+};
 
-export { Button, buttonVariants }
+// Badge.jsx
+const Badge = ({ children, color = "gray", size = "sm" }) => {
+  const colors = {
+    gray: "bg-gray-100 text-gray-800",
+    red: "bg-red-100 text-red-800",
+    yellow: "bg-yellow-100 text-yellow-800",
+    primaryGreen: "bg-primary/10 text-primary/80",
+    secondaryGreen: "bg-secondary/10 text-secondary/80",
+    blue: "bg-(--primary-light)/20 text-(--primary-light)/80",
+    purple: "bg-purple-100 text-purple-800",
+    orange: "bg-orange-100 text-orange-800",
+  };
+
+  const sizes = {
+    sm: "px-2 py-1 text-xs",
+    md: "px-2.5 py-1.5 text-sm",
+    lg: "px-3 py-2 text-base",
+  };
+
+  return (
+    <span className={`inline-flex items-center font-medium rounded-full ${colors[color]} ${sizes[size]}`}>
+      {children}
+    </span>
+  );
+};
+
+export { Button as default, Badge };

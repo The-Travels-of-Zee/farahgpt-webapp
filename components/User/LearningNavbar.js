@@ -4,14 +4,14 @@ import Link from "next/link";
 
 const LearningNavbar = () => {
   const [activeTab, setActiveTab] = useState("All courses");
-  const tabs = ["All courses", "Wishlist", "Archived"];
+  const tabs = ["All courses", "Archived"];
 
   return (
-    <div className="bg-slate-900 text-white px-4 py-6 sm:px-6 lg:px-8">
-      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 sm:mb-8">
+    <div className="bg-gradient-to-r from-(--primary-light) to-secondary text-white px-4 py-4 sm:px-6 lg:px-8">
+      <h1 className="text-2xl sm:text-3xl font-bold">
         <Link href="/learning">My Learning</Link>
       </h1>
-      <nav className="flex flex-wrap gap-x-6 gap-y-3">
+      {/* <nav className="flex flex-wrap gap-x-6 gap-y-3">
         {tabs.map((tab) => (
           <button
             key={tab}
@@ -23,7 +23,7 @@ const LearningNavbar = () => {
             {tab}
           </button>
         ))}
-      </nav>
+      </nav> */}
     </div>
   );
 };

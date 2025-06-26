@@ -68,6 +68,10 @@ body {
 html {
   scroll-behavior: smooth;
 }
+::selection {
+  color: var(--dark);
+  background-color: var(--primary-light);
+}
 
 /* Grid Background */
 .backgroundGrid {
@@ -80,7 +84,9 @@ html {
     linear-gradient(to right, rgba(200, 200, 200, 0.1) 1px, transparent 1px);
 }
 
-button {
+button,
+a,
+label {
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }

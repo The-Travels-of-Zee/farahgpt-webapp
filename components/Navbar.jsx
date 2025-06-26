@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import NotificationDropdown from "./Notification";
-import Button from "./Dashboard/Button";
+import Button from "./ui/Button";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -66,13 +66,13 @@ const Navbar = () => {
   };
 
   const navigationItems = [
-    { icon: User, label: "My Profile", href: "/dashboard", authRequired: true },
+    { icon: User, label: "My Dashboard", href: "/dashboard", authRequired: true },
     { icon: BookOpen, label: "My learning", href: "/learning", authRequired: true },
     { icon: Settings, label: "Account Settings", href: "/user/account-settings", authRequired: true },
   ];
 
   const dropdownLinks = [
-    { icon: User, label: "My Profile", href: "/dashboard" },
+    { icon: User, label: "My Dashboard", href: "/dashboard" },
     { icon: BookOpen, label: "My Learning", href: "/learning" },
     // { icon: Award, label: "My Certificates", href: "/dashboard" },
     { icon: Settings, label: "Account Settings", href: "/user/account-settings" },
@@ -92,7 +92,7 @@ const Navbar = () => {
                 <span className="text-2xl font-bold text-gray-900">FarahGPT</span>
               </div>
             </Link>
-            <Link href="/explore-courses" className="flex items-center px-4 py-2 text-md text-gray-700 cursor-pointer">
+            <Link href="/explore-courses" className="flex items-center px-4 py-2 text-md text-gray-700 ">
               Explore
             </Link>
           </motion.div>
@@ -233,22 +233,25 @@ const Navbar = () => {
             ) : (
               /* Login/Signup Buttons */
               <div className="hidden md:flex items-center space-x-2">
-                <motion.button
+                <Button
+                  variant="ghost"
+                  size="md"
                   onClick={handleLogin}
-                  className="px-4 py-2 text-gray-700 font-medium hover:text-secondary transition-colors"
+                  className="hover:text-secondary transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   Log in
-                </motion.button>
-                <motion.button
+                </Button>
+                <Button
+                  variant="gradientGreen"
+                  size="md"
                   onClick={handleLogin}
-                  className="px-4 py-2 bg-gray-900 text-white font-medium rounded hover:bg-gray-800 transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   Sign up
-                </motion.button>
+                </Button>
                 {/* <motion.button
                   className="p-2 text-gray-600 hover:text-secondary transition-colors"
                   whileHover={{ scale: 1.1 }}

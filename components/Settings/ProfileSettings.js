@@ -14,6 +14,7 @@ import {
   Trash2,
   Link as LinkIcon,
 } from "lucide-react";
+import Button from "../ui/Button";
 
 const ProfileAndSocialSettings = () => {
   const [formData, setFormData] = useState({
@@ -95,7 +96,7 @@ const ProfileAndSocialSettings = () => {
   };
 
   const inputClass =
-    "w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all";
+    "w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all";
 
   return (
     <div className="p-4 mb-18 max-w-4xl mx-auto min-h-screen overflow-y-auto space-y-8">
@@ -113,7 +114,7 @@ const ProfileAndSocialSettings = () => {
                 <User className="w-12 h-12 text-white" />
               )}
             </div>
-            <label className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-gray-50 transition">
+            <label className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition">
               <Camera className="w-4 h-4 text-gray-600" />
               <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
             </label>
@@ -160,20 +161,18 @@ const ProfileAndSocialSettings = () => {
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="bg-gradient-to-r from-teal-200 to-teal-100 text-teal-700 shadow-sm px-4 py-2 text-sm rounded-md transition"
-          >
+          <Button variant={isEditing ? "outline" : "primarySettings"} onClick={() => setIsEditing(!isEditing)}>
             {isEditing ? "Cancel" : "Edit"}
-          </button>
+          </Button>
           {isEditing && (
-            <button
+            <Button
+              variant="primarySettings"
               onClick={handleSave}
               className="bg-gradient-to-r from-teal-200 to-teal-100 text-teal-700 shadow-sm px-4 py-2 text-sm rounded-md transition flex items-center"
             >
               <Save className="w-4 h-4 mr-2" />
               Save Changes
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -185,14 +184,15 @@ const ProfileAndSocialSettings = () => {
             <LinkIcon className="w-5 h-5 mr-2" />
             Social Links
           </h3>
-          <button
+          <Button
+            variant="primarySettings"
             onClick={addSocialLink}
             disabled={socialLinks.length >= socialPlatforms.length}
             className="bg-gradient-to-r from-teal-200 to-teal-100 text-teal-700 shadow-sm px-4 py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed text-sm flex items-center transition"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Link
-          </button>
+          </Button>
         </div>
 
         <div className="space-y-4">
@@ -227,12 +227,9 @@ const ProfileAndSocialSettings = () => {
                     className={inputClass}
                   />
                 </div>
-                <button
-                  onClick={() => removeSocialLink(link.id)}
-                  className="text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md p-2 transition"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <Button variant="danger" onClick={() => removeSocialLink(link.id)}>
+                  <Trash2 className="w-5 h-5" />
+                </Button>
               </div>
             );
           })}
@@ -240,13 +237,10 @@ const ProfileAndSocialSettings = () => {
 
         {socialLinks.length > 0 && (
           <div className="mt-6 flex justify-end">
-            <button
-              onClick={handleSave}
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center transition"
-            >
+            <Button variant="primarySettings" onClick={handleSave}>
               <Save className="w-4 h-4 mr-2" />
               Save Social Links
-            </button>
+            </Button>
           </div>
         )}
       </div>

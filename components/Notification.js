@@ -105,7 +105,7 @@ const NotificationDropdown = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className={`p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${
+                    className={`p-4 border-b border-gray-50 hover:bg-gray-50  transition-colors ${
                       notification.unread ? "bg-blue-50" : ""
                     }`}
                     onClick={() => markAsRead(notification.id)}

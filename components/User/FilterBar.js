@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
+import Button from "../ui/Button";
 
 export const FilterBar = ({ searchQuery, setSearchQuery, filters, setFilters }) => {
   const FilterDropdown = ({ label, value, options, placeholder, onChange, showClear = true }) => {
@@ -25,8 +26,8 @@ export const FilterBar = ({ searchQuery, setSearchQuery, filters, setFilters }) 
           onClick={() => setIsOpen(!isOpen)}
           className={`flex items-center justify-between gap-2 px-4 py-2 border rounded-md min-w-[140px] text-left transition-colors ${
             isActive
-              ? "border-primary bg-primary/10 text-primary"
-              : "border-secondary text-secondary hover:bg-secondary/5"
+              ? "border-emerald-700 bg-(--primary-light)/10 text-emerald-700"
+              : "border-primary text-primary hover:bg-primary/5"
           }`}
         >
           <span className="truncate">{displayValue}</span>
@@ -186,9 +187,9 @@ export const FilterBar = ({ searchQuery, setSearchQuery, filters, setFilters }) 
             className="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
           />
         </div>
-        <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center">
+        <Button variant="gradientGreen" className="flex items-center justify-center">
           <Search className="w-4 h-6" />
-        </button>
+        </Button>
       </div>
     </div>
   );

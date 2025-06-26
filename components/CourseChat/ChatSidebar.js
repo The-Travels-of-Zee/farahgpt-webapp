@@ -40,7 +40,7 @@ export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onTo
             <div className="flex items-center justify-between w-full">
               <Link
                 href="/learning"
-                className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer"
+                className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 "
               >
                 <CircleArrowLeft className="w-6 h-6 text-gray-700" />
               </Link>

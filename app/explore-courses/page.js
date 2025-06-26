@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Search, Filter, Grid, List, SortAsc, Users, Star, DollarSign, Calendar, X, ChevronDown } from "lucide-react";
-import Button from "@/components/Dashboard/Button";
+import Button from "@/components/ui/Button";
 import { ExploreCourseCard, dummyCourses } from "@/components/Dashboard/CourseCard";
 import { sortOptions, statusOptions } from "@/constants";
 
@@ -99,7 +99,7 @@ const ExploreAllCourses = () => {
                 placeholder="Search courses..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
               />
             </div>
 
@@ -107,7 +107,7 @@ const ExploreAllCourses = () => {
             <div className="flex items-center gap-3">
               {/* Filter Toggle */}
               <Button
-                variant={showFilters ? "primary" : "outline"}
+                variant={showFilters ? "primaryGreen" : "outline"}
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
                 className="relative"
@@ -126,7 +126,7 @@ const ExploreAllCourses = () => {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
                 >
                   {sortOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -139,18 +139,18 @@ const ExploreAllCourses = () => {
 
               {/* View Mode Toggle */}
               <div className="flex border border-gray-300 rounded-lg overflow-hidden">
-                <button
+                <Button
+                  variant="primaryGreen"
+                  size="sm"
                   onClick={() => setViewMode("list")}
-                  className={`p-2 ${
-                    viewMode === "list" ? "bg-blue-500 text-white" : "bg-white text-gray-600 hover:bg-gray-50"
-                  }`}
+                  className={`p-2 ${viewMode === "list" ? "" : "bg-white text-gray-600 hover:bg-gray-50"}`}
                 >
                   <List className="w-4 h-4" />
-                </button>
+                </Button>
                 {/* <button
                   onClick={() => setViewMode("grid")}
                   className={`p-2 ${
-                    viewMode === "grid" ? "bg-blue-500 text-white" : "bg-white text-gray-600 hover:bg-gray-50"
+                    viewMode === "grid" ? "bg-secondary/50 text-white" : "bg-white text-gray-600 hover:bg-gray-50"
                   }`}
                 >
                   <Grid className="w-4 h-4" />
@@ -174,7 +174,7 @@ const ExploreAllCourses = () => {
                   <select
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
                   >
                     {statusOptions.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -195,7 +195,7 @@ const ExploreAllCourses = () => {
                       placeholder="Min"
                       value={priceRange[0]}
                       onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
                     />
                     <span className="text-gray-500">-</span>
                     <input
@@ -203,7 +203,7 @@ const ExploreAllCourses = () => {
                       placeholder="Max"
                       value={priceRange[1]}
                       onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 500])}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
                     />
                   </div>
                 </div> */}
@@ -214,7 +214,7 @@ const ExploreAllCourses = () => {
                   <select
                     value={minRating}
                     onChange={(e) => setMinRating(parseFloat(e.target.value))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
                   >
                     <option value={0}>Any Rating</option>
                     <option value={4.5}>4.5+ Stars</option>
