@@ -1,5 +1,4 @@
-import DashboardHeader from "@/components/Dashboard/DashboardNavbar";
-import Navbar from "@/components/Navbar";
+import AdminNavbar from "@/components/Admin/AdminNavbar";
 
 export const metadata = {
   title: "Dashboard",
@@ -9,8 +8,7 @@ export const metadata = {
 const DashboardLayout = ({ children }) => {
   return (
     <div className="admin-dashboard-layout">
-      <DashboardHeader />
-      {/* <Navbar /> */}
+      <AdminNavbar />
       <main className="admin-dashboard-layout">{children}</main>
     </div>
   );

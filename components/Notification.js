@@ -82,7 +82,7 @@ const NotificationDropdown = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full mt-2 w-80 max-w-[90vw] sm:max-w-sm bg-white rounded-lg shadow-2xl border border-gray-200 left-1/2 -translate-x-1/2 sm:left-auto sm:right-0 sm:translate-x-0"
+            className="absolute top-full mt-2 w-80 max-w-[90vw] right-0 translate-x-1/5 sm:max-w-sm bg-white rounded-lg shadow-2xl border border-gray-200 "
           >
             {/* Header */}
             <div className="p-4 border-b border-gray-100">

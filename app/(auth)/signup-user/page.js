@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { User, Mail, Lock, Eye, EyeOff, ArrowLeft, Tag } from "lucide-react";
 import { z } from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // Zod validation schema
 const signUpSchema = z.object({
@@ -15,6 +16,7 @@ const signUpSchema = z.object({
 });
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -48,6 +50,7 @@ export default function SignUpPage() {
 
       console.log("Form submitted:", formData);
       // Handle successful submission here
+      router.push("/");
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors = {};

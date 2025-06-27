@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import NotificationDropdown from "./Notification";
 import Button from "./ui/Button";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -29,6 +30,7 @@ const Navbar = () => {
   // const [notifications] = useState(2); // Mock notifications
 
   const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+  const router = useRouter();
 
   const dropdownRef = useRef(null);
   // Close dropdown on outside click
@@ -63,6 +65,7 @@ const Navbar = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setIsUserDropdownOpen(false);
+    router.push("/login");
   };
 
   const navigationItems = [
