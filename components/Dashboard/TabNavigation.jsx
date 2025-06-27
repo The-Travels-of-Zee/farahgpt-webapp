@@ -7,6 +7,7 @@ import Button from "/components/ui/Button";
 import { dummyCourses } from "./CourseCard";
 import { AdminCourseCard } from "./CourseCard";
 import CouponGenerator from "./CouponGenerator";
+import InstructorManagement from "../Admin/InstructorManagement";
 
 const EarningsChart = dynamic(() => import("./EarningsChart"), { ssr: false });
 const StatCard = dynamic(() => import("./StatCard"), { ssr: false });
@@ -18,6 +19,7 @@ const TabNav = ({ activeTab, setActiveTab }) => {
     { id: "earnings", label: "Earnings", icon: "💰" },
     { id: "coupongenerator", label: "Coupons", icon: "💲" },
     { id: "students", label: "Students", icon: "👥" },
+    { id: "instructors", label: "Instructors", icon: "👥" },
     { id: "courses", label: "Courses", icon: "📚" },
     { id: "analytics", label: "Analytics", icon: "📊" },
   ];
@@ -65,7 +67,7 @@ const DashboardTabs = () => {
     const initialTab = tabFromUrl || savedTab || "earnings";
 
     // Validate that the tab exists
-    const validTabs = ["earnings", "coupongenerator", "students", "courses", "analytics"];
+    const validTabs = ["earnings", "coupongenerator", "students", "instructors", "courses", "analytics"];
     if (validTabs.includes(initialTab)) {
       setActiveTab(initialTab);
     }
@@ -92,6 +94,8 @@ const DashboardTabs = () => {
         return <CouponGenerator />;
       case "students":
         return <StudentCard />;
+      case "instructors":
+        return <InstructorManagement />;
       case "courses":
         return (
           <>

@@ -45,6 +45,7 @@ export const AdminCourseCard = ({ course, index = 0, revenue = 0 }) => {
               <Badge color={getStatusColor(course.status)}>{course.status || "draft"}</Badge>
             </div>
             <p className="text-sm text-gray-600 line-clamp-2">{course.description || "No description available"}</p>
+            <p className="mt-2 text-sm font-semibold text-primary">{course.author}</p>
           </div>
           <CourseCardMenu />
         </div>
@@ -125,6 +126,7 @@ export const ExploreCourseCard = ({ course, index = 0, view = "list" }) => {
             <p className={`text-sm text-gray-600 line-clamp-2 ${isGrid ? "min-h-[40px]" : ""}`}>
               {course.description || "No description available"}
             </p>
+            <p className="mt-2 text-sm font-semibold text-primary">{course.author}</p>
           </div>
         </div>
 
@@ -186,7 +188,6 @@ export const formatDate = (dateString) =>
   });
 
 const CourseStats = ({ course }) => {
-  const pathname = usePathname();
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4 text-sm text-gray-600">
       <div className="flex items-center space-x-2">
@@ -203,12 +204,10 @@ const CourseStats = ({ course }) => {
         <Stars className="w-4 h-4" />
         <span>Premium</span>
       </div>
-      {!pathname.includes("/explore-courses") && (
-        <div className="flex items-center space-x-2">
-          <Calendar className="w-4 h-4" />
-          <span>{formatDate(course.createdAt)}</span>
-        </div>
-      )}
+      <div className="flex items-center space-x-2">
+        <Calendar className="w-4 h-4" />
+        <span>{formatDate(course.createdAt)}</span>
+      </div>
     </div>
   );
 };
