@@ -15,6 +15,7 @@ import {
   Settings,
   LogOut,
   Globe,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 import NotificationDropdown from "./Notification";
@@ -25,7 +26,7 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
   // const [cartItems] = useState(3); // Mock cart items
   // const [notifications] = useState(2); // Mock notifications
 
@@ -69,14 +70,16 @@ const Navbar = () => {
   };
 
   const navigationItems = [
-    { icon: User, label: "My Dashboard", href: "/dashboard", authRequired: true },
+    { icon: User, label: "My Dashboard", href: "/instructor/dashboard", authRequired: true },
     { icon: BookOpen, label: "My learning", href: "/learning", authRequired: true },
+    { icon: Star, label: "Saved Messages", href: "/saved-messages", authRequired: true },
     { icon: Settings, label: "Account Settings", href: "/user/account-settings", authRequired: true },
   ];
 
   const dropdownLinks = [
-    { icon: User, label: "My Dashboard", href: "/dashboard" },
+    { icon: User, label: "My Dashboard", href: "/instructor/dashboard" },
     { icon: BookOpen, label: "My Learning", href: "/learning" },
+    { icon: Star, label: "Saved Messages", href: "/saved-messages" },
     // { icon: Award, label: "My Certificates", href: "/dashboard" },
     { icon: Settings, label: "Account Settings", href: "/user/account-settings" },
   ];
@@ -118,7 +121,7 @@ const Navbar = () => {
           </div> */}
 
           {/* Search Bar */}
-          {isLoggedIn && pathname === "/dashboard" && (
+          {isLoggedIn && pathname === "/instuctor/dashboard" && (
             <div className="hidden md:block ml-4">
               <h2 className="text-lg font-medium text-gray-900">Welcome back, {user.name.split(" ")[0]}!</h2>
               <p className="text-sm text-gray-600">Here's what's happening with your courses today.</p>

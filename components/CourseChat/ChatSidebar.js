@@ -1,4 +1,4 @@
-import { X, Plus, MessageCircle, Crown, CircleArrowLeft } from "lucide-react";
+import { X, Plus, MessageCircle, Crown, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
@@ -35,14 +35,14 @@ export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onTo
         `}
       >
         {/* Header */}
-        <div className="flex-shrink-0 p-3 sm:p-4 border-b border-slate-200">
+        <div className="flex-shrink-0 mt-18 lg:mt-0 p-3 sm:p-4 border-b border-slate-200">
           <div className="flex flex-col items-start gap-3">
             <div className="flex items-center justify-between w-full">
               <Link
                 href="/learning"
                 className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 "
               >
-                <CircleArrowLeft className="w-6 h-6 text-gray-700" />
+                <ArrowLeft className="w-6 h-6 text-gray-700" />
               </Link>
 
               <div className="flex items-center justify-between gap-2 flex-shrink-0">
@@ -59,7 +59,7 @@ export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onTo
                 </button>
               </div>
             </div>
-            <div className="flex items-start gap-2 min-w-0">
+            <div className="mt-4 flex items-start gap-2 min-w-0">
               <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
                 <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               </div>

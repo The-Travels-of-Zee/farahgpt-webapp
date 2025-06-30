@@ -26,15 +26,18 @@ export const ChatInput = ({ onSendMessage }) => {
   };
 
   return (
-    <div className="border-t border-slate-200 p-3 sm:p-4 bg-white">
-      <form onSubmit={handleSubmit} className="flex justify-between items-center gap-2 sm:gap-3">
-        <div className="flex-1 min-w-0">
+    <div className="fixed bottom-0 left-0 lg:left-72 right-0 border-t border-slate-200 bg-white p-3 sm:p-4 z-10">
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full max-w-screen-xl justify-between mx-auto items-end gap-2 sm:gap-3"
+      >
+        <div className="flex-1">
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Ask a question..."
             className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm sm:text-base"
-            rows="2"
+            rows={2}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -50,7 +53,7 @@ export const ChatInput = ({ onSendMessage }) => {
           whileTap={{ scale: 0.95 }}
           type="submit"
           disabled={!message.trim()}
-          className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+          className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           <Send className="w-4 h-4" />
         </motion.button>

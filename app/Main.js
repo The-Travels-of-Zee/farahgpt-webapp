@@ -48,7 +48,7 @@ const Main = () => {
 
   return (
     <main className="relative min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-100">
-      <div className="container mx-auto relative">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Mobile Menu Button */}
         <motion.button
           className="absolute top-5 left-4 z-30 lg:hidden bg-emerald-600 text-white p-2 rounded-lg shadow-lg"
@@ -61,24 +61,22 @@ const Main = () => {
 
         {/* Sidebar */}
         <motion.div
-          className={`fixed left-0 top-0 h-full w-72 bg-gradient-to-b from-emerald-800 to-emerald-900 text-white shadow-2xl z-20 lg:translate-x-0 ${
+          className={`fixed left-0 top-0 h-full w-72 bg-gradient-to-b from-emerald-800 to-emerald-900 text-white shadow-2xl z-20 overflow-y-auto lg:translate-x-0 ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } transition-transform duration-300 lg:transition-none`}
           variants={sidebarVariants}
           initial="closed"
           animate={isSidebarOpen ? "open" : "closed"}
         >
-          {/* Logo Section */}
-          <div className="p-6 border-b border-emerald-700/50">
+          {/* Logo */}
+          <div className="p-6 mt-34 border-b border-emerald-700/50">
             <motion.div
               className="flex items-center space-x-3"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring" }}
             >
-              <div className="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center">
-                <span className="text-xl font-bold">F</span>
-              </div>
+              <img src="/favicon/favicon.svg" width={54} height={54} alt="farahgpt-logo" className="inline" />
               <div>
                 <h1 className="text-xl font-bold">FarahGPT</h1>
                 <p className="text-emerald-200 text-sm">Islamic AI Companion</p>
@@ -86,9 +84,9 @@ const Main = () => {
             </motion.div>
           </div>
 
-          {/* User Welcome */}
+          {/* Welcome */}
           <motion.div
-            className="p-4 mx-4 mt-26 bg-emerald-700/50 rounded-lg border border-emerald-600/30"
+            className="p-4 mx-4 mt-6 bg-emerald-700/50 rounded-lg border border-emerald-600/30"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -114,23 +112,24 @@ const Main = () => {
               transition={{ delay: 0.4 }}
             >
               {[
-                { icon: Home, label: "Home", active: true },
-                { icon: BookOpen, label: "Courses" },
-                { icon: User, label: "Profile" },
-              ].map((item, index) => (
-                <motion.button
-                  key={item.label}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
-                    item.active
-                      ? "bg-emerald-600 text-white shadow-lg"
-                      : "text-emerald-200 hover:bg-emerald-700/50 hover:text-white"
-                  }`}
-                  whileHover={{ x: 4 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <item.icon size={20} />
-                  <span>{item.label}</span>
-                </motion.button>
+                { icon: Home, label: "Home", active: true, href: "/" },
+                { icon: BookOpen, label: "My Learning", href: "/learning" },
+                { icon: Settings, label: "Settings", href: "/user/account-settings" },
+              ].map((item) => (
+                <Link href={item.href} key={item.label}>
+                  <motion.button
+                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
+                      item.active
+                        ? "bg-emerald-600 text-white shadow-lg"
+                        : "text-emerald-200 hover:bg-emerald-700/50 hover:text-white"
+                    }`}
+                    whileHover={{ x: 4 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <item.icon size={20} />
+                    <span>{item.label}</span>
+                  </motion.button>
+                </Link>
               ))}
             </motion.div>
           </nav>
@@ -140,19 +139,19 @@ const Main = () => {
             <h3 className="text-sm font-medium text-emerald-300 mb-3">QUICK ACTIONS</h3>
             <div className="space-y-2">
               {[
-                { icon: MessageCircle, label: "New Chat" },
-                { icon: Star, label: "Saved Messages" },
-                { icon: Sparkles, label: "Premium Active" },
-              ].map((item, index) => (
-                <motion.button
-                  key={item.label}
-                  className="w-full flex items-center space-x-3 px-4 py-2 text-emerald-200 hover:bg-emerald-700/50 hover:text-white rounded-lg transition-all"
-                  whileHover={{ x: 4 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <item.icon size={18} />
-                  <span className="text-sm">{item.label}</span>
-                </motion.button>
+                { icon: MessageCircle, label: "New Chat", href: "/learning/chat" },
+                { icon: Star, label: "Saved Messages", href: "/saved-messages" },
+              ].map((item) => (
+                <Link href={item.href} key={item.label}>
+                  <motion.button
+                    className="w-full flex items-center space-x-3 px-4 py-2 text-emerald-200 hover:bg-emerald-700/50 hover:text-white rounded-lg transition-all"
+                    whileHover={{ x: 4 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <item.icon size={18} />
+                    <span className="text-sm">{item.label}</span>
+                  </motion.button>
+                </Link>
               ))}
             </div>
           </div>
@@ -161,21 +160,23 @@ const Main = () => {
         {/* Main Content */}
         <div>
           <motion.div
-            className="min-h-screen p-6 lg:p-8"
+            className="min-h-screen pt-10 p-4 sm:p-6 lg:p-8"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
             {/* Header */}
-            <motion.div className="mb-8 text-center" variants={itemVariants}>
-              <h1 className="relative text-4xl lg:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-emerald-700 bg-clip-text text-transparent">
+            <motion.div className="mb-6 sm:mb-8 text-center" variants={itemVariants}>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-emerald-700 bg-clip-text text-transparent">
                 FarahGPT
               </h1>
-              <p className="text-lg text-emerald-700">Your AI-powered Islamic companion for learning and guidance</p>
+              <p className="text-base sm:text-lg text-emerald-700">
+                Your AI-powered Islamic companion for learning and guidance
+              </p>
             </motion.div>
 
-            {/* Premium Plan Card */}
-            <motion.div className="max-w-2xl mx-auto mb-8" variants={itemVariants}>
+            {/* Premium Plan */}
+            <motion.div className="max-w-2xl mx-auto mb-6 sm:mb-8" variants={itemVariants}>
               <div className="bg-gradient-to-r from-yellow-100 to-yellow-50 border-2 border-yellow-300 rounded-2xl p-6 lg:p-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-200/30 rounded-full -translate-y-16 translate-x-16"></div>
                 <div className="relative">
@@ -215,7 +216,7 @@ const Main = () => {
                     <Button
                       variant="gradientGreen"
                       size="lg"
-                      className="min-w-max"
+                      className="w-full sm:w-auto min-w-max"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -226,13 +227,13 @@ const Main = () => {
               </div>
             </motion.div>
 
-            {/* Start Chat Button */}
-            <motion.div className="max-w-6xl mx-auto mb-12" variants={itemVariants}>
+            {/* Start Chat */}
+            <motion.div className="max-w-6xl mx-auto mb-10 sm:mb-12" variants={itemVariants}>
               <Link href="/learning/chat">
                 <Button
                   variant="gradientGreen"
                   size="lg"
-                  className="min-w-max p-4 text-xl flex items-center justify-center space-x-3"
+                  className="min-w-max p-4 text-base sm:text-xl flex items-center justify-center space-x-3"
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -244,7 +245,10 @@ const Main = () => {
             </motion.div>
 
             {/* Feature Cards */}
-            <motion.div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6" variants={itemVariants}>
+            <motion.div
+              className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              variants={itemVariants}
+            >
               {[
                 {
                   icon: BookOpen,

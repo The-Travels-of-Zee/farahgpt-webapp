@@ -234,7 +234,7 @@ const AdminDashboardTabs = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="text-2xl font-bold text-gray-900">Course Management</h2>
               <Link href="/instructor/course-upload">
-                <Button className="bg-gradient-to-r from-(--primary-light) to-secondary text-white" size="md">
+                <Button className="bg-gradient-to-r from-(--primary-light) to-secondary text-white" size="lg">
                   Create Course
                 </Button>
               </Link>

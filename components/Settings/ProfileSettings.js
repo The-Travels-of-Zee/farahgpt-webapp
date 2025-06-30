@@ -128,9 +128,9 @@ const ProfileAndSocialSettings = () => {
             { name: "lastName", label: "Last Name" },
             { name: "email", label: "Email", type: "email" },
             { name: "phone", label: "Phone", type: "tel" },
-            { name: "location", label: "Location" },
-            { name: "birthdate", label: "Birth Date", type: "date" },
-            { name: "website", label: "Website", type: "url", colSpan: 2 },
+            // { name: "location", label: "Location" },
+            // { name: "birthdate", label: "Birth Date", type: "date" },
+            // { name: "website", label: "Website", type: "url", colSpan: 2 },
           ].map(({ name, label, type = "text", colSpan }) => (
             <div key={name} className={colSpan === 2 ? "md:col-span-2" : ""}>
               <label className="text-sm font-medium text-gray-700 mb-1 block">{label}</label>
@@ -146,7 +146,7 @@ const ProfileAndSocialSettings = () => {
             </div>
           ))}
 
-          <div className="md:col-span-2">
+          {/* <div className="md:col-span-2">
             <label className="text-sm font-medium text-gray-700 mb-1 block">Bio</label>
             <textarea
               name="bio"
@@ -157,7 +157,7 @@ const ProfileAndSocialSettings = () => {
               className={`${inputClass} resize-none ${!isEditing ? "bg-gray-100 cursor-not-allowed" : ""}`}
               placeholder="Tell us about yourself..."
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
@@ -178,7 +178,7 @@ const ProfileAndSocialSettings = () => {
       </div>
 
       {/* Social Links */}
-      <div className="bg-white rounded-xl shadow-md p-6">
+      {/* <div className="bg-white rounded-xl shadow-md p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold flex items-center">
             <LinkIcon className="w-5 h-5 mr-2" />
@@ -243,7 +243,7 @@ const ProfileAndSocialSettings = () => {
             </Button>
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -18,17 +18,12 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
   useEffect(() => {
     setIsClient(true);
 
-    // Check Url first for tab params
     const urlParams = new URLSearchParams(window.location.search);
     const tabFromUrl = urlParams.get("tab");
-
-    // Check localStorage for previously selected tab
     const savedTab = localStorage.getItem("settings-active-tab");
 
-    // Priority: URL > localStorage > default
     const initialTab = tabFromUrl || savedTab || "profile-settings";
 
-    // Validate that the tab exists
     const validTabs = [
       "profile-settings",
       "account-security",
@@ -41,9 +36,7 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
 
     if (validTabs.includes(initialTab)) {
       setActiveTab(initialTab);
-
-      // Make sure to also call onSectionChange to sync with parent component
-      onSectionChange(initialTab);
+      onSectionChange(initialTab, true); // <- suppress auto close on mount
     }
   }, [onSectionChange]);
 
@@ -108,7 +101,7 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            className="fixed inset-0 bg-black/50 z-10 lg:hidden"
             onClick={onToggle}
           />
         )}
@@ -120,12 +113,12 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
           x: isOpen ? 0 : "-100%",
           transition: { type: "spring", damping: 30, stiffness: 300 },
         }}
-        className={`fixed lg:static top-0 left-0 h-full w-[min(320px,85vw)] sm:w-80 bg-white border-r border-teal-200 flex flex-col z-50 lg:z-0 lg:!transform-none ${
+        className={`fixed lg:static top-0 left-0 h-full w-[min(320px,85vw)] sm:w-80 bg-white border-r border-teal-200 flex flex-col z-20 lg:!transform-none ${
           isOpen ? "shadow-xl lg:shadow-none" : ""
         }`}
       >
         {/* Header */}
-        <div className="p-4 border-b border-teal-200 flex flex-col gap-4">
+        <div className="p-4 mt-18 lg:mt-0 border-b border-teal-200 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <Link
               href="/learning"
