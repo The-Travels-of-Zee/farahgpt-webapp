@@ -5,7 +5,7 @@ import { ChatInput } from "./ChatInput";
 
 export const ChatArea = ({ messages, onSendMessage, onToggleSidebar }) => {
   return (
-    <div className="flex-1 flex flex-col h-screen min-w-0">
+    <div className="flex-1 flex flex-col min-h-0 min-w-0">
       {/* Mobile Header */}
       <div className="lg:hidden border-b border-slate-200 p-3 sm:p-4 bg-white flex items-center gap-3">
         <motion.button

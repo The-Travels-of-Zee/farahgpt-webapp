@@ -20,10 +20,10 @@ const AccountSettings = () => {
   };
 
   // Handle section change
-  const handleSectionChange = (section) => {
+  const handleSectionChange = (section, suppressAutoClose = false) => {
     setActiveSection(section);
-    // Close sidebar on mobile after selection
-    if (window.innerWidth < 1024) {
+    // Only close sidebar if not suppressed
+    if (!suppressAutoClose && window.innerWidth < 1024) {
       setIsSidebarOpen(false);
     }
   };

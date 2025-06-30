@@ -35,7 +35,7 @@ const CourseCard = ({ course, index }) => {
         <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{course.title}</h3>
         <p className="text-sm text-gray-600 mb-3">{course.instructor}</p>
 
-        <div className="flex items-center justify-between mb-3">
+        {/* <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
             <span className={`text-sm font-medium ${getProgressColor(course.progress)}`}>
               {course.progress}% complete
@@ -46,22 +46,22 @@ const CourseCard = ({ course, index }) => {
               <Star key={i} className="w-4 h-4 text-orange-400 fill-current" />
             ))}
           </div>
-        </div>
+        </div> */}
 
-        <div className="flex items-center justify-between text-sm text-gray-500">
+        {/* <div className="flex items-center justify-between text-sm text-gray-500">
           <span>Your rating</span>
-        </div>
+        </div> */}
 
         {course.progress === 0 && (
           <Link href={`${pathname}/${course.id}`}>
-            <Button variant="gradientGreen" size="md" className="mt-4 w-full">
+            <Button variant="blueToGreen" size="md" className="w-full">
               START COURSE
             </Button>
           </Link>
         )}
         {course.progress > 0 && (
           <Link href={`${pathname}/${course.id}`}>
-            <Button variant="gradientGreen" size="md" className="mt-4 w-full">
+            <Button variant="gradientGreen" size="md" className="w-full">
               CONTINUE
             </Button>
           </Link>

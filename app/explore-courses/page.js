@@ -78,7 +78,9 @@ const ExploreAllCourses = () => {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Explore All Courses</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-arefruqaa font-bold text-gray-900 mb-2">
+              Explore All Courses
+            </h1>
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4 sm:px-0">
               Discover our comprehensive collection of courses designed to help you master new skills and advance your
               career.
@@ -106,7 +108,7 @@ const ExploreAllCourses = () => {
             {/* Controls */}
             <div className="flex items-center gap-3">
               {/* Filter Toggle */}
-              <Button
+              {/* <Button
                 variant={showFilters ? "primaryGreen" : "outline"}
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
@@ -119,7 +121,7 @@ const ExploreAllCourses = () => {
                     {activeFiltersCount}
                   </span>
                 )}
-              </Button>
+              </Button> */}
 
               {/* Sort Dropdown */}
               <div className="relative">
@@ -255,7 +257,7 @@ const ExploreAllCourses = () => {
           </div>
 
           {/* Quick Stats */}
-          <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
+          {/* <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4" />
               <span>
@@ -273,7 +275,7 @@ const ExploreAllCourses = () => {
                 avg rating
               </span>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Course Grid/List */}
@@ -300,9 +302,9 @@ const ExploreAllCourses = () => {
             <p className="text-gray-600 mb-6">
               Try adjusting your search terms or filters to find what you're looking for.
             </p>
-            <Button variant="outline" onClick={clearFilters}>
+            {/* <Button variant="outline" onClick={clearFilters}>
               Clear All Filters
-            </Button>
+            </Button> */}
           </motion.div>
         )}
       </div>

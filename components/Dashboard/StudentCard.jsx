@@ -64,7 +64,7 @@ const StudentCard = ({ student, index = 0 }) => {
             </div>
             <div className="flex items-center space-x-1">
               <Star className="w-3 h-3" />
-              <span>{studentData.rating || 0}/5</span>
+              {/* <span>{studentData.rating || 0}/5</span> */}
             </div>
           </div>
         </div>
@@ -72,7 +72,7 @@ const StudentCard = ({ student, index = 0 }) => {
 
       {/* Right Section */}
       <div className="flex justify-between md:justify-end items-center space-x-6 w-full md:w-1/3">
-        <div className="text-right w-1/2">
+        {/* <div className="text-right w-1/2">
           <div className="text-sm font-medium text-gray-900">{studentData.progress || 0}% Complete</div>
           <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
             <div
@@ -80,7 +80,7 @@ const StudentCard = ({ student, index = 0 }) => {
               style={{ width: `${studentData.progress || 0}%` }}
             />
           </div>
-        </div>
+        </div> */}
 
         <div className="text-right w-1/2">
           <div className="text-sm font-medium text-gray-900">${studentData.totalSpent || 0}</div>

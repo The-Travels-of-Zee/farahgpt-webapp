@@ -1,7 +1,7 @@
 // components/courses/CourseCard.tsx
 import { motion } from "framer-motion";
 import Button, { Badge } from "@/components/ui/Button";
-import { Users, DollarSign, Star, Calendar, MoreHorizontal, Eye, Edit, Trash2, Stars } from "lucide-react";
+import { Users, DollarSign, Star, Calendar, MoreHorizontal, Eye, Edit, Trash2, Stars, Crown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -51,7 +51,7 @@ export const AdminCourseCard = ({ course, index = 0, revenue = 0 }) => {
         </div>
 
         <CourseStats course={course} />
-        <CourseProgress completionRate={course.completionRate} />
+        {/* <CourseProgress completionRate={course.completionRate} /> */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="text-sm text-gray-600">
             Revenue: <span className="font-semibold text-green-600">${revenue}</span>
@@ -141,7 +141,7 @@ export const ExploreCourseCard = ({ course, index = 0, view = "list" }) => {
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <Link href={`${pathname}/../learning/${course.id}`}>
               <Button
-                variant="gradientGreen"
+                variant="blueToGreen"
                 size="sm"
                 className={`w-full sm:w-auto ${isGrid ? "text-sm px-3 py-1.5" : ""}`}
               >
@@ -194,16 +194,16 @@ const CourseStats = ({ course }) => {
         <Users className="w-4 h-4" />
         <span>{course.studentsEnrolled || 0} students</span>
       </div>
-      <div className="flex items-center space-x-2">
+      {/* <div className="flex items-center space-x-2">
         <Star className="w-4 h-4" />
         <span>
           {course.rating || 0} ({course.reviews || 0})
         </span>
-      </div>
-      <div className="max-w-min flex items-center space-x-2 bg-yellow-200 py-1 px-2 rounded-full text-sm text-amber-600">
-        <Stars className="w-4 h-4" />
-        <span>Premium</span>
-      </div>
+      </div> */}
+      <span className="max-w-min bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-sm">
+        <Crown className="w-4 h-4 mr-1" />
+        Premium
+      </span>
       <div className="flex items-center space-x-2">
         <Calendar className="w-4 h-4" />
         <span>{formatDate(course.createdAt)}</span>

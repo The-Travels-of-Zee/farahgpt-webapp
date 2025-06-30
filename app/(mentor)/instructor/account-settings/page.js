@@ -1,14 +1,14 @@
 "use client";
-import ProfileSettings from "@/components/Settings/ProfileSettings";
-import PaymentReceive from "@/components/Settings/PaymentReceive";
 import AccountSecurity from "@/components/Settings/AccountSecurity";
-import PaymentSettings from "@/components/Settings/PaymentSettings";
-import NotificationSettings from "@/components/Settings/NotificationSettings";
 import CloseAccount from "@/components/Settings/CloseAccount";
+import NotificationSettings from "@/components/Settings/NotificationSettings";
+import PaymentReceive from "@/components/Settings/PaymentReceive";
+import PaymentSettings from "@/components/Settings/PaymentSettings";
+import ProfileSettings from "@/components/Settings/ProfileSettings";
 import SettingsSidebar from "@/components/Settings/SettingsSidebar";
+import WithdrawFunds from "@/components/Settings/WithdrawFunds";
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import WithdrawFunds from "@/components/Settings/WithdrawFunds";
 
 const AccountSettings = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -20,10 +20,10 @@ const AccountSettings = () => {
   };
 
   // Handle section change
-  const handleSectionChange = (section) => {
+  const handleSectionChange = (section, suppressAutoClose = false) => {
     setActiveSection(section);
-    // Close sidebar on mobile after selection
-    if (window.innerWidth < 1024) {
+    // Only close sidebar if not suppressed
+    if (!suppressAutoClose && window.innerWidth < 1024) {
       setIsSidebarOpen(false);
     }
   };

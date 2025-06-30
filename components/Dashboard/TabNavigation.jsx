@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { DetailedStats } from "./StatCard";
 import Link from "next/link";
@@ -8,6 +9,8 @@ import { dummyCourses } from "./CourseCard";
 import { AdminCourseCard } from "./CourseCard";
 import CouponGenerator from "./CouponGenerator";
 import InstructorManagement from "../Admin/InstructorManagement";
+import { usePathname } from "next/navigation";
+import { Search, Star, Users } from "lucide-react";
 
 const EarningsChart = dynamic(() => import("./EarningsChart"), { ssr: false });
 const StatCard = dynamic(() => import("./StatCard"), { ssr: false });
@@ -19,7 +22,6 @@ const TabNav = ({ activeTab, setActiveTab }) => {
     { id: "earnings", label: "Earnings", icon: "💰" },
     { id: "coupongenerator", label: "Coupons", icon: "💲" },
     { id: "students", label: "Students", icon: "👥" },
-    { id: "instructors", label: "Instructors", icon: "👥" },
     { id: "courses", label: "Courses", icon: "📚" },
     { id: "analytics", label: "Analytics", icon: "📊" },
   ];
@@ -45,6 +47,141 @@ const TabNav = ({ activeTab, setActiveTab }) => {
         </nav>
       </div>
     </div>
+  );
+};
+
+const TotalCourseStats = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+  const [priceRange, setPriceRange] = useState([0, 500]);
+  const [minRating, setMinRating] = useState(0);
+
+  // Filter and sort courses
+  const filteredAndSortedCourses = useMemo(() => {
+    let filtered = dummyCourses.filter((course) => {
+      const matchesSearch =
+        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesStatus = selectedStatus === "all" || course.status === selectedStatus;
+
+      const matchesPrice = course.price >= priceRange[0] && course.price <= priceRange[1];
+
+      const matchesRating = course.rating >= minRating;
+
+      return matchesSearch && matchesStatus && matchesPrice && matchesRating;
+    });
+
+    // Sort courses
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "newest":
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        case "oldest":
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        case "popular":
+          return b.studentsEnrolled - a.studentsEnrolled;
+        case "rating":
+          return b.rating - a.rating;
+        case "price-low":
+          return a.price - b.price;
+        case "price-high":
+          return b.price - a.price;
+        case "alphabetical":
+          return a.title.localeCompare(b.title);
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  }, [searchTerm, selectedStatus, sortBy, priceRange, minRating]);
+  return (
+    <>
+      {/* Search and Filter Bar */}
+      <div className="sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto py-4">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            {/* Search */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search courses..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Results */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <p className="text-lg text-gray-900">
+            <span className="font-semibold">{filteredAndSortedCourses.length}</span> courses found
+          </p>
+          {searchTerm && (
+            <p className="text-sm text-gray-600 mt-1">
+              Showing results for "<span className="font-medium">{searchTerm}</span>"
+            </p>
+          )}
+        </div>
+
+        {/* Quick Stats */}
+        <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            <span>
+              {filteredAndSortedCourses.reduce((sum, course) => sum + course.studentsEnrolled, 0).toLocaleString()}{" "}
+              total students
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Star className="w-4 h-4" />
+            <span>
+              {(
+                filteredAndSortedCourses.reduce((sum, course) => sum + course.rating, 0) /
+                  filteredAndSortedCourses.length || 0
+              ).toFixed(1)}{" "}
+              avg rating
+            </span>
+          </div>
+        </div>
+      </div>
+      <Link href="/instructor/course-upload">
+        <Button variant="blueToGreen" className="mb-4" size="lg">
+          Create Course
+        </Button>
+      </Link>
+      {filteredAndSortedCourses.length > 0 ? (
+        <div className={"space-y-6"}>
+          {filteredAndSortedCourses.map((course, index) => (
+            <motion.div
+              key={course.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className={"h-fit"}
+            >
+              <AdminCourseCard course={course} index={index} />
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+          <div className="text-gray-400 mb-4">
+            <Search className="w-16 h-16 mx-auto" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">No courses found</h3>
+          <p className="text-gray-600 mb-6">
+            Try adjusting your search terms or filters to find what you're looking for.
+          </p>
+        </motion.div>
+      )}
+    </>
   );
 };
 
@@ -94,23 +231,8 @@ const DashboardTabs = () => {
         return <CouponGenerator />;
       case "students":
         return <StudentCard />;
-      case "instructors":
-        return <InstructorManagement />;
       case "courses":
-        return (
-          <>
-            <Link href="/instructor/course-upload">
-              <Button className="bg-gradient-to-r mb-4 from-(--primary-light) to-secondary text-white" size="md">
-                Create Course
-              </Button>
-            </Link>
-            {dummyCourses.map((course) => (
-              <div key={course.id} className="mb-4">
-                <AdminCourseCard course={course} />
-              </div>
-            ))}
-          </>
-        );
+        return <TotalCourseStats />;
       case "analytics":
         return (
           <div className="space-y-6">
