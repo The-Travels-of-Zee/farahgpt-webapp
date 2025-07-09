@@ -5,9 +5,9 @@ import { ChatInput } from "./ChatInput";
 
 export const ChatArea = ({ messages, onSendMessage, onToggleSidebar }) => {
   return (
-    <div className="flex-1 flex flex-col min-h-0 min-w-0">
+    <div className="flex-1 flex flex-col h-full min-w-0">
       {/* Mobile Header */}
-      <div className="lg:hidden border-b border-slate-200 p-3 sm:p-4 bg-white flex items-center gap-3">
+      <div className="lg:hidden border-b border-slate-200 pt-20 p-3 sm:p-4 bg-white flex items-center gap-3">
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={onToggleSidebar}
@@ -19,7 +19,7 @@ export const ChatArea = ({ messages, onSendMessage, onToggleSidebar }) => {
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto bg-slate-50">
+      <div className="flex-1 overflow-y-auto pb-20 lg:pb-44 pt-8 lg:pt-24 bg-slate-50">
         <div className="max-w-4xl mx-auto px-2 sm:px-0">
           {messages.map((message, index) => (
             <ChatMessage key={index} message={message} isUser={message.isUser} />

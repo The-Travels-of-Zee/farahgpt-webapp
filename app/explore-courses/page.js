@@ -1,11 +1,42 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, Filter, Grid, List, SortAsc, Users, Star, DollarSign, Calendar, X, ChevronDown } from "lucide-react";
+import { Search, List, X, ChevronDown } from "lucide-react";
 import Button from "@/components/ui/Button";
-import { ExploreCourseCard, dummyCourses } from "@/components/Dashboard/CourseCard";
+import { ExploreCourseCard } from "@/components/Dashboard/CourseCard";
 import { sortOptions, statusOptions } from "@/constants";
+import fetchCourses from "@/lib/actions/courseActions";
+import CourseErrorState from "@/components/ui/CourseErrorState";
+import CourseLoadingState from "@/components/ui/CourseLoadingState";
+import CoursesEmptyState from "@/components/ui/CoursesEmptyState";
+
+// Skeleton for header while loading
+const HeaderSkeleton = () => (
+  <div className="bg-white border-b border-gray-200">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="text-center">
+        <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-4 animate-pulse"></div>
+        <div className="h-4 bg-gray-200 rounded w-96 mx-auto animate-pulse"></div>
+      </div>
+    </div>
+  </div>
+);
+
+// Skeleton for search bar while loading
+const SearchSkeleton = () => (
+  <div className="bg-white border-b border-gray-200">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="h-10 bg-gray-200 rounded-lg w-full max-w-md animate-pulse"></div>
+        <div className="flex items-center gap-3">
+          <div className="h-10 bg-gray-200 rounded-lg w-32 animate-pulse"></div>
+          <div className="h-10 bg-gray-200 rounded-lg w-10 animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 const ExploreAllCourses = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,37 +47,74 @@ const ExploreAllCourses = () => {
   const [priceRange, setPriceRange] = useState([0, 500]);
   const [minRating, setMinRating] = useState(0);
 
+  // Course data and loading states
+  // Add state for courses data
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch courses function with proper error handling
+  const loadCourses = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const result = await fetchCourses();
+
+      if (result.success) {
+        setCourses(result.data || []);
+      } else {
+        // Handle case where result exists but success is false
+        const errorMessage = result.message || result.error || "Failed to fetch courses";
+        setError(errorMessage);
+        setCourses([]);
+      }
+    } catch (error) {
+      console.error("Error loading courses:", error);
+      setError(error.message || "An unexpected error occurred while loading courses");
+      setCourses([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch courses on component mount
+  useEffect(() => {
+    loadCourses();
+  }, []);
+
   // Filter and sort courses
   const filteredAndSortedCourses = useMemo(() => {
-    let filtered = dummyCourses.filter((course) => {
+    if (!courses.length) return [];
+
+    let filtered = courses.filter((course) => {
       const matchesSearch =
         course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         course.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesStatus = selectedStatus === "all" || course.status === selectedStatus;
+      // const matchesStatus = selectedStatus === "all" || course.status === selectedStatus;
+      // const matchesPrice = course.price >= priceRange[0] && course.price <= priceRange[1];
+      // const matchesRating = course.rating >= minRating;
+      // return matchesSearch && matchesStatus && matchesPrice && matchesRating;
 
-      const matchesPrice = course.price >= priceRange[0] && course.price <= priceRange[1];
-
-      const matchesRating = course.rating >= minRating;
-
-      return matchesSearch && matchesStatus && matchesPrice && matchesRating;
+      return matchesSearch;
     });
 
     // Sort courses
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "newest":
-          return new Date(b.createdAt) - new Date(a.createdAt);
+          return new Date(b.created_at || b.createdAt) - new Date(a.created_at || a.createdAt);
         case "oldest":
-          return new Date(a.createdAt) - new Date(b.createdAt);
+          return new Date(a.created_at || a.createdAt) - new Date(b.created_at || b.createdAt);
         case "popular":
-          return b.studentsEnrolled - a.studentsEnrolled;
+          return (b.studentsEnrolled || 0) - (a.studentsEnrolled || 0);
         case "rating":
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
         case "price-low":
-          return a.price - b.price;
+          return (a.price || 0) - (b.price || 0);
         case "price-high":
-          return b.price - a.price;
+          return (b.price || 0) - (a.price || 0);
         case "alphabetical":
           return a.title.localeCompare(b.title);
         default:
@@ -55,7 +123,7 @@ const ExploreAllCourses = () => {
     });
 
     return filtered;
-  }, [searchTerm, selectedStatus, sortBy, priceRange, minRating]);
+  }, [courses, searchTerm, selectedStatus, sortBy, priceRange, minRating]);
 
   const clearFilters = () => {
     setSearchTerm("");
@@ -71,6 +139,48 @@ const ExploreAllCourses = () => {
     priceRange[0] > 0 || priceRange[1] < 500 ? "price" : null,
     minRating > 0 ? "rating" : null,
   ].filter(Boolean).length;
+
+  const hasActiveFilters = activeFiltersCount > 0;
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <HeaderSkeleton />
+        <SearchSkeleton />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="h-6 bg-gray-200 rounded w-40 animate-pulse"></div>
+          </div>
+          <CourseLoadingState />
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-white border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <div className="text-center">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-arefruqaa font-bold text-gray-900 mb-2">
+                Explore All Courses
+              </h1>
+              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4 sm:px-0">
+                Discover our comprehensive collection of courses designed to help you master new skills and advance your
+                career.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <CourseErrorState error={error} onRetry={loadCourses} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -107,22 +217,6 @@ const ExploreAllCourses = () => {
 
             {/* Controls */}
             <div className="flex items-center gap-3">
-              {/* Filter Toggle */}
-              {/* <Button
-                variant={showFilters ? "primaryGreen" : "outline"}
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-                className="relative"
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Filters
-                {activeFiltersCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {activeFiltersCount}
-                  </span>
-                )}
-              </Button> */}
-
               {/* Sort Dropdown */}
               <div className="relative">
                 <select
@@ -149,14 +243,6 @@ const ExploreAllCourses = () => {
                 >
                   <List className="w-4 h-4" />
                 </Button>
-                {/* <button
-                  onClick={() => setViewMode("grid")}
-                  className={`p-2 ${
-                    viewMode === "grid" ? "bg-secondary/50 text-white" : "bg-white text-gray-600 hover:bg-gray-50"
-                  }`}
-                >
-                  <Grid className="w-4 h-4" />
-                </button> */}
               </div>
             </div>
           </div>
@@ -186,30 +272,6 @@ const ExploreAllCourses = () => {
                   </select>
                 </div>
 
-                {/* Price Range */}
-                {/* <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Price Range: ${priceRange[0]} - ${priceRange[1]}
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      placeholder="Min"
-                      value={priceRange[0]}
-                      onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
-                    />
-                    <span className="text-gray-500">-</span>
-                    <input
-                      type="number"
-                      placeholder="Max"
-                      value={priceRange[1]}
-                      onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 500])}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
-                    />
-                  </div>
-                </div> */}
-
                 {/* Minimum Rating */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Rating</label>
@@ -228,7 +290,7 @@ const ExploreAllCourses = () => {
               </div>
 
               {/* Clear Filters */}
-              {activeFiltersCount > 0 && (
+              {hasActiveFilters && (
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <Button variant="outline" size="sm" onClick={clearFilters}>
                     <X className="w-4 h-4 mr-2" />
@@ -255,27 +317,6 @@ const ExploreAllCourses = () => {
               </p>
             )}
           </div>
-
-          {/* Quick Stats */}
-          {/* <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              <span>
-                {filteredAndSortedCourses.reduce((sum, course) => sum + course.studentsEnrolled, 0).toLocaleString()}{" "}
-                total students
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Star className="w-4 h-4" />
-              <span>
-                {(
-                  filteredAndSortedCourses.reduce((sum, course) => sum + course.rating, 0) /
-                    filteredAndSortedCourses.length || 0
-                ).toFixed(1)}{" "}
-                avg rating
-              </span>
-            </div>
-          </div> */}
         </div>
 
         {/* Course Grid/List */}
@@ -294,17 +335,8 @@ const ExploreAllCourses = () => {
             ))}
           </div>
         ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-            <div className="text-gray-400 mb-4">
-              <Search className="w-16 h-16 mx-auto" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No courses found</h3>
-            <p className="text-gray-600 mb-6">
-              Try adjusting your search terms or filters to find what you're looking for.
-            </p>
-            {/* <Button variant="outline" onClick={clearFilters}>
-              Clear All Filters
-            </Button> */}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <CoursesEmptyState hasFilters={hasActiveFilters} onClearFilters={clearFilters} />
           </motion.div>
         )}
       </div>

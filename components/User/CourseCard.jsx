@@ -53,14 +53,14 @@ const CourseCard = ({ course, index }) => {
         </div> */}
 
         {course.progress === 0 && (
-          <Link href={`${pathname}/${course.id}`}>
+          <Link href={`${pathname}/chat/${course.id}`}>
             <Button variant="blueToGreen" size="md" className="w-full">
               START COURSE
             </Button>
           </Link>
         )}
         {course.progress > 0 && (
-          <Link href={`${pathname}/${course.id}`}>
+          <Link href={`${pathname}/chat/${course.id}`}>
             <Button variant="gradientGreen" size="md" className="w-full">
               CONTINUE
             </Button>

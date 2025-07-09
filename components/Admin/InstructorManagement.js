@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -17,94 +17,7 @@ import {
   MoreVertical,
   AlertTriangle,
 } from "lucide-react";
-
-// Mock data for instructors
-const dummyInstructors = [
-  {
-    id: 1,
-    name: "Shaykh Muhammad Alshareef (rahimaullah)",
-    email: "email@example.com",
-    avatar: "https://ui-avatars.com/api/?name=Sarah+Johnson&background=6366f1&color=fff",
-    status: "active",
-    joinDate: "2023-01-15",
-    specialization: "Islamic Mentor",
-    totalCourses: 12,
-    totalStudents: 2847,
-    avgRating: 4.8,
-    totalRevenue: 89450,
-    revenueGrowth: 15.2,
-    lastActive: "2 hours ago",
-    courses: [
-      { id: 1, title: "Quran 101", students: 450, revenue: 15000, rating: 4.9 },
-      { id: 2, title: "Hadith 101", students: 890, revenue: 22500, rating: 4.7 },
-      { id: 3, title: "Arabic 101", students: 567, revenue: 18900, rating: 4.8 },
-      { id: 4, title: "Fiqh 101", students: 340, revenue: 12000, rating: 4.6 },
-    ],
-  },
-  {
-    id: 2,
-    name: "Ustadh Nouman Ali Khan",
-    email: "email@example.com",
-    avatar: "https://ui-avatars.com/api/?name=Michael+Chen&background=10b981&color=fff",
-    status: "active",
-    joinDate: "2022-08-20",
-    specialization: "Islamic Mentor",
-    totalCourses: 8,
-    totalStudents: 1923,
-    avgRating: 4.6,
-    totalRevenue: 67890,
-    revenueGrowth: 8.7,
-    lastActive: "1 day ago",
-    courses: [
-      { id: 1, title: "Quran 101", students: 450, revenue: 15000, rating: 4.9 },
-      { id: 2, title: "Hadith 101", students: 890, revenue: 22500, rating: 4.7 },
-      { id: 3, title: "Arabic 101", students: 567, revenue: 18900, rating: 4.8 },
-      { id: 4, title: "Fiqh 101", students: 340, revenue: 12000, rating: 4.6 },
-    ],
-  },
-  {
-    id: 3,
-    name: "Ustadh Yasir Qadhi",
-    email: "email@example.com",
-    avatar: "https://ui-avatars.com/api/?name=Emma+Rodriguez&background=f59e0b&color=fff",
-    status: "inactive",
-    joinDate: "2023-03-10",
-    specialization: "Islamic Mentor",
-    totalCourses: 6,
-    totalStudents: 1456,
-    avgRating: 4.9,
-    totalRevenue: 45600,
-    revenueGrowth: -2.1,
-    lastActive: "1 week ago",
-    courses: [
-      { id: 1, title: "Quran 101", students: 450, revenue: 15000, rating: 4.9 },
-      { id: 2, title: "Hadith 101", students: 890, revenue: 22500, rating: 4.7 },
-      { id: 3, title: "Arabic 101", students: 567, revenue: 18900, rating: 4.8 },
-      { id: 4, title: "Fiqh 101", students: 340, revenue: 12000, rating: 4.6 },
-    ],
-  },
-  {
-    id: 4,
-    name: "Ustadh Omar Suleiman",
-    email: "email@example.com",
-    avatar: "https://ui-avatars.com/api/?name=David+Kim&background=ef4444&color=fff",
-    status: "active",
-    joinDate: "2022-11-05",
-    specialization: "Islamic Mentor",
-    totalCourses: 9,
-    totalStudents: 1187,
-    avgRating: 4.7,
-    totalRevenue: 56780,
-    revenueGrowth: 12.4,
-    lastActive: "5 hours ago",
-    courses: [
-      { id: 1, title: "Quran 101", students: 450, revenue: 15000, rating: 4.9 },
-      { id: 2, title: "Hadith 101", students: 890, revenue: 22500, rating: 4.7 },
-      { id: 3, title: "Arabic 101", students: 567, revenue: 18900, rating: 4.8 },
-      { id: 4, title: "Fiqh 101", students: 340, revenue: 12000, rating: 4.6 },
-    ],
-  },
-];
+import { fetchInstructors } from "@/lib/actions/instructorActions";
 
 const InstructorCard = ({ instructor, index, onView, onRemove }) => {
   const [showMenu, setShowMenu] = useState(false);
@@ -169,7 +82,7 @@ const InstructorCard = ({ instructor, index, onView, onRemove }) => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Users className="w-4 h-4 text-green-500" />
-                  <span className="text-gray-600">{instructor.totalStudents.toLocaleString()} students</span>
+                  {/* <span className="text-gray-600">{instructor.totalStudents.toLocaleString()} students</span> */}
                 </div>
                 <div className="flex items-center space-x-2">
                   <Star className="w-4 h-4 text-yellow-500" />
@@ -186,7 +99,7 @@ const InstructorCard = ({ instructor, index, onView, onRemove }) => {
           {/* Right Side */}
           <div className="flex items-start justify-between md:flex-col md:items-end space-x-2 md:space-x-0 md:space-y-2">
             <div className="text-right">
-              <div className="text-lg font-semibold text-gray-900">${instructor.totalRevenue.toLocaleString()}</div>
+              {/* <div className="text-lg font-semibold text-gray-900">${instructor.totalRevenue.toLocaleString()}</div> */}
               <div className={`flex items-center justify-end text-sm ${getRevenueColor(instructor.revenueGrowth)}`}>
                 <TrendingUp className="w-3 h-3 mr-1" />
                 {instructor.revenueGrowth > 0 ? "+" : ""}
@@ -286,8 +199,6 @@ const InstructorCard = ({ instructor, index, onView, onRemove }) => {
 };
 
 const CourseDetailModal = ({ instructor, onClose }) => {
-  if (!instructor) return null;
-
   return (
     <motion.div
       className="fixed inset-0 bg-black/50 backdrop-blur-md bg-opacity-50 flex items-center justify-center z-50 p-4"
@@ -328,7 +239,7 @@ const CourseDetailModal = ({ instructor, onClose }) => {
                 <Users className="w-5 h-5 text-green-600" />
                 <span className="text-sm font-medium text-green-900">Total Students</span>
               </div>
-              <div className="text-2xl font-bold text-green-600">{instructor.totalStudents.toLocaleString()}</div>
+              {/* <div className="text-2xl font-bold text-green-600">{instructor.totalStudents.toLocaleString()}</div> */}
             </div>
             <div className="bg-yellow-50 rounded-lg p-4">
               <div className="flex items-center space-x-2 mb-2">
@@ -342,11 +253,11 @@ const CourseDetailModal = ({ instructor, onClose }) => {
                 <DollarSign className="w-5 h-5 text-purple-600" />
                 <span className="text-sm font-medium text-purple-900">Total Revenue</span>
               </div>
-              <div className="text-2xl font-bold text-purple-600">${instructor.totalRevenue.toLocaleString()}</div>
+              {/* <div className="text-2xl font-bold text-purple-600">${instructor.totalRevenue.toLocaleString()}</div> */}
             </div>
           </div>
 
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Courses ({instructor.courses.length})</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Courses ({instructor.courses.length || 5})</h3>
           <div className="space-y-4">
             {instructor.courses.map((course) => (
               <div key={course.id} className="bg-gray-50 rounded-lg p-4">
@@ -364,7 +275,7 @@ const CourseDetailModal = ({ instructor, onClose }) => {
                       </div>
                       <div className="flex items-center space-x-1">
                         <DollarSign className="w-4 h-4" />
-                        <span>${course.revenue.toLocaleString()}</span>
+                        {/* <span>${course.revenue.toLocaleString()}</span> */}
                       </div>
                     </div>
                   </div>
@@ -379,11 +290,31 @@ const CourseDetailModal = ({ instructor, onClose }) => {
 };
 
 const InstructorManagement = () => {
-  const [instructors, setInstructors] = useState(dummyInstructors);
+  const [instructors, setInstructors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedInstructor, setSelectedInstructor] = useState(null);
   const [showCourseModal, setShowCourseModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch instructors on component mount
+  useEffect(() => {
+    const loadInstructors = async () => {
+      try {
+        setLoading(true);
+        const result = await fetchSellers();
+        if (result.success) {
+          setInstructors(result.data || []);
+        }
+      } catch (error) {
+        console.error("Error loading courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInstructors();
+  }, []);
 
   const filteredInstructors = instructors.filter((instructor) => {
     const matchesSearch =
@@ -408,13 +339,26 @@ const InstructorManagement = () => {
   const totalRevenue = instructors.reduce((sum, instructor) => sum + instructor.totalRevenue, 0);
   const totalStudents = instructors.reduce((sum, instructor) => sum + instructor.totalStudents, 0);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Instructor Management</h1>
+            <p className="text-gray-600">Manage and monitor your instructors and their performance</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Instructor Management</h1>
-          <p className="text-gray-600">Manage and monitor your instructors and their performance</p>
+          <p className="text-gray-600">Manage and monitor your Instructors and their performance</p>
         </div>
 
         {/* Stats Cards */}
@@ -448,7 +392,7 @@ const InstructorManagement = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">${totalRevenue.toLocaleString()}</p>
+                {/* <p className="text-2xl font-bold text-gray-900">${totalRevenue.toLocaleString()}</p> */}
               </div>
             </div>
           </div>
@@ -459,7 +403,7 @@ const InstructorManagement = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Total Students</p>
-                <p className="text-2xl font-bold text-gray-900">{totalStudents.toLocaleString()}</p>
+                {/* <p className="text-2xl font-bold text-gray-900">{totalStudents.toLocaleString()}</p> */}
               </div>
             </div>
           </div>
@@ -472,7 +416,7 @@ const InstructorManagement = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search instructors by name, email, or specialization..."
+                placeholder="Search Instructors by name, email, or specialization..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -493,12 +437,12 @@ const InstructorManagement = () => {
           </div>
         </div>
 
-        {/* Instructors List */}
+        {/* instructors List */}
         <div className="space-y-4">
           {filteredInstructors.length > 0 ? (
             filteredInstructors.map((instructor, index) => (
               <InstructorCard
-                key={instructor.id}
+                key={index}
                 instructor={instructor}
                 index={index}
                 onView={handleViewCourses}
@@ -508,7 +452,7 @@ const InstructorManagement = () => {
           ) : (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
               <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No instructors found</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No Instructors found</h3>
               <p className="text-gray-600">Try adjusting your search or filter criteria</p>
             </div>
           )}

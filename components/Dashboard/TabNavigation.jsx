@@ -5,12 +5,10 @@ import dynamic from "next/dynamic";
 import { DetailedStats } from "./StatCard";
 import Link from "next/link";
 import Button from "/components/ui/Button";
-import { dummyCourses } from "./CourseCard";
 import { AdminCourseCard } from "./CourseCard";
 import CouponGenerator from "./CouponGenerator";
-import InstructorManagement from "../Admin/InstructorManagement";
-import { usePathname } from "next/navigation";
-import { Search, Star, Users } from "lucide-react";
+import { ChevronDown, List, Search, Star, Users } from "lucide-react";
+import { fetchCourses } from "@/lib/actions/courseActions";
 
 const EarningsChart = dynamic(() => import("./EarningsChart"), { ssr: false });
 const StatCard = dynamic(() => import("./StatCard"), { ssr: false });
@@ -57,37 +55,63 @@ const TotalCourseStats = () => {
   const [priceRange, setPriceRange] = useState([0, 500]);
   const [minRating, setMinRating] = useState(0);
 
+  // Fetch courses from courseActions
+  // Add state for courses data
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch courses on component mount
+  useEffect(() => {
+    const loadCourses = async () => {
+      try {
+        setLoading(true);
+        const result = await fetchCourses();
+        if (result.success) {
+          setCourses(result.data || []);
+        }
+      } catch (error) {
+        console.error("Error loading courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCourses();
+  }, []);
+
   // Filter and sort courses
   const filteredAndSortedCourses = useMemo(() => {
-    let filtered = dummyCourses.filter((course) => {
+    let filtered = courses.filter((course) => {
       const matchesSearch =
         course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         course.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesStatus = selectedStatus === "all" || course.status === selectedStatus;
+      // const matchesStatus = selectedStatus === "all" || course.status === selectedStatus;
 
-      const matchesPrice = course.price >= priceRange[0] && course.price <= priceRange[1];
+      // const matchesPrice = course.price >= priceRange[0] && course.price <= priceRange[1];
 
-      const matchesRating = course.rating >= minRating;
+      // const matchesRating = course.rating >= minRating;
 
-      return matchesSearch && matchesStatus && matchesPrice && matchesRating;
+      // return matchesSearch && matchesStatus && matchesPrice && matchesRating;
+
+      return matchesSearch;
     });
 
     // Sort courses
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "newest":
-          return new Date(b.createdAt) - new Date(a.createdAt);
+          return new Date(b.created_at || b.createdAt) - new Date(a.created_at || a.createdAt);
         case "oldest":
-          return new Date(a.createdAt) - new Date(b.createdAt);
+          return new Date(a.created_at || a.createdAt) - new Date(b.created_at || b.createdAt);
         case "popular":
-          return b.studentsEnrolled - a.studentsEnrolled;
+          return (b.studentsEnrolled || 0) - (a.studentsEnrolled || 0);
         case "rating":
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
         case "price-low":
-          return a.price - b.price;
+          return (a.price || 0) - (b.price || 0);
         case "price-high":
-          return b.price - a.price;
+          return (b.price || 0) - (a.price || 0);
         case "alphabetical":
           return a.title.localeCompare(b.title);
         default:
@@ -96,7 +120,35 @@ const TotalCourseStats = () => {
     });
 
     return filtered;
-  }, [searchTerm, selectedStatus, sortBy, priceRange, minRating]);
+  }, [courses, searchTerm, selectedStatus, sortBy, priceRange, minRating]);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <>
+        <div className="sticky top-0 z-30">
+          <div className="max-w-7xl mx-auto py-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Search */}
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Search courses..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="text-center mt-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading courses...</p>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       {/* Search and Filter Bar */}
@@ -128,27 +180,6 @@ const TotalCourseStats = () => {
               Showing results for "<span className="font-medium">{searchTerm}</span>"
             </p>
           )}
-        </div>
-
-        {/* Quick Stats */}
-        <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            <span>
-              {filteredAndSortedCourses.reduce((sum, course) => sum + course.studentsEnrolled, 0).toLocaleString()}{" "}
-              total students
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Star className="w-4 h-4" />
-            <span>
-              {(
-                filteredAndSortedCourses.reduce((sum, course) => sum + course.rating, 0) /
-                  filteredAndSortedCourses.length || 0
-              ).toFixed(1)}{" "}
-              avg rating
-            </span>
-          </div>
         </div>
       </div>
       <Link href="/instructor/course-upload">

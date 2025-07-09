@@ -4,10 +4,14 @@ import dynamic from "next/dynamic";
 import { DetailedStats } from "@/components/Dashboard/StatCard";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
-import { dummyCourses } from "@/components/Dashboard/CourseCard";
+// import { AllCourses } from "@/components/Dashboard/CourseCard";
 import { AdminCourseCard } from "@/components/Dashboard/CourseCard";
 import CouponGenerator from "@/components/Dashboard/CouponGenerator";
 import InstructorManagement from "./InstructorManagement";
+import fetchCourses from "@/lib/actions/courseActions";
+import CourseLoadingState from "../ui/CourseLoadingState";
+import CourseErrorState from "../ui/CourseErrorState";
+import CoursesEmptyState from "../ui/CoursesEmptyState";
 
 // Dynamic imports for better performance
 const EarningsChart = dynamic(() => import("@/components/Dashboard/EarningsChart"), { ssr: false });
@@ -125,6 +129,44 @@ const AdminDashboardTabs = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isClient, setIsClient] = useState(false);
 
+  // Fetch courses from courseActions
+  // Add state for courses data
+  const [courses, setCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(false);
+  const [coursesError, setCoursesError] = useState(null);
+
+  // Fetch courses function with proper error handling
+  const loadCourses = async () => {
+    try {
+      setCoursesLoading(true);
+      setCoursesError(null);
+
+      const result = await fetchCourses();
+
+      if (result && result.success) {
+        setCourses(result.data || []);
+      } else {
+        // Handle case where result exists but success is false
+        const errorMessage = result?.message || result?.error || "Failed to fetch courses";
+        setCoursesError(errorMessage);
+        setCourses([]);
+      }
+    } catch (error) {
+      console.error("Error loading courses:", error);
+      setCoursesError(error.message || "An unexpected error occurred while loading courses");
+      setCourses([]);
+    } finally {
+      setCoursesLoading(false);
+    }
+  };
+
+  // Load courses when component mounts or when courses tab is accessed
+  useEffect(() => {
+    if (isClient && activeTab === "courses") {
+      loadCourses();
+    }
+  }, [isClient, activeTab]);
+
   // Initialize tab from URL or localStorage on client side
   useEffect(() => {
     setIsClient(true);
@@ -234,16 +276,25 @@ const AdminDashboardTabs = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="text-2xl font-bold text-gray-900">Course Management</h2>
               <Link href="/instructor/course-upload">
-                <Button className="bg-gradient-to-r from-(--primary-light) to-secondary text-white" size="lg">
+                <Button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white" size="lg">
                   Create Course
                 </Button>
               </Link>
             </div>
-            <div className="grid gap-4">
-              {dummyCourses.map((course) => (
-                <AdminCourseCard key={course.id} course={course} />
-              ))}
-            </div>
+
+            {coursesLoading ? (
+              <CourseLoadingState />
+            ) : coursesError ? (
+              <CourseErrorState error={coursesError} onRetry={loadCourses} />
+            ) : courses.length === 0 ? (
+              <CoursesEmptyState />
+            ) : (
+              <div className="grid gap-4">
+                {courses.map((course) => (
+                  <AdminCourseCard key={course.id} course={course} />
+                ))}
+              </div>
+            )}
           </div>
         );
 

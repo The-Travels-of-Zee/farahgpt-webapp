@@ -229,7 +229,7 @@ const Main = () => {
 
             {/* Start Chat */}
             <motion.div className="max-w-6xl mx-auto mb-10 sm:mb-12" variants={itemVariants}>
-              <Link href="/learning/chat">
+              <Link href="/learning/chat/new-chat">
                 <Button
                   variant="gradientGreen"
                   size="lg"

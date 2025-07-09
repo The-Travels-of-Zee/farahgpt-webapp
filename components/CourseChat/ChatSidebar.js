@@ -27,7 +27,7 @@ export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onTo
         }}
         className={`
           fixed lg:static top-0 left-0 h-full
-          w-[min(320px,85vw)] sm:w-80 
+          w-[min(320px,85vw)] sm:w-80 lg:pt-16
           bg-slate-50 border-r border-slate-200 
           flex flex-col z-40
           lg:!transform-none lg:w-80
@@ -46,10 +46,10 @@ export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onTo
               </Link>
 
               <div className="flex items-center justify-between gap-2 flex-shrink-0">
-                <div className="bg-yellow-100 text-yellow-800 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs font-medium">
-                  <Crown className="inline w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-sm">
+                  <Crown className="w-3 h-3 mr-1" />
                   Premium
-                </div>
+                </span>
                 <button
                   onClick={onToggle}
                   className="w-5 h-5 text-slate-600 hover:text-slate-800 lg:hidden p-0.5 -m-0.5"
