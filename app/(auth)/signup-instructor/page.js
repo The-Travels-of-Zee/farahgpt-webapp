@@ -85,7 +85,7 @@ export default function SignUpInstructorPage() {
     setErrors({});
 
     try {
-      const result = await signInWithGoogle();
+      const result = await signInWithGoogle("instructor");
 
       if (!result.success) {
         throw new Error(result.error);
@@ -93,6 +93,7 @@ export default function SignUpInstructorPage() {
 
       // Google OAuth will redirect, so we don't need to handle success here
       // The redirect will be handled by the OAuth callback
+      // OAuth will redirect to /auth/callback?role=instructor
     } catch (error) {
       setErrors({ general: error.message });
     } finally {

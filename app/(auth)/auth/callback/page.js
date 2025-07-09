@@ -16,8 +16,14 @@ export default function AuthCallbackPage() {
         const result = await handleOAuthCallbackFromUrl();
 
         if (result.success) {
-          // Redirect to dashboard or home page
-          router.push("/");
+          const { role } = result;
+
+          // Role-based routing
+          if (role === "instructor") {
+            router.push("/instructor/dashboard");
+          } else {
+            router.push("/");
+          }
         } else {
           setError(result.error || "Authentication failed");
         }

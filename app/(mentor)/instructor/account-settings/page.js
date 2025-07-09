@@ -10,7 +10,7 @@ import WithdrawFunds from "@/components/Settings/WithdrawFunds";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 
-const AccountSettings = () => {
+const InstructorAccountSettings = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("profile-settings");
 
@@ -77,4 +77,4 @@ const AccountSettings = () => {
   );
 };
 
-export default AccountSettings;
+export default InstructorAccountSettings;

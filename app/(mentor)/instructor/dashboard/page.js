@@ -1,7 +1,7 @@
 import TabNavigation from "@/components/Dashboard/TabNavigation";
 import React from "react";
 
-const DashboardPage = () => {
+const InstructorDashboardPage = () => {
   return (
     <main>
       <TabNavigation />
@@ -9,4 +9,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default InstructorDashboardPage;
