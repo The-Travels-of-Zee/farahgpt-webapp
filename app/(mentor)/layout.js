@@ -1,8 +1,8 @@
 import Navbar from "@/components/Navbar";
 
 export const metadata = {
-  title: "Dashboard",
-  description: "User dashboard with stats, settings, and more",
+  title: "Instructor Dashboard",
+  description: "Instructor dashboard with stats, settings, and more",
 };
 
 const DashboardLayout = ({ children }) => {

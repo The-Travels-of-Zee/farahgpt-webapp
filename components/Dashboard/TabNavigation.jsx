@@ -8,7 +8,7 @@ import Button from "/components/ui/Button";
 import { AdminCourseCard } from "./CourseCard";
 import CouponGenerator from "./CouponGenerator";
 import { ChevronDown, List, Search, Star, Users } from "lucide-react";
-import { fetchCourses } from "@/lib/actions/courseActions";
+import fetchCourses from "@/lib/actions/courseActions";
 
 const EarningsChart = dynamic(() => import("./EarningsChart"), { ssr: false });
 const StatCard = dynamic(() => import("./StatCard"), { ssr: false });
