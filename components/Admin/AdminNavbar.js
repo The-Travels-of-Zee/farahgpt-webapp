@@ -106,10 +106,10 @@ const AdminNavbar = () => {
         <div className="flex items-center justify-between h-20">
           {/* Left Side - Logo and Admin Greeting */}
           <div className="flex items-center space-x-4">
-            <Link href="/admin/dashboard" className="flex-shrink-0">
+            <Link href="/" className="flex-shrink-0">
               <div className="flex items-center space-x-2 mr-4">
                 <img src="/favicon/favicon.svg" width={48} height={48} alt="farahgpt-logo" className="inline" />
-                <h1 className="text-xl font-roboto">FarahGPT</h1>
+                <h1 className="text-xl font-roboto">Home</h1>
               </div>
             </Link>
 

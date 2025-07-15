@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
 import Button from "@/components/ui/Button";
 
-export const FilterBar = ({ searchQuery, setSearchQuery, filters, setFilters }) => {
+export const FilterBar = ({ searchQuery, setSearchQuery, filters, filterOptions, setFilters }) => {
   const FilterDropdown = ({ label, value, options, placeholder, onChange, showClear = true }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -72,11 +72,11 @@ export const FilterBar = ({ searchQuery, setSearchQuery, filters, setFilters }) 
       sort: "Recently Accessed",
       categories: "",
       progress: "",
-      instructor: "",
+      seller_name: "",
     });
   };
 
-  const hasActiveFilters = filters.categories || filters.progress || filters.instructor;
+  const hasActiveFilters = filters.categories || filters.progress || filters.seller_name;
 
   return (
     <div className="space-y-4">
@@ -96,35 +96,25 @@ export const FilterBar = ({ searchQuery, setSearchQuery, filters, setFilters }) 
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm font-medium text-gray-900 whitespace-nowrap">Filter by:</span>
 
-          <FilterDropdown
-            label="Category"
-            value={filters.categories}
-            options={["Design", "Development", "Programming", "Business", "Marketing"]}
-            placeholder="All Categories"
-            onChange={(value) => setFilters((prev) => ({ ...prev, categories: value }))}
-          />
-
-          <FilterDropdown
-            label="Progress"
-            value={filters.progress}
-            options={["Not Started", "In Progress", "Completed"]}
-            placeholder="All Progress"
-            onChange={(value) => setFilters((prev) => ({ ...prev, progress: value }))}
-          />
-
-          <FilterDropdown
-            label="Instructor"
-            value={filters.instructor}
-            options={[
-              "Shaykh Muhammad Alshareef (rahimaullah)",
-              "Ustadh Nouman Ali Khan",
-              "Ustadh Yasir Qadhi",
-              "Ustadh Omar Suleiman",
-              "Sheikh Assim Al Hakeem",
-            ]}
-            placeholder="All Instructors"
-            onChange={(value) => setFilters((prev) => ({ ...prev, instructor: value }))}
-          />
+          {filterOptions &&
+            filterOptions.map((opt, index) => {
+              const name = opt.value;
+              return (
+                <FilterDropdown
+                  key={index}
+                  label={opt.label}
+                  value={filters[name]}
+                  options={opt.options}
+                  placeholder={`All ${opt.placeholder}`}
+                  onChange={(value) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      [opt.onChange]: value,
+                    }))
+                  }
+                />
+              );
+            })}
 
           {hasActiveFilters && (
             <button
@@ -162,11 +152,11 @@ export const FilterBar = ({ searchQuery, setSearchQuery, filters, setFilters }) 
               </button>
             </span>
           )}
-          {filters.instructor && (
+          {filters.seller_name && (
             <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary text-sm rounded-md">
-              Instructor: {filters.instructor}
+              Instructor: {filters.seller_name}
               <button
-                onClick={() => setFilters((prev) => ({ ...prev, instructor: "" }))}
+                onClick={() => setFilters((prev) => ({ ...prev, seller_name: "" }))}
                 className="hover:text-primary/70"
               >
                 ×

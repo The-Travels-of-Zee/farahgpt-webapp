@@ -23,8 +23,14 @@ const CourseCard = ({ course, index }) => {
       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
     >
       <div className="relative">
-        <div className={`h-48 ${course.bgColor} flex items-center justify-center`}>
-          <div className="text-white text-6xl">{course.icon}</div>
+        <div className="w-full flex items-center justify-center aspect-square bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
+          {course.course_image ? (
+            <img src={course.course_image} alt={course.title} className="w-auto h-full aspect-square object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-white text-3xl font-bold">
+              {course.title.charAt(0) || "C"}
+            </div>
+          )}
         </div>
         <button className="absolute top-4 right-4 text-white hover:text-gray-200">
           <MoreHorizontal className="w-5 h-5" />
@@ -33,7 +39,8 @@ const CourseCard = ({ course, index }) => {
 
       <div className="p-4">
         <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{course.title}</h3>
-        <p className="text-sm text-gray-600 mb-3">{course.instructor}</p>
+        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{course.description}</p>
+        <p className="text-sm text-gray-600 mb-3">{course.seller_name}</p>
 
         {/* <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
@@ -52,13 +59,11 @@ const CourseCard = ({ course, index }) => {
           <span>Your rating</span>
         </div> */}
 
-        {course.progress === 0 && (
-          <Link href={`${pathname}/chat/${course.id}`}>
-            <Button variant="blueToGreen" size="md" className="w-full">
-              START COURSE
-            </Button>
-          </Link>
-        )}
+        <Link href={`${pathname}/chat/${course.id}`}>
+          <Button variant="blueToGreen" size="md" className="w-full">
+            START LEARNING
+          </Button>
+        </Link>
         {course.progress > 0 && (
           <Link href={`${pathname}/chat/${course.id}`}>
             <Button variant="gradientGreen" size="md" className="w-full">

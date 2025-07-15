@@ -16,6 +16,8 @@ import {
   LogOut,
   Globe,
   Star,
+  Lock,
+  Crown,
 } from "lucide-react";
 import Link from "next/link";
 import NotificationDropdown from "./Notification";
@@ -24,19 +26,17 @@ import { useRouter, usePathname } from "next/navigation";
 import useUserStore from "@/store/userStore";
 
 const Navbar = () => {
+  const { isPremium } = useUserStore();
   const pageURL = usePathname();
   const { user, isLoggedIn, login, logout } = useUserStore();
-  // const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const [cartItems] = useState(3); // Mock cart items
-  // const [notifications] = useState(2); // Mock notifications
 
   const pathname = typeof window !== "undefined" ? window.location.pathname : "";
   const router = useRouter();
 
   const dropdownRef = useRef(null);
+
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -69,20 +69,142 @@ const Navbar = () => {
     router.push("/login");
   };
 
+  // Route guarding function
+  const handleProtectedRoute = (href, authRequired, premiumRequired = false) => {
+    if (authRequired && !isLoggedIn) {
+      // Redirect to login if not authenticated
+      router.push(`/login?redirect=${encodeURIComponent(href)}`);
+      return;
+    }
+
+    if (premiumRequired && !isPremium) {
+      // Redirect to upgrade page if premium required but user is not premium
+      router.push(`/plans?redirect=${encodeURIComponent(href)}`);
+      return;
+    }
+
+    // If all checks pass, navigate to the route
+    router.push(href);
+  };
+
+  // Protected Link component
+  const ProtectedLink = ({ href, authRequired, premiumRequired = false, children, className = "", onClick = null }) => {
+    const canAccess = (!authRequired || isLoggedIn) && (!premiumRequired || isPremium);
+
+    if (canAccess) {
+      return (
+        <Link href={href} className={className} onClick={onClick}>
+          {children}
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        onClick={() => handleProtectedRoute(href, authRequired, premiumRequired)}
+        className={`${className} cursor-pointer`}
+      >
+        {children}
+      </button>
+    );
+  };
+
+  // Navigation items with route protection
   const navigationItems = [
-    { icon: User, label: "My Dashboard", href: "/instructor/dashboard", authRequired: true },
-    { icon: BookOpen, label: "My learning", href: "/learning", authRequired: true },
-    { icon: Star, label: "Saved Messages", href: "/saved-messages", authRequired: true },
-    { icon: Settings, label: "Account Settings", href: "/user/account-settings", authRequired: true },
+    {
+      icon: User,
+      label: "My Dashboard",
+      href: "/instructor/dashboard",
+      authRequired: true,
+      premiumRequired: false,
+    },
+    {
+      icon: BookOpen,
+      label: "My learning",
+      href: "/learning",
+      authRequired: true,
+      premiumRequired: true,
+    },
+    {
+      icon: Star,
+      label: "Saved Messages",
+      href: "/saved-messages",
+      authRequired: true,
+      premiumRequired: false,
+    },
+    {
+      icon: Settings,
+      label: "Account Settings",
+      href: "/user/account-settings",
+      authRequired: true,
+      premiumRequired: false,
+    },
   ];
 
   const dropdownLinks = [
-    { icon: User, label: "My Dashboard", href: "/instructor/dashboard" },
-    { icon: BookOpen, label: "My Learning", href: "/learning" },
-    { icon: Star, label: "Saved Messages", href: "/saved-messages" },
-    // { icon: Award, label: "My Certificates", href: "/dashboard" },
-    { icon: Settings, label: "Account Settings", href: "/user/account-settings" },
+    {
+      icon: User,
+      label: "My Dashboard",
+      href: "/instructor/dashboard",
+      authRequired: true,
+      premiumRequired: false,
+    },
+    {
+      icon: BookOpen,
+      label: "My learning",
+      href: "/learning",
+      authRequired: true,
+      premiumRequired: true,
+    },
+    {
+      icon: Star,
+      label: "Saved Messages",
+      href: "/saved-messages",
+      authRequired: true,
+      premiumRequired: false,
+    },
+    {
+      icon: Settings,
+      label: "Account Settings",
+      href: "/user/account-settings",
+      authRequired: true,
+      premiumRequired: false,
+    },
   ];
+
+  // Render navigation item with appropriate styling and icons
+  const renderNavItem = (item, isMobile = false) => {
+    const { icon: Icon, label, href, authRequired, premiumRequired } = item;
+    const canAccess = (!authRequired || isLoggedIn) && (!premiumRequired || isPremium);
+
+    const baseClassName = isMobile
+      ? "flex items-center w-full text-gray-700 hover:text-secondary font-medium transition-colors"
+      : "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors";
+
+    const disabledClassName = isMobile
+      ? "flex items-center min-w-max text-gray-400 font-medium cursor-pointer"
+      : "flex items-center px-4 py-2 text-sm text-gray-400 cursor-pointer";
+
+    return (
+      <ProtectedLink
+        key={label}
+        onClick={() => setIsMobileMenuOpen(false)}
+        href={href}
+        authRequired={authRequired}
+        premiumRequired={premiumRequired}
+        className={canAccess ? baseClassName : disabledClassName}
+      >
+        <Icon className={`h-4 w-4 mr-3 ${canAccess ? "text-gray-400" : "text-gray-300"}`} />
+        <span className="flex-1">{label}</span>
+        {!canAccess && (
+          <div className="flex items-center ml-2">
+            {authRequired && !isLoggedIn && <Lock className="h-3 w-3 text-gray-400" />}
+            {premiumRequired && !isPremium && <Crown className="h-3 w-3 text-amber-500" />}
+          </div>
+        )}
+      </ProtectedLink>
+    );
+  };
 
   return (
     <nav
@@ -107,72 +229,21 @@ const Navbar = () => {
             </Link>
           </motion.div>
 
-          {/* Desktop Navigation */}
-          {/* <div className="hidden lg:flex items-center space-x-8">
-            {navigationItems.map(
-              (item) =>
-                (!item.authRequired || isLoggedIn) && (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    className="text-gray-700 hover:text-secondary font-medium transition-colors"
-                    whileHover={{ y: -1 }}
-                  >
-                    {item.label}
-                  </Link>
-                )
-            )}
-          </div> */}
-
-          {/* Search Bar */}
-          {isLoggedIn && pathname === "/instuctor/dashboard" && (
+          {/* Welcome Message */}
+          {isLoggedIn && pathname === "/instructor/dashboard" && (
             <div className="hidden md:block ml-4">
-              <h2 className="text-lg font-medium text-gray-900">Welcome back, {user.name.split(" ")[0]}!</h2>
+              <h2 className="text-lg font-medium text-gray-900">
+                Welcome back, {user.name.split(" ")[0]}!
+                {isPremium && <Crown className="inline h-4 w-4 ml-1 text-amber-500" />}
+              </h2>
               <p className="text-sm text-gray-600">Here's what's happening with your courses today.</p>
             </div>
           )}
-          {/* <div className="flex-1 max-w-2xl mx-8 hidden md:block">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-full bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="Search for anything"
-              />
-            </div>
-          </div> */}
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
             {isLoggedIn ? (
               <>
-                {/* Wishlist */}
-                {/* <motion.button
-                  className="p-2 text-gray-600 hover:text-secondary transition-colors relative"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Heart className="h-6 w-6" />
-                </motion.button> */}
-
-                {/* Cart */}
-                {/* <motion.button
-                  className="p-2 text-gray-600 hover:text-secondary transition-colors relative"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <ShoppingCart className="h-6 w-6" />
-                  {cartItems > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {cartItems}
-                    </span>
-                  )}
-                </motion.button> */}
-
                 {/* Notifications */}
                 <NotificationDropdown />
 
@@ -183,9 +254,19 @@ const Navbar = () => {
                     className="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
                     whileHover={{ scale: 1.05 }}
                   >
-                    <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">{user.initials}</span>
+                    <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center relative">
+                      {user?.avatar ? (
+                        <img src={user?.avatar} className="w-8 h-8 rounded-full" alt="user-profile-image" />
+                      ) : (
+                        <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">{user?.initials}</span>
+                        </div>
+                      )}
+                      {isPremium && (
+                        <Crown className="absolute -top-1 -right-1 h-3 w-3 text-amber-500 bg-white rounded-full" />
+                      )}
                     </div>
+
                     <ChevronDown className="h-4 w-4 text-gray-500" />
                   </motion.button>
 
@@ -198,31 +279,45 @@ const Navbar = () => {
                         className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
                       >
                         <div className="px-4 py-3 border-b border-gray-100">
-                          <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                          <p className="text-sm text-gray-500">{user.email}</p>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                              <p className="text-sm text-gray-500">{user.email}</p>
+                            </div>
+                          </div>
+                          {isPremium && (
+                            <div className="flex items-center space-x-1 mt-1">
+                              <span className="max-w-min bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-sm">
+                                <Crown className="w-4 h-4 mr-1" />
+                                Premium
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         <div className="py-2">
-                          {isLoggedIn && (
-                            <Link href="/instructor/course-upload">
-                              <Button
-                                className="bg-gradient-to-r ml-4 mb-2 from-(--primary-light) to-secondary text-white"
-                                size="md"
-                              >
-                                Create Course
-                              </Button>
-                            </Link>
-                          )}
-                          {dropdownLinks.map((item) => (
-                            <Link
-                              key={item.label}
-                              href={item.href}
-                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          <ProtectedLink href="/instructor/course-upload" authRequired={true} className="block">
+                            <Button
+                              className="bg-gradient-to-r ml-4 mb-2 from-(--primary-light) to-secondary text-white"
+                              size="md"
                             >
-                              <item.icon className="h-4 w-4 mr-3 text-gray-400" />
-                              {item.label}
-                            </Link>
-                          ))}
+                              Create Course
+                            </Button>
+                          </ProtectedLink>
+
+                          {dropdownLinks.map((item) => renderNavItem(item, false))}
+
+                          {!isPremium && (
+                            <div className="px-4 py-2 border-t border-gray-100 mt-2">
+                              <button
+                                onClick={() => router.push("/plans")}
+                                className="flex min-w-max items-center px-3 py-2 text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md hover:from-amber-600 hover:to-orange-600 transition-colors"
+                              >
+                                <Crown className="h-4 w-4 mr-2" />
+                                Upgrade to Premium
+                              </button>
+                            </div>
+                          )}
                         </div>
 
                         <div className="border-t border-gray-100 py-2">
@@ -262,43 +357,32 @@ const Navbar = () => {
                 >
                   Sign up
                 </Button>
-                {/* <motion.button
-                  className="p-2 text-gray-600 hover:text-secondary transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Globe className="h-6 w-6" />
-                </motion.button> */}
               </div>
             )}
 
             {/* Mobile Menu Button */}
             <motion.button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-gray-600 hover:text-secondary transition-colors"
+              className="lg:hidden flex items-center gap-2 p-2 text-gray-600 hover:text-secondary transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
+              <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center relative">
+                {user?.avatar ? (
+                  <img src={user?.avatar} className="w-8 h-8 rounded-full" alt="user-profile-image" />
+                ) : (
+                  <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">{user?.initials}</span>
+                  </div>
+                )}
+                {isPremium && (
+                  <Crown className="absolute -top-1 -right-1 h-3 w-3 text-amber-500 bg-white rounded-full" />
+                )}
+              </div>
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </motion.button>
           </div>
         </div>
-
-        {/* Mobile Search Bar */}
-        {/* <div className="md:hidden pb-4">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-full bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="Search for anything"
-            />
-          </div>
-        </div> */}
       </div>
 
       {/* Mobile Menu */}
@@ -310,37 +394,56 @@ const Navbar = () => {
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden bg-white border-t border-gray-200"
           >
+            <div className="px-4 py-3 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-md font-medium text-gray-900">{user.name}</p>
+                  <p className="text-md text-gray-500">{user.email}</p>
+                </div>
+              </div>
+              {isPremium && (
+                <div className="flex items-center space-x-1 mt-1">
+                  <span className="max-w-min bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-sm">
+                    <Crown className="w-4 h-4 mr-1" />
+                    Premium
+                  </span>
+                </div>
+              )}
+            </div>
             <div className="px-4 py-4 space-y-4">
               {isLoggedIn && (
-                <Link href="/instructor/course-upload">
-                  <Button className="bg-gradient-to-r mb-4 from-(--primary-light) to-secondary text-white" size="md">
+                <ProtectedLink href="/instructor/course-upload" authRequired={true} className="block">
+                  <Button className="bg-gradient-to-r mb-2 from-(--primary-light) to-secondary text-white" size="md">
                     Create Course
                   </Button>
-                </Link>
+                </ProtectedLink>
               )}
-              {navigationItems.map(
-                (item) =>
-                  (!item.authRequired || isLoggedIn) && (
-                    <Link
-                      key={item.label}
-                      href={item.href}
-                      className="block text-gray-700 hover:text-secondary font-medium transition-colors"
-                    >
-                      <item.icon className="inline-block mr-2 h-5 w-5 text-gray-400" />
-                      {item.label}
-                    </Link>
-                  )
+
+              {navigationItems.map((item) => renderNavItem(item, true))}
+
+              {isLoggedIn && !isPremium && (
+                <div className="pt-2">
+                  <button
+                    onClick={() => router.push("/plans")}
+                    className="flex min-w-max items-center px-3 py-2 text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md hover:from-amber-600 hover:to-orange-600 transition-colors"
+                  >
+                    <Crown className="h-4 w-4 mr-2" />
+                    Upgrade to Premium
+                  </button>
+                </div>
               )}
+
               {isLoggedIn && (
                 <motion.button
                   onClick={handleLogout}
-                  className="flex items-center w-full pt-2 border-t-blue-100 border-t-1 text-red-600 hover:bg-red-50 transition-colors"
+                  className="flex items-center w-full pt-2 border-t border-gray-100 text-red-600 hover:bg-red-50 transition-colors"
                   whileHover={{ x: 0 }}
                 >
                   <LogOut className="h-4 w-4 mr-3" />
                   Sign Out
                 </motion.button>
               )}
+
               {!isLoggedIn && (
                 <div className="pt-4 border-t border-gray-200 space-y-2">
                   <motion.button

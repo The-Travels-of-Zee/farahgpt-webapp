@@ -235,7 +235,7 @@ const SavedMessagesPage = () => {
         )}
 
         {/* Back to Chat Button */}
-        <motion.div
+        {/* <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
@@ -258,7 +258,7 @@ const SavedMessagesPage = () => {
               <span>Back to Chat</span>
             </motion.button>
           </Link>
-        </motion.div>
+        </motion.div> */}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, List, X, ChevronDown } from "lucide-react";
+import { Search, List, X, ChevronDown, Grid } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { ExploreCourseCard } from "@/components/Dashboard/CourseCard";
 import { sortOptions, statusOptions } from "@/constants";
@@ -10,6 +10,7 @@ import fetchCourses from "@/lib/actions/courseActions";
 import CourseErrorState from "@/components/ui/CourseErrorState";
 import CourseLoadingState from "@/components/ui/CourseLoadingState";
 import CoursesEmptyState from "@/components/ui/CoursesEmptyState";
+import useUserStore from "@/store/userStore";
 
 // Skeleton for header while loading
 const HeaderSkeleton = () => (
@@ -39,6 +40,8 @@ const SearchSkeleton = () => (
 );
 
 const ExploreAllCourses = () => {
+  const { isPremium } = useUserStore();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
@@ -234,14 +237,28 @@ const ExploreAllCourses = () => {
               </div>
 
               {/* View Mode Toggle */}
-              <div className="flex border border-gray-300 rounded-lg overflow-hidden">
+              <div className="flex gap-2 rounded-lg overflow-hidden">
                 <Button
-                  variant="primaryGreen"
+                  variant="ghost"
                   size="sm"
                   onClick={() => setViewMode("list")}
-                  className={`p-2 ${viewMode === "list" ? "" : "bg-white text-gray-600 hover:bg-gray-50"}`}
+                  aria-pressed={viewMode === "list"}
+                  className={`p-2 transition-colors duration-200 ${
+                    viewMode === "list" ? "bg-primary text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
                 >
                   <List className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  aria-pressed={viewMode === "grid"}
+                  className={`p-2 transition-colors duration-200 ${
+                    viewMode === "grid" ? "bg-primary text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  <Grid className="w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -321,7 +338,7 @@ const ExploreAllCourses = () => {
 
         {/* Course Grid/List */}
         {filteredAndSortedCourses.length > 0 ? (
-          <div className={viewMode === "grid" ? "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" : "space-y-6"}>
+          <div className={viewMode === "grid" ? "grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "space-y-6"}>
             {filteredAndSortedCourses.map((course, index) => (
               <motion.div
                 key={course.id}
@@ -330,7 +347,7 @@ const ExploreAllCourses = () => {
                 transition={{ delay: index * 0.05 }}
                 className={viewMode === "grid" ? "h-fit" : ""}
               >
-                <ExploreCourseCard course={course} index={index} />
+                <ExploreCourseCard course={course} index={index} isPremium={isPremium} view={viewMode} />
               </motion.div>
             ))}
           </div>
