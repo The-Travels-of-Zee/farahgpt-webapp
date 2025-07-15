@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Mail, ArrowLeft, CheckCircle } from "lucide-react";
 import { z } from "zod";
 import Link from "next/link";
+import { resetPassword } from "@/lib/actions/authActions";
 
 // Zod validation schema
 const forgotPasswordSchema = z.object({
@@ -38,7 +39,8 @@ export default function ForgotPasswordPage() {
       forgotPasswordSchema.parse(formData);
 
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      await resetPassword(formData.email)
 
       console.log("Password reset email sent to:", formData.email);
       setIsEmailSent(true);

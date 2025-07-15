@@ -14,11 +14,121 @@ import {
   Crown,
   CheckCircle,
   Sparkles,
+  BadgeCheck,
 } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import useUserStore from "@/store/userStore";
+
+const PremiumPlan = ({ variants }) => {
+  return (
+    <motion.div className="max-w-2xl mx-auto mb-6 sm:mb-8" variants={variants}>
+      <div className="bg-gradient-to-r from-yellow-100 to-yellow-50 border-2 border-yellow-300 rounded-2xl p-6 lg:p-8 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-200/30 rounded-full -translate-y-16 translate-x-16"></div>
+        <div className="relative">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <Crown className="w-8 h-8 text-yellow-600" />
+              <h2 className="text-2xl font-bold text-yellow-800">Premium Plan</h2>
+            </div>
+            <motion.div
+              className="bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-medium"
+              whileHover={{ scale: 1.05 }}
+            >
+              ACTIVE
+            </motion.div>
+          </div>
+
+          <p className="text-yellow-700 mb-6">You have access to advanced courses, chat history and priority support</p>
+
+          <div className="grid md:grid-cols-3 gap-2 place-items-start lg:place-items-center mb-6">
+            {["Advanced Islamic Courses", "Priority Support", "Chat History Access"].map((feature, index) => (
+              <motion.div
+                key={feature}
+                className="flex items-center space-x-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 + index * 0.1 }}
+              >
+                <CheckCircle className="w-5 h-5 text-emerald-600" />
+                <span className="text-sm text-yellow-800">{feature}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <Link href="/plans">
+            <Button
+              variant="gradientGreen"
+              size="lg"
+              className="w-full sm:w-auto min-w-max"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Manage Subscription
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const FreePlan = ({ variants }) => {
+  return (
+    <motion.div className="max-w-2xl mx-auto mb-6 sm:mb-8" variants={variants}>
+      <div className="bg-gradient-to-r from-blue-100 to-blue-50 border-2 border-blue-300 rounded-2xl p-6 lg:p-8 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-200/30 rounded-full -translate-y-16 translate-x-16"></div>
+        <div className="relative">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <BadgeCheck className="w-8 h-8 text-blue-600" />
+              <h2 className="text-2xl font-bold text-blue-800">Free Plan</h2>
+            </div>
+            <motion.div
+              className="bg-gray-600 text-white px-4 py-2 rounded-full text-sm font-medium"
+              whileHover={{ scale: 1.05 }}
+            >
+              CURRENT PLAN
+            </motion.div>
+          </div>
+
+          <p className="text-blue-700 mb-6">You have access to introductory courses and basic support features.</p>
+
+          <div className="grid md:grid-cols-3 gap-2 place-items-start lg:place-items-center mb-6">
+            {["Introductory Courses", "Community Access", "Basic Support"].map((feature, index) => (
+              <motion.div
+                key={feature}
+                className="flex items-center space-x-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 + index * 0.1 }}
+              >
+                <CheckCircle className="w-5 h-5 text-blue-600" />
+                <span className="text-sm text-blue-800">{feature}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <Link href="/plans">
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto min-w-max"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Explore Premium
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const Main = () => {
+  const isPremium = useUserStore((state) => state.isPremium);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const containerVariants = {
@@ -176,56 +286,7 @@ const Main = () => {
             </motion.div>
 
             {/* Premium Plan */}
-            <motion.div className="max-w-2xl mx-auto mb-6 sm:mb-8" variants={itemVariants}>
-              <div className="bg-gradient-to-r from-yellow-100 to-yellow-50 border-2 border-yellow-300 rounded-2xl p-6 lg:p-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-200/30 rounded-full -translate-y-16 translate-x-16"></div>
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <Crown className="w-8 h-8 text-yellow-600" />
-                      <h2 className="text-2xl font-bold text-yellow-800">Premium Plan</h2>
-                    </div>
-                    <motion.div
-                      className="bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-medium"
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      ACTIVE
-                    </motion.div>
-                  </div>
-
-                  <p className="text-yellow-700 mb-6">
-                    You have access to advanced courses, chat history and priority support
-                  </p>
-
-                  <div className="grid md:grid-cols-3 gap-2 place-items-start lg:place-items-center mb-6">
-                    {["Advanced Islamic Courses", "Priority Support", "Chat History Access"].map((feature, index) => (
-                      <motion.div
-                        key={feature}
-                        className="flex items-center space-x-2"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 + index * 0.1 }}
-                      >
-                        <CheckCircle className="w-5 h-5 text-emerald-600" />
-                        <span className="text-sm text-yellow-800">{feature}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  <Link href="/plans">
-                    <Button
-                      variant="gradientGreen"
-                      size="lg"
-                      className="w-full sm:w-auto min-w-max"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Manage Subscription
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
+            {isPremium ? <PremiumPlan variants={itemVariants} /> : <FreePlan variants={itemVariants} />}
 
             {/* Start Chat */}
             <motion.div className="max-w-6xl mx-auto mb-10 sm:mb-12" variants={itemVariants}>

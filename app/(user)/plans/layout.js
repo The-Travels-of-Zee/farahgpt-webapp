@@ -9,7 +9,6 @@ export const metadata = {
 const PlansLayout = ({ children }) => {
   return (
     <div>
-      <Navbar />
       <main>{children}</main>
       <Footer />
     </div>

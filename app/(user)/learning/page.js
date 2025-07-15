@@ -1,8 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CourseCard from "@/components/User/CourseCard";
 import { FilterBar } from "@/components/User/FilterBar";
 import Header from "@/components/User/LearningNavbar";
+import fetchCourses from "@/lib/actions/courseActions";
+import useUserStore from "@/store/userStore";
+import { useRouter } from "next/navigation";
 
 // Course Grid Component
 const CourseGrid = ({ courses }) => {
@@ -17,69 +20,49 @@ const CourseGrid = ({ courses }) => {
 
 // Main Dashboard Component
 const LearningDashboard = () => {
+  const { isPremium } = useUserStore();
+  const router = useRouter();
+  if (!isPremium) {
+    return router.push("/plans");
+  }
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
     sort: "Recently Accessed",
     categories: "",
     progress: "",
-    instructor: "",
+    seller_name: "",
   });
 
-  const courses = [
-    {
-      id: 1,
-      title: "Visionaire: The Art of Dream Duas",
-      instructor: "Shaykh Muhammad Alshareef (rahimaullah)",
-      progress: 99,
-      bgColor: "bg-gradient-to-br from-blue-400 to-blue-600",
-      icon: "🌙",
-    },
-    {
-      id: 2,
-      title: "Dream Worldwide Arabic Workbook",
-      instructor: "Ustadh Nouman Ali Khan",
-      progress: 100,
-      bgColor: "bg-gradient-to-br from-red-400 to-pink-600",
-      icon: "🌴",
-    },
-    {
-      id: 3,
-      title: "Master the Arabic alphabet and start reading with confidence in just 21 days",
-      instructor: "Ustadh Yasir Qadhi",
-      progress: 22,
-      bgColor: "bg-gradient-to-br from-purple-400 to-indigo-600",
-      icon: "⭐",
-    },
-    {
-      id: 4,
-      title: "Hadith Arabic: Learn the Language of the Prophet (ﷺ)",
-      instructor: "Ustadh Omar Suleiman",
-      progress: 4,
-      bgColor: "bg-gradient-to-br from-green-400 to-teal-600",
-      icon: "🤲",
-    },
-    {
-      id: 5,
-      title: "Tafsir Essentials: Understanding the meaning of the Quran",
-      instructor: "Sheikh Assim Al Hakeem",
-      progress: 0,
-      bgColor: "bg-gradient-to-br from-orange-400 to-red-600",
-      icon: "📖",
-    },
-    {
-      id: 6,
-      title: "Faith & Finances: Islamic Wealth Principles",
-      instructor: "Islamic Finance Faculty",
-      progress: 0,
-      bgColor: "bg-gradient-to-br from-orange-400 to-red-600",
-      icon: "💳",
-    },
-  ];
+  // Fetch courses from courseActions
+  // Add state for courses data
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch courses on component mount
+  useEffect(() => {
+    const loadCourses = async () => {
+      try {
+        setLoading(true);
+        const result = await fetchCourses();
+        if (result.success) {
+          setCourses(result.data || []);
+        }
+      } catch (error) {
+        console.error("Error loading courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCourses();
+  }, []);
+
+  // Show loading state
 
   const filteredCourses = courses
     .filter((course) => {
       const query = searchQuery.toLowerCase();
-      return course.title.toLowerCase().includes(query) || course.instructor.toLowerCase().includes(query);
+      return course.title.toLowerCase().includes(query) || course.seller_name.toLowerCase().includes(query);
     })
     .filter((course) => {
       if (filters.categories) {
@@ -94,8 +77,8 @@ const LearningDashboard = () => {
       return true;
     })
     .filter((course) => {
-      if (filters.instructor) {
-        return course.instructor.toLowerCase().includes(filters.instructor.toLowerCase());
+      if (filters.seller_name) {
+        return course.seller_name.toLowerCase().includes(filters.seller_name.toLowerCase());
       }
       return true;
     });
@@ -107,6 +90,30 @@ const LearningDashboard = () => {
     filteredCourses.sort((a, b) => b.title.localeCompare(a.title));
   }
 
+  const filterOptions = [
+    // {
+    //   label: "Category",
+    //   value: "categories",
+    //   options: ["Design", "Development", "Programming", "Business", "Marketing"],
+    //   placeholder: "Categories",
+    //   onChange: "categories",
+    // },
+    // {
+    //   label: "Progress",
+    //   value: "progress",
+    //   options: ["Not Started", "In Progress", "Completed"],
+    //   placeholder: "Progress",
+    //   onChange: "progress",
+    // },
+    {
+      label: "Instructor",
+      value: "instructor",
+      options: Array.from(new Set(courses.map((course) => course.seller_name))),
+      placeholder: "Instructors",
+      onChange: "seller_name",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -115,9 +122,19 @@ const LearningDashboard = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           filters={filters}
+          filterOptions={filterOptions}
           setFilters={setFilters}
         />
-        <CourseGrid courses={filteredCourses} />
+        {loading ? (
+          <div className="min-h-screen bg-gray-50">
+            <div className="text-center mt-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading courses...</p>
+            </div>
+          </div>
+        ) : (
+          <CourseGrid courses={filteredCourses} />
+        )}
         {/* <CoursesList /> */}
       </div>
     </div>
