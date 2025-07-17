@@ -38,7 +38,7 @@ export default function OtpConfirmPage() {
       setUserType(typeParam);
     } else {
       // Redirect to appropriate signup page if no email
-      router.push("/signup");
+      router.push("/signup-user");
     }
   }, [router]);
 
@@ -145,7 +145,7 @@ export default function OtpConfirmPage() {
   };
 
   const getBackLink = () => {
-    return userType === "instructor" ? "/signup-instructor" : "/signup";
+    return userType === "instructor" ? "/signup-instructor" : "/signup-user";
   };
 
   const getUserTypeDisplay = () => {

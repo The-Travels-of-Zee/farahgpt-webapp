@@ -1,3 +1,4 @@
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 export const metadata = {
@@ -18,7 +19,10 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon" sizes="any" />
         <link rel="manifest" href="/favicon/manifest.json" />
       </head>
-      <body className={"font-notosans antialiased"}>{children}</body>
+      <body className={"font-notosans antialiased"}>
+        <Toaster />
+        {children}
+      </body>
     </html>
   );
 }

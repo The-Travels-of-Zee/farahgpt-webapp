@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Menu,
@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import useUserStore from "@/store/userStore";
+import { getSubscriptionStatus } from "@/lib/actions/subscriptionActions";
 
 const PremiumPlan = ({ variants }) => {
   return (
@@ -127,7 +128,25 @@ const FreePlan = ({ variants }) => {
 };
 
 const Main = () => {
-  const isPremium = useUserStore((state) => state.isPremium);
+  const { user, isPremium, setSubscriptionTier } = useUserStore();
+  useEffect(() => {
+    if (user?.id) {
+      loadSubscriptionStatus();
+    }
+  }, [user?.id]);
+
+  const loadSubscriptionStatus = async () => {
+    try {
+      const result = await getSubscriptionStatus(user.id);
+      if (result.success) {
+        setSubscriptionTier(result.data.subscription_tier || "free");
+        console.log("Current subscription tier:", result.data.subscription_tier);
+      }
+    } catch (error) {
+      console.error("Error loading subscription status:", error);
+    }
+  };
+  console.log(isPremium);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 

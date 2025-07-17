@@ -45,18 +45,21 @@ export default function SignUpInstructorPage() {
       // Validate form data
       const validatedData = signUpSchema.parse(formData);
 
-      // Attempt to sign up the user
+      // Attempt to sign up the instructor
       const result = await signUpInstructorWithEmail(validatedData.email, validatedData.password, {
         name: validatedData.fullName,
         role: "instructor",
       });
 
       if (result.success) {
-        // Check if email confirmation is required
-        if (result.requiresConfirmation) {
-          // Redirect to OTP confirmation page with instructor type
+        if (result.isExistingAuth) {
+          // User already had auth account as regular user, now added as instructor
+          // You can either auto-login or redirect to login
+          router.push(`/login?message=${encodeURIComponent(result.message)}`);
+        } else if (result.requiresConfirmation) {
+          // New instructor, needs OTP confirmation
           router.push(`/otp-confirm?email=${encodeURIComponent(validatedData.email)}&type=instructor`);
-        } else {
+        } else {s
           // User is confirmed, complete login
           await completeUserLogin(result.user, "instructor");
           router.push("/instructor/dashboard");
@@ -74,6 +77,8 @@ export default function SignUpInstructorPage() {
           }
         });
         setErrors(newErrors);
+      } else {
+        setErrors({ submit: error.message || "An error occurred during signup" });
       }
     } finally {
       setIsLoading(false);
