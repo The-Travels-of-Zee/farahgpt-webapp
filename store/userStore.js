@@ -11,7 +11,6 @@ const useUserStore = create(
       avatar: null,
       isPremium: false,
       subscriptionTier: "free", // 'free' | 'premium'
-      enrolledCourses: [],
       // Add hydration state
       _hasHydrated: false,
       setHasHydrated: (state) => {
@@ -37,7 +36,6 @@ const useUserStore = create(
           avatar: null,
           isPremium: false,
           subscriptionTier: "free",
-          enrolledCourses: [],
         }),
 
       setUser: (user) =>
@@ -60,8 +58,6 @@ const useUserStore = create(
           subscriptionTier: tier,
           isPremium: tier === "premium",
         }),
-
-      setEnrolledCourses: (courses) => set({ enrolledCourses: courses }),
 
       // Helper methods
       hasFeature: (feature) => {
@@ -106,7 +102,6 @@ const useUserStore = create(
         role: state.role,
         isPremium: state.isPremium,
         subscriptionTier: state.subscriptionTier,
-        enrolledCourses: state.enrolledCourses,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);

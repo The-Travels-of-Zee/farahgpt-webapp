@@ -37,6 +37,7 @@ export default function LogInPage() {
     }
   };
 
+  // Updated handleSubmit function for your login component
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -53,8 +54,9 @@ export default function LogInPage() {
         throw new Error(result.error);
       }
 
-      // Handle successful login
-      router.push("/");
+      // Handle successful login with dynamic redirect
+      const redirectPath = result.redirectPath || "/";
+      router.push(redirectPath);
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors = {};

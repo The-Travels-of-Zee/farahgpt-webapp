@@ -51,14 +51,17 @@ export default function SignUpUserPage() {
       const result = await signUpUserWithEmail(validatedData.email, validatedData.password, {
         name: validatedData.fullName,
         role: "user",
-        isPremium: "free",
+        subscription_tier: "free",
         promoCode: validatedData.promoCode || null,
       });
 
       if (result.success) {
-        // Check if email confirmation is required
-        if (result.requiresConfirmation) {
-          // Redirect to OTP confirmation page
+        if (result.isExistingAuth) {
+          // User already had auth account as instructor, now added as user
+          // You can either auto-login or redirect to login
+          router.push(`/login?message=${encodeURIComponent(result.message)}`);
+        } else if (result.requiresConfirmation) {
+          // New user, needs OTP confirmation
           router.push(`/otp-confirm?email=${encodeURIComponent(validatedData.email)}&type=user`);
         } else {
           // User is confirmed, complete login
@@ -69,7 +72,7 @@ export default function SignUpUserPage() {
         // Handle signup error
         setErrors({ submit: result.error });
       }
-    } catch (error) { 
+    } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors = {};
         error.errors.forEach((err) => {

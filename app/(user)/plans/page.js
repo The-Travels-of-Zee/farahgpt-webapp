@@ -1,9 +1,10 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Star, Loader2, AlertCircle } from "lucide-react";
+import { Check, Star, Loader2 } from "lucide-react";
 import useUserStore from "@/store/userStore";
 import HydrationWrapper from "@/components/HydrationWrapper";
+import toast, { subscriptionToasts } from "@/lib/utils/toast";
 import {
   updateSubscription,
   getSubscriptionStatus,
@@ -14,8 +15,6 @@ import {
 const SubscriptionPageContent = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
   const [isRestoring, setIsRestoring] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
   const modalRef = useRef(null);
@@ -58,30 +57,36 @@ const SubscriptionPageContent = () => {
 
   const handleUpgrade = async () => {
     if (!user?.id) {
-      setError("Please log in to upgrade your subscription");
+      toast.error("Please log in to upgrade your subscription");
       return;
     }
 
     setIsLoading(true);
-    setError(null);
 
     try {
-      // Simulate payment processing
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Create upgrade promise
+      const upgradePromise = (async () => {
+        // Simulate payment processing
+        await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const result = await updateSubscription(user.id, "premium");
+        const result = await updateSubscription(user.id, "premium");
 
-      if (result.success) {
-        setSuccess("Successfully upgraded to Premium!");
-        setShowUpgradeModal(false);
-        // Reload subscription status to update UI
-        await loadSubscriptionStatus();
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(result.error || "Failed to upgrade subscription");
-      }
+        if (!result.success) {
+          throw new Error(result.error || "Failed to upgrade subscription");
+        }
+
+        return result;
+      })();
+
+      // Use promise toast for better UX
+      await subscriptionToasts.upgradePromise(upgradePromise);
+
+      setShowUpgradeModal(false);
+      // Reload subscription status to update UI
+      await loadSubscriptionStatus();
     } catch (error) {
-      setError("An error occurred during upgrade. Please try again.");
+      // Error is already handled by promise toast
+      console.error("Upgrade error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -89,26 +94,23 @@ const SubscriptionPageContent = () => {
 
   const handleRestore = async () => {
     if (!user?.id) {
-      setError("Please log in to restore purchases");
+      toast.error("Please log in to restore purchases");
       return;
     }
 
     setIsRestoring(true);
-    setError(null);
 
     try {
-      const result = await restoreSubscription(user.id);
+      const restorePromise = restoreSubscription(user.id);
+
+      const result = await subscriptionToasts.restorePromise(restorePromise);
 
       if (result.success) {
-        setSuccess(result.message || "Subscription restored successfully!");
         // Reload subscription status to update UI
         await loadSubscriptionStatus();
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(result.message || "No active subscription found to restore");
       }
     } catch (error) {
-      setError("Failed to restore subscription. Please try again.");
+      console.error("Restore error:", error);
     } finally {
       setIsRestoring(false);
     }
@@ -116,26 +118,23 @@ const SubscriptionPageContent = () => {
 
   const handleCancel = async () => {
     if (!user?.id) {
-      setError("Please log in to cancel subscription");
+      toast.error("Please log in to cancel subscription");
       return;
     }
 
     setIsCanceling(true);
-    setError(null);
 
     try {
-      const result = await cancelSubscription(user.id);
+      const cancelPromise = cancelSubscription(user.id);
+
+      const result = await subscriptionToasts.cancelPromise(cancelPromise);
 
       if (result.success) {
-        setSuccess("Subscription canceled successfully!");
         // Reload subscription status to update UI
         await loadSubscriptionStatus();
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(result.error || "Failed to cancel subscription");
       }
     } catch (error) {
-      setError("Failed to cancel subscription. Please try again.");
+      console.error("Cancel error:", error);
     } finally {
       setIsCanceling(false);
     }
@@ -191,34 +190,7 @@ const SubscriptionPageContent = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Success/Error Messages */}
-      <AnimatePresence>
-        {(success || error) && (
-          <motion.div
-            className="fixed top-4 right-4 z-50 max-w-sm"
-            initial={{ opacity: 0, x: 300 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 300 }}
-          >
-            <div
-              className={`p-4 rounded-xl shadow-lg ${
-                success
-                  ? "bg-green-100 border border-green-200 text-green-800"
-                  : "bg-red-100 border border-red-200 text-red-800"
-              }`}
-            >
-              <div className="flex items-center space-x-2">
-                {success ? (
-                  <Check className="w-5 h-5 text-green-600" />
-                ) : (
-                  <AlertCircle className="w-5 h-5 text-red-600" />
-                )}
-                <span className="font-medium">{success || error}</span>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Toast Container */}
 
       {/* Main Content */}
       <motion.main
