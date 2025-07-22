@@ -44,10 +44,10 @@ const InstructorCard = ({ instructor, index, onView, onRemove }) => {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between space-y-4 md:space-y-0 md:space-x-4">
           {/* Left Side */}
           <div className="flex flex-col sm:flex-row sm:space-x-4 flex-1">
-            {/* Avatar and status */}
+            {/* photo_url and status */}
             <div className="relative flex-shrink-0 w-14 h-14 mb-4 sm:mb-0">
               <img
-                src={instructor.avatar}
+                src={instructor.photo_url}
                 alt={instructor.name}
                 className="w-full h-full rounded-full object-cover ring-2 ring-gray-100"
               />
@@ -214,7 +214,7 @@ const CourseDetailModal = ({ instructor, onClose }) => {
       >
         <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <img src={instructor.avatar} alt={instructor.name} className="w-12 h-12 rounded-full object-cover" />
+            <img src={instructor.photo_url} alt={instructor.name} className="w-12 h-12 rounded-full object-cover" />
             <div>
               <h2 className="text-xl font-semibold text-gray-900">{instructor.name}</h2>
               <p className="text-sm text-gray-600">{instructor.specialization}</p>
@@ -257,7 +257,7 @@ const CourseDetailModal = ({ instructor, onClose }) => {
             </div>
           </div>
 
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Courses ({instructor.courses.length || 5})</h3>
+          {/* <h3 className="text-lg font-semibold text-gray-900 mb-4">Courses</h3>
           <div className="space-y-4">
             {instructor.courses.map((course) => (
               <div key={course.id} className="bg-gray-50 rounded-lg p-4">
@@ -275,14 +275,14 @@ const CourseDetailModal = ({ instructor, onClose }) => {
                       </div>
                       <div className="flex items-center space-x-1">
                         <DollarSign className="w-4 h-4" />
-                        {/* <span>${course.revenue.toLocaleString()}</span> */}
+                        <span>${course.revenue.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </motion.div>
     </motion.div>
@@ -302,7 +302,7 @@ const InstructorManagement = () => {
     const loadInstructors = async () => {
       try {
         setLoading(true);
-        const result = await fetchSellers();
+        const result = await fetchInstructors();
         if (result.success) {
           setInstructors(result.data || []);
         }

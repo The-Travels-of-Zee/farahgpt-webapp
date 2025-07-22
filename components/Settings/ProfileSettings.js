@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Camera,
   Save,
@@ -12,30 +12,143 @@ import {
   Youtube,
   Plus,
   Trash2,
+  Link,
+  Loader2,
+  AlertCircle,
+  CheckCircle,
   Link as LinkIcon,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { useUser } from "@/hooks/useUser";
 
 const ProfileAndSocialSettings = () => {
+  const {
+    user,
+    displayName,
+    photoUrl,
+    currentUser,
+    refreshUser,
+    updateProfile,
+    uploadProfilePicture,
+    deleteProfilePicture,
+  } = useUser();
+
   const [formData, setFormData] = useState({
-    firstName: "Shaheer",
-    lastName: "Mansoor",
-    email: "shaheer@example.com",
-    phone: "+92 300 1234567",
-    bio: "Full-stack developer passionate about creating amazing user experiences.",
-    location: "Gujranwala, Punjab, Pakistan",
-    birthdate: "1995-06-15",
-    website: "https://shaheermansoor.dev",
+    fullName: "",
+    email: "",
     profileImage: null,
   });
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+
+  // Load user data on component mount
+  useEffect(() => {
+    if (user?.id) {
+      loadUserProfile();
+    }
+  }, [user?.id]);
+
+  const loadUserProfile = async () => {
+    try {
+      setIsLoading(true);
+      await refreshUser(user?.id);
+
+      // Update form data with current user information
+      setFormData({
+        fullName: user?.name || displayName || "",
+        email: user?.email || "",
+        profileImage: photoUrl || null,
+      });
+    } catch (error) {
+      setMessage({ type: "error", text: "Failed to load profile" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setMessage({ type: "error", text: "Please select an image file" });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({ type: "error", text: "Image size must be less than 5MB" });
+      return;
+    }
+
+    try {
+      setImageUploading(true);
+      const result = await uploadProfilePicture(user?.id, file);
+
+      setFormData((prev) => ({ ...prev, profileImage: result.imageUrl }));
+      setMessage({ type: "success", text: "Profile picture updated successfully" });
+    } catch (error) {
+      setMessage({ type: "error", text: error.message || "Failed to upload image" });
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    try {
+      setImageUploading(true);
+      await deleteProfilePicture(user?.id);
+
+      setFormData((prev) => ({ ...prev, profileImage: null }));
+      setMessage({ type: "success", text: "Profile picture removed successfully" });
+    } catch (error) {
+      setMessage({ type: "error", text: error.message || "Failed to remove image" });
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      await updateProfile(user?.id, formData);
+
+      setMessage({ type: "success", text: "Profile updated successfully" });
+      setIsEditing(false);
+
+      // Refresh user data to get latest information
+      await refreshUser(user?.id);
+    } catch (error) {
+      setMessage({ type: "error", text: error.message || "Failed to update profile" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Clear message after 5 seconds
+  useEffect(() => {
+    if (message.text) {
+      const timer = setTimeout(() => {
+        setMessage({ type: "", text: "" });
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   const [socialLinks, setSocialLinks] = useState([
     { id: 1, platform: "github", url: "https://github.com/shaheer", icon: Github },
     { id: 2, platform: "twitter", url: "https://twitter.com/shaheer", icon: Twitter },
     { id: 3, platform: "linkedin", url: "https://linkedin.com/in/shaheer", icon: Linkedin },
   ]);
-
-  const [isEditing, setIsEditing] = useState(false);
 
   const socialPlatforms = [
     { name: "github", icon: Github, placeholder: "GitHub username or URL" },
@@ -45,22 +158,6 @@ const ProfileAndSocialSettings = () => {
     { name: "facebook", icon: Facebook, placeholder: "Facebook profile URL" },
     { name: "youtube", icon: Youtube, placeholder: "YouTube channel URL" },
   ];
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFormData((prev) => ({ ...prev, profileImage: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const addSocialLink = () => {
     const availablePlatforms = socialPlatforms.filter(
@@ -89,17 +186,25 @@ const ProfileAndSocialSettings = () => {
     setSocialLinks((prev) => prev.filter((link) => link.id !== id));
   };
 
-  const handleSave = () => {
-    console.log("Saving profile data:", formData);
-    console.log("Saving social links:", socialLinks);
-    setIsEditing(false);
-  };
-
   const inputClass =
-    "w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all";
+    "w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all";
 
   return (
     <div className="p-4 mb-18 max-w-4xl mx-auto min-h-screen overflow-y-auto space-y-8">
+      {/* Message Display */}
+      {message.text && (
+        <div
+          className={`p-4 rounded-md flex items-center gap-2 ${
+            message.type === "success"
+              ? "bg-green-50 text-green-800 border border-green-200"
+              : "bg-red-50 text-red-800 border border-red-200"
+          }`}
+        >
+          {message.type === "success" ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+          <span>{message.text}</span>
+        </div>
+      )}
+
       {/* Profile Information */}
       <div className="space-y-6 bg-white rounded-xl shadow-md p-6">
         <h2 className="text-2xl font-bold text-gray-900">Profile Information</h2>
@@ -108,31 +213,44 @@ const ProfileAndSocialSettings = () => {
         <div className="flex items-center space-x-6">
           <div className="relative">
             <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center overflow-hidden">
-              {formData.profileImage ? (
-                <img src={formData.profileImage} alt="Profile" className="w-full h-full object-cover" />
+              {imageUploading ? (
+                <Loader2 className="w-8 h-8 text-white animate-spin" />
+              ) : photoUrl ? (
+                <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
                 <User className="w-12 h-12 text-white" />
               )}
             </div>
-            <label className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition">
+            <label className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition cursor-pointer">
               <Camera className="w-4 h-4 text-gray-600" />
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                disabled={imageUploading}
+              />
             </label>
           </div>
+
+          {photoUrl && (
+            <button
+              onClick={handleDeleteImage}
+              disabled={imageUploading}
+              className="px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors disabled:opacity-50"
+            >
+              Remove Photo
+            </button>
+          )}
         </div>
 
-        {/* Inputs */}
+        {/* Form Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
-            { name: "firstName", label: "First Name" },
-            { name: "lastName", label: "Last Name" },
+            { name: "fullName", label: "Full Name" },
             { name: "email", label: "Email", type: "email" },
-            { name: "phone", label: "Phone", type: "tel" },
-            // { name: "location", label: "Location" },
-            // { name: "birthdate", label: "Birth Date", type: "date" },
-            // { name: "website", label: "Website", type: "url", colSpan: 2 },
-          ].map(({ name, label, type = "text", colSpan }) => (
-            <div key={name} className={colSpan === 2 ? "md:col-span-2" : ""}>
+          ].map(({ name, label, type = "text" }) => (
+            <div key={name}>
               <label className="text-sm font-medium text-gray-700 mb-1 block">{label}</label>
               <input
                 name={name}
@@ -145,105 +263,38 @@ const ProfileAndSocialSettings = () => {
               />
             </div>
           ))}
-
-          {/* <div className="md:col-span-2">
-            <label className="text-sm font-medium text-gray-700 mb-1 block">Bio</label>
-            <textarea
-              name="bio"
-              rows={3}
-              value={formData.bio}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className={`${inputClass} resize-none ${!isEditing ? "bg-gray-100 cursor-not-allowed" : ""}`}
-              placeholder="Tell us about yourself..."
-            />
-          </div> */}
         </div>
 
+        {/* Action Buttons */}
         <div className="flex justify-end gap-2 pt-4">
-          <Button variant={isEditing ? "outline" : "primarySettings"} onClick={() => setIsEditing(!isEditing)}>
+          <button
+            onClick={() => {
+              setIsEditing(!isEditing);
+              if (isEditing) {
+                // Reset form data when canceling
+                loadUserProfile();
+              }
+            }}
+            disabled={isLoading}
+            className={`px-4 py-2 text-sm rounded-md transition ${
+              isEditing ? "bg-gray-100 text-gray-700 hover:bg-gray-200" : "bg-blue-500 text-white hover:bg-blue-600"
+            } disabled:opacity-50`}
+          >
             {isEditing ? "Cancel" : "Edit"}
-          </Button>
+          </button>
+
           {isEditing && (
-            <Button
-              variant="primarySettings"
+            <button
               onClick={handleSave}
-              className="bg-gradient-to-r from-teal-200 to-teal-100 text-teal-700 shadow-sm px-4 py-2 text-sm rounded-md transition flex items-center"
+              disabled={isLoading}
+              className="bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-sm px-4 py-2 text-sm rounded-md hover:from-teal-600 hover:to-teal-700 transition flex items-center disabled:opacity-50"
             >
-              <Save className="w-4 h-4 mr-2" />
+              {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
               Save Changes
-            </Button>
+            </button>
           )}
         </div>
       </div>
-
-      {/* Social Links */}
-      {/* <div className="bg-white rounded-xl shadow-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold flex items-center">
-            <LinkIcon className="w-5 h-5 mr-2" />
-            Social Links
-          </h3>
-          <Button
-            variant="primarySettings"
-            onClick={addSocialLink}
-            disabled={socialLinks.length >= socialPlatforms.length}
-            className="bg-gradient-to-r from-teal-200 to-teal-100 text-teal-700 shadow-sm px-4 py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed text-sm flex items-center transition"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Link
-          </Button>
-        </div>
-
-        <div className="space-y-4">
-          {socialLinks.map((link) => {
-            const platform = socialPlatforms.find((p) => p.name === link.platform);
-            const IconComponent = platform?.icon || LinkIcon;
-
-            return (
-              <div key={link.id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
-                <IconComponent className="w-6 h-6 text-gray-600" />
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <select
-                    value={link.platform}
-                    onChange={(e) => {
-                      const selectedPlatform = socialPlatforms.find((p) => p.name === e.target.value);
-                      updateSocialLink(link.id, "platform", e.target.value);
-                      updateSocialLink(link.id, "icon", selectedPlatform?.icon || LinkIcon);
-                    }}
-                    className={inputClass}
-                  >
-                    {socialPlatforms.map((platform) => (
-                      <option key={platform.name} value={platform.name}>
-                        {platform.name.charAt(0).toUpperCase() + platform.name.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="url"
-                    value={link.url}
-                    onChange={(e) => updateSocialLink(link.id, "url", e.target.value)}
-                    placeholder={platform?.placeholder || "Enter URL"}
-                    className={inputClass}
-                  />
-                </div>
-                <Button variant="danger" onClick={() => removeSocialLink(link.id)}>
-                  <Trash2 className="w-5 h-5" />
-                </Button>
-              </div>
-            );
-          })}
-        </div>
-
-        {socialLinks.length > 0 && (
-          <div className="mt-6 flex justify-end">
-            <Button variant="primarySettings" onClick={handleSave}>
-              <Save className="w-4 h-4 mr-2" />
-              Save Social Links
-            </Button>
-          </div>
-        )}
-      </div> */}
     </div>
   );
 };

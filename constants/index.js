@@ -343,13 +343,16 @@ export const footerSections = [
     ],
   },
 ];
-
+import { PiTiktokLogo } from "react-icons/pi";
 export const socialLinks = [
   { name: "LinkedIn", icon: Linkedin, href: "https://www.linkedin.com/company/farahgpt/" },
-  // { name: "Facebook", icon: Facebook, href: "https://facebook.com" },
-  // { name: "Twitter", icon: Twitter, href: "https://twitter.com" },
-  // { name: "Instagram", icon: Instagram, href: "https://instagram.com" },
-  // { name: "YouTube", icon: Youtube, href: "https://youtube.com" },
+  { name: "Facebook", icon: Facebook, href: "https://www.facebook.com/share/1EejMRmzs4/?mibextid=wwXIfr" },
+  {
+    name: "Instagram",
+    icon: Instagram,
+    href: "https://www.instagram.com/farahgpt?igsh=cjkyMnZhZnIyM2tz&utm_source=qr",
+  },
+  { name: "TikTok", icon: PiTiktokLogo, href: "https://www.tiktok.com/@farahgpt?_t=ZS-8yDjWFcjHXw&_r=1" },
 ];
 
 export const bottomLinks = [

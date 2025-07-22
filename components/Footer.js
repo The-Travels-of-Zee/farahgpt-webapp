@@ -2,6 +2,7 @@
 import { Mail, MapPin } from "lucide-react";
 import { bottomLinks, footerSections, socialLinks } from "@/constants";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const Footer = () => {
   // Animation variants
@@ -102,6 +103,27 @@ const Footer = () => {
             </div>
 
             {/* Social Links */}
+            <motion.ul
+              initial={{ opacity: 0, y: "100%" }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="list-none flex gap-4 my-6 p-0 w-full"
+            >
+              <li className="m-0 p-0">
+                <Link
+                  href={"https://play.google.com/store/apps/details?id=com.app.farahgpt"}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <img className="h-14" alt="google play logo" src="/stores/google-play.svg" />
+                </Link>
+              </li>
+              <li className="m-0 p-0" rel="noopener">
+                <Link href={"https://apps.apple.com/us/app/farahgpt/id6746275409"} target="_blank">
+                  <img className="h-14" alt="app store logo" src="/stores/app-store.svg" />
+                </Link>
+              </li>
+            </motion.ul>
             <div className="flex gap-3">
               {socialLinks.map((social, index) => {
                 const IconComponent = social.icon;

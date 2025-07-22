@@ -24,6 +24,7 @@ import NotificationDropdown from "./Notification";
 import Button from "./ui/Button";
 import { useRouter, usePathname } from "next/navigation";
 import useUserStore from "@/store/userStore";
+import useUser from "@/hooks/useUser";
 
 const Navbar = () => {
   const { isPremium } = useUserStore();
@@ -53,15 +54,6 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isUserDropdownOpen]);
-
-  const handleLogin = () => {
-    // Mock user data
-    login({
-      name: "Shaheer Mansoor",
-      email: "shaheer.mansoor@example.com",
-      initials: "SM",
-    });
-  };
 
   const handleLogout = () => {
     logout();
@@ -255,8 +247,8 @@ const Navbar = () => {
                     whileHover={{ scale: 1.05 }}
                   >
                     <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center relative">
-                      {user?.avatar ? (
-                        <img src={user?.avatar} className="w-8 h-8 rounded-full" alt="user-profile-image" />
+                      {user?.photo_url ? (
+                        <img src={user?.photo_url} className="w-8 h-8 rounded-full" alt="user-profile-image" />
                       ) : (
                         <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
                           <span className="text-white text-sm font-medium">{user?.initials}</span>
@@ -368,8 +360,8 @@ const Navbar = () => {
               whileTap={{ scale: 0.95 }}
             >
               <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center relative">
-                {user?.avatar ? (
-                  <img src={user?.avatar} className="w-8 h-8 rounded-full" alt="user-profile-image" />
+                {user?.photo_url ? (
+                  <img src={user?.photo_url} className="w-8 h-8 rounded-full" alt="user-profile-image" />
                 ) : (
                   <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
                     <span className="text-white text-sm font-medium">{user?.initials}</span>
