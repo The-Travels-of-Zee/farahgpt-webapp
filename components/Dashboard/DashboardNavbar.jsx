@@ -13,7 +13,7 @@ const useAuth = () => {
     ? {
         name: "Shaheer Mansoor",
         email: "shaheer.mansoor@example.com",
-        avatar: null,
+        photo_url: null,
         initials: "SM",
       }
     : null;

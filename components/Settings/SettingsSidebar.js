@@ -1,17 +1,18 @@
 "use client";
 
 import { sidebarLinks } from "@/constants";
+import { useUser } from "@/hooks/useUser";
+import useUserStore from "@/store/userStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Crown, User, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) => {
-  const [formData, setFormData] = useState({
-    firstName: "Shaheer",
-    lastName: "Mansoor",
-    profileImage: null,
-  });
+  const { user, isPremium, refreshUser, _hasHydrated } = useUser();
+  // const { isPremium } = useUserStore();
+  // console.lozg(user);
+
   const [activeTab, setActiveTab] = useState("profile-settings");
   const [isClient, setIsClient] = useState(false);
 
@@ -36,9 +37,31 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
 
     if (validTabs.includes(initialTab)) {
       setActiveTab(initialTab);
-      onSectionChange(initialTab, true); // <- suppress auto close on mount
+      onSectionChange(initialTab, true);
     }
   }, [onSectionChange]);
+
+  // Auto-refresh user data after hydration to ensure we have latest data
+  useEffect(() => {
+    if (_hasHydrated && user?.id) {
+      refreshUser(user.id);
+    }
+  }, [_hasHydrated, user?.id]);
+
+  // Listen for profile update events
+  useEffect(() => {
+    const handleProfileUpdated = () => {
+      if (user?.id) {
+        refreshUser(user.id);
+      }
+    };
+
+    window.addEventListener("profileUpdated", handleProfileUpdated);
+
+    return () => {
+      window.removeEventListener("profileUpdated", handleProfileUpdated);
+    };
+  }, [user?.id, refreshUser]);
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
@@ -129,10 +152,14 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
             </Link>
 
             <div className="flex items-center gap-2">
-              <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-sm">
-                <Crown className="w-3 h-3 mr-1" />
-                Premium
-              </span>
+              {isPremium && (
+                <>
+                  <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-sm">
+                    <Crown className="w-3 h-3 mr-1" />
+                    Premium
+                  </span>
+                </>
+              )}
               <button
                 onClick={onToggle}
                 className="w-6 h-6 text-teal-600 hover:text-teal-800 lg:hidden transition-colors"
@@ -147,14 +174,14 @@ const SettingsSidebar = ({ isOpen, onToggle, activeSection, onSectionChange }) =
           <div className="flex flex-col items-center gap-2 text-center">
             <div className="relative">
               <div className="w-24 h-24 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center overflow-hidden shadow-lg">
-                {formData.profileImage ? (
-                  <img src={formData.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                {user?.photo_url ? (
+                  <img src={user?.photo_url} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   <User className="w-12 h-12 text-white" />
                 )}
               </div>
             </div>
-            <div className="flex items-center text-sm sm:text-base font-medium text-teal-800">Shaheer Mansoor</div>
+            <div className="flex items-center text-sm sm:text-base font-medium text-teal-800">{user?.name}</div>
           </div>
         </div>
 

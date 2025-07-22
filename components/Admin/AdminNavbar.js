@@ -33,7 +33,7 @@ const useAuth = () => {
     ? {
         name: "Admin Dashboard",
         email: "admin@farahgpt.com",
-        avatar: null,
+        photo_url: null,
         initials: "SM",
         role: "Super Admin",
       }

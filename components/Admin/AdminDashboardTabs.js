@@ -15,6 +15,7 @@ import CoursesEmptyState from "../ui/CoursesEmptyState";
 
 // Dynamic imports for better performance
 const EarningsChart = dynamic(() => import("@/components/Dashboard/EarningsChart"), { ssr: false });
+const WithdrawalsManagement = dynamic(() => import("@/components/Admin/WithdrawalsManagement"), { ssr: false });
 const StatCard = dynamic(() => import("@/components/Dashboard/StatCard"), { ssr: false });
 const StudentCard = dynamic(() => import("@/components/Dashboard/StudentCard"), { ssr: false });
 // const UserManagement = dynamic(() => import("@/components/Dashboard/UserManagement"), { ssr: false });
@@ -29,6 +30,7 @@ const TabNav = ({ activeTab, setActiveTab }) => {
   const tabs = [
     { id: "dashboard", label: "Dashboard", icon: "📊", category: "overview" },
     { id: "earnings", label: "Earnings", icon: "💰", category: "financial" },
+    { id: "withdrawals", label: "Withdrawals", icon: "💳", category: "financial" },
     { id: "payments", label: "Payments", icon: "💳", category: "financial" },
     { id: "coupongenerator", label: "Coupons", icon: "💲", category: "financial" },
     { id: "instructors", label: "Instructors", icon: "👨‍🏫", category: "management" },
@@ -184,6 +186,7 @@ const AdminDashboardTabs = () => {
     // Validate that the tab exists
     const validTabs = [
       "dashboard",
+      "withdrawals",
       "earnings",
       "payments",
       "coupongenerator",
@@ -227,6 +230,9 @@ const AdminDashboardTabs = () => {
 
       case "earnings":
         return <EarningsChart />;
+
+      case "withdrawals":
+        return <WithdrawalsManagement />;
 
       case "payments":
         return (

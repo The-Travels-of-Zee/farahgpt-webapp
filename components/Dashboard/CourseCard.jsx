@@ -1,11 +1,184 @@
 // components/courses/CourseCard.tsx
 import { motion } from "framer-motion";
 import Button, { Badge } from "@/components/ui/Button";
-import { Users, Calendar, MoreHorizontal, Eye, Edit, Trash2, Crown } from "lucide-react";
+import {
+  Users,
+  Calendar,
+  MoreHorizontal,
+  Eye,
+  Edit,
+  Trash2,
+  Crown,
+  Search,
+  Filter,
+  SortAsc,
+  SortDesc,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import fetchCourses from "@/lib/actions/courseActions";
 import { useEffect, useRef, useState } from "react";
+
+// Filter and Search Component
+export const CourseFilters = ({
+  searchTerm,
+  setSearchTerm,
+  statusFilter,
+  setStatusFilter,
+  sortBy,
+  setSortBy,
+  sortOrder,
+  setSortOrder,
+  view,
+  setView,
+}) => {
+  const [showFilters, setShowFilters] = useState(false);
+  const filterRef = useRef(null);
+
+  // Close filters on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowFilters(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("all");
+    setSortBy("title");
+    setSortOrder("asc");
+  };
+
+  const hasActiveFilters = searchTerm || statusFilter !== "all";
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        {/* Search Bar */}
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search courses..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Filter and Sort Controls */}
+        <div className="flex items-center gap-3">
+          {/* View Toggle */}
+          <div className="flex border border-gray-300 rounded-md overflow-hidden">
+            <button
+              onClick={() => setView("list")}
+              className={`px-3 py-1 text-sm ${
+                view === "list" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              List
+            </button>
+            <button
+              onClick={() => setView("grid")}
+              className={`px-3 py-1 text-sm ${
+                view === "grid" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              Grid
+            </button>
+          </div>
+
+          {/* Filter Button */}
+          <div className="relative" ref={filterRef}>
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-3 py-2 border rounded-md text-sm ${
+                hasActiveFilters ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-300 hover:bg-gray-50"
+              }`}
+            >
+              <Filter className="w-4 h-4" />
+              Filters
+              {hasActiveFilters && (
+                <span className="bg-blue-500 text-white text-xs rounded-full px-1.5 py-0.5 ml-1">
+                  {(searchTerm ? 1 : 0) + (statusFilter !== "all" ? 1 : 0)}
+                </span>
+              )}
+            </button>
+
+            {/* Filter Dropdown */}
+            {showFilters && (
+              <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-gray-200 rounded-md shadow-lg z-20">
+                <div className="p-4 space-y-4">
+                  {/* Status Filter */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="all">All Statuses</option>
+                      <option value="published">Published</option>
+                      <option value="draft">Draft</option>
+                      <option value="archived">Archived</option>
+                      <option value="pending">Pending</option>
+                    </select>
+                  </div>
+
+                  {/* Sort Options */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                    <div className="flex gap-2">
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="title">Title</option>
+                        <option value="created_at">Date Created</option>
+                        <option value="studentsEnrolled">Students</option>
+                        <option value="seller_name">Instructor</option>
+                      </select>
+                      <button
+                        onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                        className="px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                      >
+                        {sortOrder === "asc" ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Clear Filters */}
+                  {hasActiveFilters && (
+                    <button
+                      onClick={clearFilters}
+                      className="w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"
+                    >
+                      Clear All Filters
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Course Card component for admin dashboard
 export const AdminCourseCard = ({ course, index = 0, revenue = 0 }) => {
@@ -53,19 +226,10 @@ export const AdminCourseCard = ({ course, index = 0, revenue = 0 }) => {
         </div>
 
         <CourseStats course={course} />
-        {/* <CourseProgress completionRate={course.completionRate} /> */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="text-sm text-gray-600">
             Revenue: <span className="font-semibold text-green-600">${revenue}</span>
           </div>
-          {/* <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-            <Button variant="outline" size="sm" className="w-full sm:w-auto">
-              View Analytics
-            </Button>
-            <Button variant="blueToGreen" size="sm" className="w-full sm:w-auto">
-              Manage Course
-            </Button>
-          </div> */}
         </div>
       </div>
     </motion.div>
@@ -187,15 +351,12 @@ export const CourseCardMenu = () => {
 };
 
 // components/courses/CourseStats.tsx
-
 export const formatDate = (dateString) =>
   new Date(dateString).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
-
-// components/courses/CourseStats.tsx
 
 export const CourseStats = ({ course, view = "list" }) => {
   const isGrid = view === "grid";
@@ -238,23 +399,17 @@ export const CourseProgress = ({ completionRate = 0 }) => (
   </div>
 );
 
-// WASTE CODE
-// components/courses/CourseList.tsx
-// import CourseCard from "./CourseCard";
-
-// export const CourseList = ({ courses }) => (
-//   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-//     {courses.map((course, index) => (
-//       <CourseCard key={course.id} course={course} index={index} />
-//     ))}
-//   </div>
-// );
-
+// Enhanced AllCourses component with filtering logic
 export const AllCourses = () => {
-  // Fetch courses from courseActions
-  // Add state for courses data
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Filter and sort states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("title");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [view, setView] = useState("list");
 
   // Fetch courses on component mount
   useEffect(() => {
@@ -275,6 +430,59 @@ export const AllCourses = () => {
     loadCourses();
   }, []);
 
+  // Filter and sort courses
+  const filteredAndSortedCourses = courses
+    .filter((course) => {
+      // Search filter
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        const matchesSearch =
+          course.title?.toLowerCase().includes(searchLower) ||
+          course.description?.toLowerCase().includes(searchLower) ||
+          course.seller_name?.toLowerCase().includes(searchLower);
+        if (!matchesSearch) return false;
+      }
+
+      // Status filter
+      if (statusFilter !== "all") {
+        const courseStatus = course.status?.toLowerCase() || "draft";
+        if (courseStatus !== statusFilter) return false;
+      }
+
+      return true;
+    })
+    .sort((a, b) => {
+      let aValue, bValue;
+
+      switch (sortBy) {
+        case "title":
+          aValue = a.title?.toLowerCase() || "";
+          bValue = b.title?.toLowerCase() || "";
+          break;
+        case "created_at":
+          aValue = new Date(a.created_at || 0);
+          bValue = new Date(b.created_at || 0);
+          break;
+        case "studentsEnrolled":
+          aValue = parseInt(a.studentsEnrolled) || 0;
+          bValue = parseInt(b.studentsEnrolled) || 0;
+          break;
+        case "seller_name":
+          aValue = a.seller_name?.toLowerCase() || "";
+          bValue = b.seller_name?.toLowerCase() || "";
+          break;
+        default:
+          aValue = a.title?.toLowerCase() || "";
+          bValue = b.title?.toLowerCase() || "";
+      }
+
+      if (sortOrder === "asc") {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+
   // Show loading state
   if (loading) {
     return (
@@ -286,5 +494,62 @@ export const AllCourses = () => {
       </div>
     );
   }
-  return courses;
+
+  return {
+    courses: filteredAndSortedCourses,
+    totalCourses: courses.length,
+    filteredCount: filteredAndSortedCourses.length,
+    filters: {
+      searchTerm,
+      setSearchTerm,
+      statusFilter,
+      setStatusFilter,
+      sortBy,
+      setSortBy,
+      sortOrder,
+      setSortOrder,
+      view,
+      setView,
+    },
+  };
+};
+
+// Course Results Display Component
+export const CourseResults = ({
+  courses,
+  totalCourses,
+  filteredCount,
+  view = "list",
+  CardComponent = AdminCourseCard,
+}) => {
+  const isGrid = view === "grid";
+
+  return (
+    <div>
+      {/* Results Summary */}
+      <div className="mb-4 text-sm text-gray-600">
+        Showing {filteredCount} of {totalCourses} courses
+      </div>
+
+      {/* No Results */}
+      {filteredCount === 0 ? (
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-6xl mb-4">📚</div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No courses found</h3>
+          <p className="text-gray-600">Try adjusting your search or filters</p>
+        </div>
+      ) : (
+        /* Course Grid/List */
+        <div
+          className={`
+          ${isGrid ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" : "space-y-4"}
+        `}
+        >
+          {courses.map((course, index) => (
+            <CardComponent key={course.id} course={course} index={index} view={view} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };

@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { DetailedStats } from "./StatCard";
 import Link from "next/link";
 import Button from "/components/ui/Button";
-import { AdminCourseCard } from "./CourseCard";
+import { AdminCourseCard, CourseFilters, CourseResults } from "./CourseCard";
 import CouponGenerator from "./CouponGenerator";
 import { ChevronDown, List, Search, Star, Users } from "lucide-react";
 import fetchCourses from "@/lib/actions/courseActions";
@@ -49,16 +49,16 @@ const TabNav = ({ activeTab, setActiveTab }) => {
 };
 
 const TotalCourseStats = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("all");
-  const [sortBy, setSortBy] = useState("newest");
-  const [priceRange, setPriceRange] = useState([0, 500]);
-  const [minRating, setMinRating] = useState(0);
-
-  // Fetch courses from courseActions
-  // Add state for courses data
+  // State for courses data
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Filter and sort states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("created_at");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [view, setView] = useState("list");
 
   // Fetch courses on component mount
   useEffect(() => {
@@ -79,140 +79,126 @@ const TotalCourseStats = () => {
     loadCourses();
   }, []);
 
-  // Filter and sort courses
+  // Filter and sort courses using the same logic as the enhanced component
   const filteredAndSortedCourses = useMemo(() => {
-    let filtered = courses.filter((course) => {
-      const matchesSearch =
-        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return courses
+      .filter((course) => {
+        // Search filter
+        if (searchTerm) {
+          const searchLower = searchTerm.toLowerCase();
+          const matchesSearch =
+            course.title?.toLowerCase().includes(searchLower) ||
+            course.description?.toLowerCase().includes(searchLower) ||
+            course.seller_name?.toLowerCase().includes(searchLower);
+          if (!matchesSearch) return false;
+        }
 
-      // const matchesStatus = selectedStatus === "all" || course.status === selectedStatus;
+        // Status filter
+        if (statusFilter !== "all") {
+          const courseStatus = course.status?.toLowerCase() || "draft";
+          if (courseStatus !== statusFilter) return false;
+        }
 
-      // const matchesPrice = course.price >= priceRange[0] && course.price <= priceRange[1];
+        return true;
+      })
+      .sort((a, b) => {
+        let aValue, bValue;
 
-      // const matchesRating = course.rating >= minRating;
+        switch (sortBy) {
+          case "title":
+            aValue = a.title?.toLowerCase() || "";
+            bValue = b.title?.toLowerCase() || "";
+            break;
+          case "created_at":
+            aValue = new Date(a.created_at || a.createdAt || 0);
+            bValue = new Date(b.created_at || b.createdAt || 0);
+            break;
+          case "studentsEnrolled":
+            aValue = parseInt(a.studentsEnrolled) || 0;
+            bValue = parseInt(b.studentsEnrolled) || 0;
+            break;
+          case "seller_name":
+            aValue = a.seller_name?.toLowerCase() || "";
+            bValue = b.seller_name?.toLowerCase() || "";
+            break;
+          default:
+            aValue = a.title?.toLowerCase() || "";
+            bValue = b.title?.toLowerCase() || "";
+        }
 
-      // return matchesSearch && matchesStatus && matchesPrice && matchesRating;
-
-      return matchesSearch;
-    });
-
-    // Sort courses
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return new Date(b.created_at || b.createdAt) - new Date(a.created_at || a.createdAt);
-        case "oldest":
-          return new Date(a.created_at || a.createdAt) - new Date(b.created_at || b.createdAt);
-        case "popular":
-          return (b.studentsEnrolled || 0) - (a.studentsEnrolled || 0);
-        case "rating":
-          return (b.rating || 0) - (a.rating || 0);
-        case "price-low":
-          return (a.price || 0) - (b.price || 0);
-        case "price-high":
-          return (b.price || 0) - (a.price || 0);
-        case "alphabetical":
-          return a.title.localeCompare(b.title);
-        default:
-          return 0;
-      }
-    });
-
-    return filtered;
-  }, [courses, searchTerm, selectedStatus, sortBy, priceRange, minRating]);
+        if (sortOrder === "asc") {
+          return aValue > bValue ? 1 : -1;
+        } else {
+          return aValue < bValue ? 1 : -1;
+        }
+      });
+  }, [courses, searchTerm, statusFilter, sortBy, sortOrder]);
 
   // Show loading state
   if (loading) {
     return (
-      <>
-        <div className="sticky top-0 z-30">
-          <div className="max-w-7xl mx-auto py-4">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              {/* Search */}
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Search courses..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
-                />
-              </div>
+      <div className="space-y-6">
+        {/* Loading state for filters */}
+        <div className="bg-white border border-gray-200 rounded-lg p-4 animate-pulse">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="flex-1 max-w-md">
+              <div className="h-10 bg-gray-200 rounded-md"></div>
+            </div>
+            <div className="flex gap-3">
+              <div className="h-10 w-20 bg-gray-200 rounded-md"></div>
+              <div className="h-10 w-24 bg-gray-200 rounded-md"></div>
             </div>
           </div>
         </div>
+
+        {/* Loading state for create button */}
+        <div className="h-12 w-40 bg-gray-200 rounded-lg animate-pulse"></div>
+
+        {/* Loading state for content */}
         <div className="text-center mt-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading courses...</p>
         </div>
-      </>
+      </div>
     );
   }
 
+  const filterProps = {
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
+    view,
+    setView,
+  };
+
   return (
-    <>
-      {/* Search and Filter Bar */}
-      <div className="sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto py-4">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search courses..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-transparent"
-              />
-            </div>
-          </div>
-        </div>
+    <div className="space-y-6">
+      {/* Enhanced Filter Component */}
+      <CourseFilters {...filterProps} />
+
+      {/* Create Course Button */}
+      <div className="flex justify-between items-center">
+        <Link href="/instructor/course-upload">
+          <Button variant="blueToGreen" size="lg">
+            Create Course
+          </Button>
+        </Link>
       </div>
-      {/* Results */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <p className="text-lg text-gray-900">
-            <span className="font-semibold">{filteredAndSortedCourses.length}</span> courses found
-          </p>
-          {searchTerm && (
-            <p className="text-sm text-gray-600 mt-1">
-              Showing results for "<span className="font-medium">{searchTerm}</span>"
-            </p>
-          )}
-        </div>
-      </div>
-      <Link href="/instructor/course-upload">
-        <Button variant="blueToGreen" className="mb-4" size="lg">
-          Create Course
-        </Button>
-      </Link>
-      {filteredAndSortedCourses.length > 0 ? (
-        <div className={"space-y-6"}>
-          {filteredAndSortedCourses.map((course, index) => (
-            <motion.div
-              key={course.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className={"h-fit"}
-            >
-              <AdminCourseCard course={course} index={index} />
-            </motion.div>
-          ))}
-        </div>
-      ) : (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-          <div className="text-gray-400 mb-4">
-            <Search className="w-16 h-16 mx-auto" />
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No courses found</h3>
-          <p className="text-gray-600 mb-6">
-            Try adjusting your search terms or filters to find what you're looking for.
-          </p>
-        </motion.div>
-      )}
-    </>
+
+      {/* Course Results */}
+      <CourseResults
+        courses={filteredAndSortedCourses}
+        totalCourses={courses.length}
+        filteredCount={filteredAndSortedCourses.length}
+        view={view}
+        CardComponent={AdminCourseCard}
+      />
+    </div>
   );
 };
 
@@ -268,11 +254,7 @@ const DashboardTabs = () => {
         return (
           <div className="space-y-6">
             <StatCard />
-            {/* <StatsGrid /> */}
-            {/* <QuickStats /> */}
             <DetailedStats />
-            {/* <RevenueStats /> */}
-            {/* <StudentStats /> */}
           </div>
         );
       default:
@@ -308,11 +290,7 @@ const DashboardTabs = () => {
       <TabNav activeTab={activeTab} setActiveTab={handleTabChange} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div
-        // className="bg-white rounded-lg shadow-sm p-6 border border-gray-200"
-        >
-          {renderTabContent()}
-        </div>
+        <div>{renderTabContent()}</div>
       </div>
     </div>
   );

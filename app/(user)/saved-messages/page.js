@@ -17,7 +17,7 @@ const SavedMessagesPage = () => {
         timestamp: "18:36",
         date: "Today",
         sender: "Farah",
-        avatar: "F",
+        photo_url: "F",
         saved: true,
       },
       {
@@ -27,7 +27,7 @@ const SavedMessagesPage = () => {
         timestamp: "18:45",
         date: "Today",
         sender: "Farah",
-        avatar: "F",
+        photo_url: "F",
         saved: true,
       },
       {
@@ -36,7 +36,7 @@ const SavedMessagesPage = () => {
         timestamp: "19:12",
         date: "Yesterday",
         sender: "You",
-        avatar: "Y",
+        photo_url: "Y",
         saved: true,
       },
       {
@@ -46,7 +46,7 @@ const SavedMessagesPage = () => {
         timestamp: "19:15",
         date: "Yesterday",
         sender: "Farah",
-        avatar: "F",
+        photo_url: "F",
         saved: true,
       },
       {
@@ -55,7 +55,7 @@ const SavedMessagesPage = () => {
         timestamp: "14h ago",
         date: "Yesterday",
         sender: "You",
-        avatar: "Y",
+        photo_url: "Y",
         saved: true,
       },
     ];
@@ -172,13 +172,13 @@ const SavedMessagesPage = () => {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-3 flex-1">
-                    {/* Avatar */}
+                    {/* photo_url */}
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                         message.sender === "Farah" ? "bg-teal-500 text-white" : "bg-gray-600 text-white"
                       }`}
                     >
-                      {message.avatar}
+                      {message.photo_url}
                     </div>
 
                     {/* Message Content */}
