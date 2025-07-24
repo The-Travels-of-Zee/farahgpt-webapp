@@ -8,29 +8,32 @@ const messageSchema = z.object({
   text: z.string().min(1, "Message cannot be empty").max(1000, "Message too long"),
 });
 
-export const ChatInput = ({ onSendMessage }) => {
+export const ChatInput = ({ chatHook, onSendMessage }) => {
+  const { loading, error, sendMessage } = chatHook;
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const validatedMessage = messageSchema.parse({ text: message.trim() });
+
+      // First, show the user message immediately in the chat
       onSendMessage(validatedMessage.text);
+
+      // Clear the input
       setMessage("");
-      setError("");
+
+      // Then send to AI (this will add the AI response when it comes back)
+      await sendMessage(validatedMessage.text);
     } catch (err) {
-      setError(err.errors[0].message);
+      console.log(err.errors[0].message);
     }
   };
 
   return (
     <div className="fixed bottom-0 left-0 lg:left-72 right-0 border-t border-slate-200 bg-white p-3 sm:p-4 z-10">
-      <form
-        onSubmit={handleSubmit}
-        className="flex w-full max-w-screen-xl justify-between mx-auto items-end gap-2 sm:gap-3"
-      >
+      <div className="flex w-full max-w-screen-xl justify-between mx-auto items-end gap-2 sm:gap-3">
         <div className="flex-1">
           <textarea
             value={message}
@@ -51,13 +54,18 @@ export const ChatInput = ({ onSendMessage }) => {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          type="submit"
-          disabled={!message.trim()}
+          type="button"
+          onClick={handleSubmit}
+          disabled={!message.trim() || loading}
           className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <Send className="w-4 h-4" />
+          {loading ? (
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          ) : (
+            <Send className="w-4 h-4" />
+          )}
         </motion.button>
-      </form>
+      </div>
     </div>
   );
 };

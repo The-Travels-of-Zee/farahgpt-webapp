@@ -1,9 +1,47 @@
+import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
+import { useHalalChat } from "@/hooks/useHalalChat";
 
-export const ChatArea = ({ messages, onSendMessage, onToggleSidebar }) => {
+export const ChatArea = ({ onToggleSidebar, onSendMessage }) => {
+  const chatHook = useHalalChat();
+  const { messages, loading } = chatHook;
+  const [displayMessages, setDisplayMessages] = useState([]);
+  const bottomRef = useRef(null); // Ref to scroll anchor
+
+  // Keep displayMessages synced with actual chat messages
+  useEffect(() => {
+    setDisplayMessages(messages);
+  }, [messages]);
+
+  // Scroll to bottom on new messages or loading state
+  useEffect(() => {
+    const scrollToBottom = () => {
+      if (bottomRef.current) {
+        bottomRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
+    scrollToBottom();
+  }, [displayMessages, loading]);
+
+  const handleSendMessage = (userMessage) => {
+    const userMessageObj = {
+      role: "user",
+      content: userMessage,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    // Show the user message immediately
+    setDisplayMessages((prev) => [...prev, userMessageObj]);
+
+    if (onSendMessage) {
+      onSendMessage(userMessage);
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col h-full min-w-0">
       {/* Mobile Header */}
@@ -18,14 +56,20 @@ export const ChatArea = ({ messages, onSendMessage, onToggleSidebar }) => {
         <h1 className="font-semibold text-slate-800 text-sm sm:text-base">Visionaire Chat</h1>
       </div>
 
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto pb-20 lg:pb-44 pt-8 lg:pt-24 bg-slate-50">
+      {/* Chat Messages */}
+      <div className="flex-1 overflow-y-auto pb-40 lg:pb-80 pt-8 lg:pt-24 bg-slate-50">
         <div className="max-w-4xl mx-auto px-2 sm:px-0">
-          {messages.map((message, index) => (
-            <ChatMessage key={index} message={message} isUser={message.isUser} />
+          {displayMessages.map((message, index) => (
+            <ChatMessage key={index} message={message} isUser={message.role === "user"} />
           ))}
 
-          {messages.length === 0 && (
+          {/* AI is thinking */}
+          {loading && (
+            <ChatMessage message={{ content: "Farah is thinking...", time: "" }} isUser={false} isLoading={true} />
+          )}
+
+          {/* Welcome placeholder */}
+          {displayMessages.length === 0 && !loading && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -39,11 +83,14 @@ export const ChatArea = ({ messages, onSendMessage, onToggleSidebar }) => {
               </div>
             </motion.div>
           )}
+
+          {/* Scroll anchor */}
+          <div ref={bottomRef} />
         </div>
       </div>
 
-      {/* Input Area */}
-      <ChatInput onSendMessage={onSendMessage} />
+      {/* Chat Input */}
+      <ChatInput chatHook={chatHook} onSendMessage={handleSendMessage} />
     </div>
   );
 };
