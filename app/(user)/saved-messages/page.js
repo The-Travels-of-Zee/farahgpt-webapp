@@ -9,60 +9,63 @@ const SavedMessagesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredMessages, setFilteredMessages] = useState([]);
 
+  // Load saved messages from localStorage
   useEffect(() => {
-    const mockSavedMessages = [
-      {
-        id: 1,
-        content: "Assalamu Alaikum! I'm Farah, your course mentor. What would you like to know about this course?",
-        timestamp: "18:36",
-        date: "Today",
-        sender: "Farah",
-        photo_url: "F",
-        saved: true,
-      },
-      {
-        id: 2,
-        content:
-          "The Art of Dream Duas is a comprehensive course that explores the spiritual dimensions of Islamic supplications and their connection to our subconscious mind.",
-        timestamp: "18:45",
-        date: "Today",
-        sender: "Farah",
-        photo_url: "F",
-        saved: true,
-      },
-      {
-        id: 3,
-        content: "Can you explain more about the practical applications of dream interpretation in daily life?",
-        timestamp: "19:12",
-        date: "Yesterday",
-        sender: "You",
-        photo_url: "Y",
-        saved: true,
-      },
-      {
-        id: 4,
-        content:
-          "Dream interpretation in Islam follows specific guidelines from the Quran and Sunnah. There are three types of dreams: true dreams from Allah, dreams from the self, and dreams from Shaytan.",
-        timestamp: "19:15",
-        date: "Yesterday",
-        sender: "Farah",
-        photo_url: "F",
-        saved: true,
-      },
-      {
-        id: 5,
-        content: "I feel demotivated and have been struggling with consistency in my prayers and Islamic studies.",
-        timestamp: "14h ago",
-        date: "Yesterday",
-        sender: "You",
-        photo_url: "Y",
-        saved: true,
-      },
-    ];
+    const loadSavedMessages = () => {
+      try {
+        const stored = localStorage.getItem("savedMessages");
+        if (stored) {
+          const messages = JSON.parse(stored);
+          // Transform the stored messages to match the component's expected format
+          const transformedMessages = messages.map((message, index) => ({
+            id: `saved_${index}_${Date.now()}`, // Generate unique ID
+            content: message.content,
+            timestamp: message.time,
+            date: formatDate(message.savedAt),
+            sender: "Farah", // Since we only save AI messages
+            photo_url: "F",
+            saved: true,
+            savedAt: message.savedAt,
+          }));
+          setSavedMessages(transformedMessages);
+          setFilteredMessages(transformedMessages);
+        }
+      } catch (error) {
+        console.error("Error loading saved messages:", error);
+        setSavedMessages([]);
+        setFilteredMessages([]);
+      }
+    };
 
-    setSavedMessages(mockSavedMessages);
-    setFilteredMessages(mockSavedMessages);
+    loadSavedMessages();
+
+    // Listen for localStorage changes (if messages are saved/unsaved in other tabs)
+    const handleStorageChange = (e) => {
+      if (e.key === "savedMessages") {
+        loadSavedMessages();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  // Helper function to format date
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    if (messageDate.getTime() === today.getTime()) {
+      return "Today";
+    } else if (messageDate.getTime() === yesterday.getTime()) {
+      return "Yesterday";
+    } else {
+      return date.toLocaleDateString();
+    }
+  };
 
   // Filter messages based on search query
   useEffect(() => {
@@ -80,7 +83,23 @@ const SavedMessagesPage = () => {
 
   // Unsave message function
   const unsaveMessage = (messageId) => {
-    setSavedMessages((prev) => prev.filter((msg) => msg.id !== messageId));
+    try {
+      // Find the message to remove
+      const messageToRemove = savedMessages.find((msg) => msg.id === messageId);
+      if (!messageToRemove) return;
+
+      // Update localStorage
+      const storedMessages = JSON.parse(localStorage.getItem("savedMessages") || "[]");
+      const updatedStoredMessages = storedMessages.filter(
+        (stored) => !(stored.content === messageToRemove.content && stored.time === messageToRemove.timestamp)
+      );
+      localStorage.setItem("savedMessages", JSON.stringify(updatedStoredMessages));
+
+      // Update component state
+      setSavedMessages((prev) => prev.filter((msg) => msg.id !== messageId));
+    } catch (error) {
+      console.error("Error removing saved message:", error);
+    }
   };
 
   // Animation variants
@@ -172,13 +191,15 @@ const SavedMessagesPage = () => {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-3 flex-1">
-                    {/* photo_url */}
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                        message.sender === "Farah" ? "bg-teal-500 text-white" : "bg-gray-600 text-white"
-                      }`}
-                    >
-                      {message.photo_url}
+                    {/* Avatar */}
+                    <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <img
+                        src="/favicon/favicon.png"
+                        width={24}
+                        height={24}
+                        alt="farah-logo"
+                        className="inline p-0.5"
+                      />
                     </div>
 
                     {/* Message Content */}
@@ -189,6 +210,12 @@ const SavedMessagesPage = () => {
                         <span className="text-xs text-gray-500">{message.timestamp}</span>
                       </div>
                       <p className="text-gray-700 text-sm leading-relaxed">{message.content}</p>
+                      {message.savedAt && (
+                        <p className="text-xs text-gray-400 mt-2">
+                          Saved on {new Date(message.savedAt).toLocaleDateString()} at{" "}
+                          {new Date(message.savedAt).toLocaleTimeString()}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -197,11 +224,11 @@ const SavedMessagesPage = () => {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => unsaveMessage(message.id)}
-                    className="ml-4 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    className="ml-4 p-2 text-yellow-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                     title="Unsave message"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
+                      <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
                     </svg>
                   </motion.button>
                 </div>
@@ -233,32 +260,6 @@ const SavedMessagesPage = () => {
             </p>
           </motion.div>
         )}
-
-        {/* Back to Chat Button */}
-        {/* <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="fixed bottom-6 right-6"
-        >
-          <Link href="/">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-full shadow-lg transition-colors flex items-center space-x-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                />
-              </svg>
-              <span>Back to Chat</span>
-            </motion.button>
-          </Link>
-        </motion.div> */}
       </div>
     </div>
   );
