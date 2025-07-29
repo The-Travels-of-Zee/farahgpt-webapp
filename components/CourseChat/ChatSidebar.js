@@ -1,8 +1,55 @@
-import { X, Plus, MessageCircle, Crown, ArrowLeft } from "lucide-react";
+import { X, Plus, MessageCircle, Crown, ArrowLeft, MoreVertical, Edit2, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import Link from "next/link";
 
-export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onToggle }) => {
+export const ChatSidebar = ({
+  onNewChat,
+  recentChats,
+  onChatSelect,
+  onChatRename,
+  onChatDelete,
+  isOpen,
+  onToggle,
+  currentSessionId,
+  messageCount = 0,
+}) => {
+  const [editingChatId, setEditingChatId] = useState(null);
+  const [editingTitle, setEditingTitle] = useState("");
+  const [showDropdownId, setShowDropdownId] = useState(null);
+
+  const handleStartRename = (chat) => {
+    setEditingChatId(chat.id);
+    setEditingTitle(chat.title);
+    setShowDropdownId(null);
+  };
+
+  const handleSaveRename = (chatId) => {
+    if (editingTitle.trim()) {
+      onChatRename(chatId, editingTitle.trim());
+    }
+    setEditingChatId(null);
+    setEditingTitle("");
+  };
+
+  const handleCancelRename = () => {
+    setEditingChatId(null);
+    setEditingTitle("");
+  };
+
+  const handleDeleteChat = (chatId) => {
+    onChatDelete(chatId);
+    setShowDropdownId(null);
+  };
+
+  const handleKeyDown = (e, chatId) => {
+    if (e.key === "Enter") {
+      handleSaveRename(chatId);
+    } else if (e.key === "Escape") {
+      handleCancelRename();
+    }
+  };
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -40,7 +87,7 @@ export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onTo
             <div className="flex items-center justify-between w-full">
               <Link
                 href="/learning"
-                className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 "
+                className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0"
               >
                 <ArrowLeft className="w-6 h-6 text-gray-700" />
               </Link>
@@ -76,7 +123,9 @@ export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onTo
         {/* Chat Sessions Info */}
         <div className="flex-shrink-0 p-3 sm:p-4 bg-slate-100/50">
           <h2 className="font-semibold text-slate-700 text-sm sm:text-base mb-1">Chat Sessions</h2>
-          <p className="text-xs sm:text-sm text-slate-500">1 message in current session</p>
+          <p className="text-xs sm:text-sm text-slate-500">
+            {messageCount} message{messageCount !== 1 ? "s" : ""} in current session
+          </p>
         </div>
 
         {/* New Chat Button */}
@@ -116,32 +165,100 @@ export const ChatSidebar = ({ onNewChat, recentChats, onChatSelect, isOpen, onTo
             ) : (
               <div className="space-y-1 mt-4">
                 {recentChats.map((chat, index) => (
-                  <motion.button
+                  <motion.div
                     key={chat.id || index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="
-                      w-full text-left p-2.5 sm:p-3 rounded-lg 
-                      hover:bg-slate-100 active:bg-slate-200
-                      transition-colors focus:outline-none 
-                      focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1
-                    "
-                    onClick={() => {
-                      onChatSelect(chat);
-                      if (window.innerWidth < 1024) onToggle();
-                    }}
+                    className={`
+                      relative group rounded-lg transition-colors
+                      ${currentSessionId === chat.id ? "bg-primary/10 border border-primary/20" : "hover:bg-slate-100"}
+                    `}
                   >
-                    <h4 className="font-medium text-slate-800 text-sm mb-1 line-clamp-1">{chat.title}</h4>
-                    {chat.preview && <p className="text-xs text-slate-500 line-clamp-2 mb-1">{chat.preview}</p>}
-                    <span className="text-xs text-slate-400">{chat.time}</span>
-                  </motion.button>
+                    {editingChatId === chat.id ? (
+                      // Editing mode
+                      <div className="p-2.5 sm:p-3">
+                        <input
+                          type="text"
+                          value={editingTitle}
+                          onChange={(e) => setEditingTitle(e.target.value)}
+                          onKeyDown={(e) => handleKeyDown(e, chat.id)}
+                          onBlur={() => handleSaveRename(chat.id)}
+                          className="w-full bg-white border border-slate-300 rounded px-2 py-1 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          autoFocus
+                        />
+                      </div>
+                    ) : (
+                      // Normal mode
+                      <>
+                        <button
+                          className="w-full text-left p-2.5 sm:p-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
+                          onClick={() => {
+                            onChatSelect(chat);
+                            if (window.innerWidth < 1024) onToggle();
+                          }}
+                        >
+                          <h4
+                            className={`font-medium text-sm mb-1 line-clamp-1 pr-8 ${
+                              currentSessionId === chat.id ? "text-primary" : "text-slate-800"
+                            }`}
+                          >
+                            {chat.title}
+                          </h4>
+                          {chat.preview && <p className="text-xs text-slate-500 line-clamp-2 mb-1">{chat.preview}</p>}
+                          <span className="text-xs text-slate-400">{chat.time}</span>
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        <div className="absolute top-2 right-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setShowDropdownId(showDropdownId === chat.id ? null : chat.id);
+                            }}
+                            className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 transition-all"
+                          >
+                            <MoreVertical className="w-3 h-3 text-slate-500" />
+                          </button>
+
+                          <AnimatePresence>
+                            {showDropdownId === chat.id && (
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                className="absolute right-0 top-8 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 min-w-[120px]"
+                              >
+                                <button
+                                  onClick={() => handleStartRename(chat)}
+                                  className="w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                                >
+                                  <Edit2 className="w-3 h-3" />
+                                  Rename
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteChat(chat.id)}
+                                  className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                  Delete
+                                </button>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </>
+                    )}
+                  </motion.div>
                 ))}
               </div>
             )}
           </div>
         </div>
       </motion.div>
+
+      {/* Click outside to close dropdown */}
+      {showDropdownId && <div className="fixed inset-0 z-30" onClick={() => setShowDropdownId(null)} />}
     </>
   );
 };

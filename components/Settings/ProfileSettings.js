@@ -19,7 +19,7 @@ import {
   Link as LinkIcon,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
-import { useUser } from "@/hooks/useUser";
+import useUser from "@/hooks/useUser";
 
 const ProfileAndSocialSettings = () => {
   const {
@@ -44,6 +44,17 @@ const ProfileAndSocialSettings = () => {
   const [imageUploading, setImageUploading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
+  // Update form data when user data changes
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        fullName: user?.name || displayName || "",
+        email: user?.email || "",
+        profileImage: user?.photo_url || photoUrl || null,
+      });
+    }
+  }, [user, displayName, photoUrl]);
+
   // Load user data on component mount
   useEffect(() => {
     if (user?.id) {
@@ -52,16 +63,18 @@ const ProfileAndSocialSettings = () => {
   }, [user?.id]);
 
   const loadUserProfile = async () => {
+    if (!user?.id) return;
+
     try {
       setIsLoading(true);
-      await refreshUser(user?.id);
+      const result = await refreshUser(user.id);
 
-      // Update form data with current user information
-      setFormData({
-        fullName: user?.name || displayName || "",
-        email: user?.email || "",
-        profileImage: photoUrl || null,
-      });
+      if (result.success) {
+        // Form data will be updated by the useEffect above
+        console.log("Profile loaded successfully");
+      } else {
+        setMessage({ type: "error", text: "Failed to load profile" });
+      }
     } catch (error) {
       setMessage({ type: "error", text: "Failed to load profile" });
     } finally {
@@ -76,7 +89,7 @@ const ProfileAndSocialSettings = () => {
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file || !user?.id) return;
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
@@ -92,10 +105,14 @@ const ProfileAndSocialSettings = () => {
 
     try {
       setImageUploading(true);
-      const result = await uploadProfilePicture(user?.id, file);
+      const result = await uploadProfilePicture(user.id, file);
 
-      setFormData((prev) => ({ ...prev, profileImage: result.imageUrl }));
-      setMessage({ type: "success", text: "Profile picture updated successfully" });
+      if (result.success) {
+        // Form data will be updated by the useEffect above when user data changes
+        setMessage({ type: "success", text: "Profile picture updated successfully" });
+      } else {
+        throw new Error(result.error || "Failed to upload image");
+      }
     } catch (error) {
       setMessage({ type: "error", text: error.message || "Failed to upload image" });
     } finally {
@@ -104,12 +121,18 @@ const ProfileAndSocialSettings = () => {
   };
 
   const handleDeleteImage = async () => {
+    if (!user?.id) return;
+
     try {
       setImageUploading(true);
-      await deleteProfilePicture(user?.id);
+      const result = await deleteProfilePicture(user.id);
 
-      setFormData((prev) => ({ ...prev, profileImage: null }));
-      setMessage({ type: "success", text: "Profile picture removed successfully" });
+      if (result.success) {
+        // Form data will be updated by the useEffect above when user data changes
+        setMessage({ type: "success", text: "Profile picture removed successfully" });
+      } else {
+        throw new Error(result.error || "Failed to remove image");
+      }
     } catch (error) {
       setMessage({ type: "error", text: error.message || "Failed to remove image" });
     } finally {
@@ -118,19 +141,35 @@ const ProfileAndSocialSettings = () => {
   };
 
   const handleSave = async () => {
+    if (!user?.id) return;
+
     try {
       setIsLoading(true);
-      await updateProfile(user?.id, formData);
+      const result = await updateProfile(user.id, formData);
 
-      setMessage({ type: "success", text: "Profile updated successfully" });
-      setIsEditing(false);
-
-      // Refresh user data to get latest information
-      await refreshUser(user?.id);
+      if (result.success) {
+        setMessage({ type: "success", text: "Profile updated successfully" });
+        setIsEditing(false);
+        // User data will be automatically updated by the hook
+      } else {
+        throw new Error(result.error || "Failed to update profile");
+      }
     } catch (error) {
       setMessage({ type: "error", text: error.message || "Failed to update profile" });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    // Reset form data to current user data
+    if (user) {
+      setFormData({
+        fullName: user?.name || displayName || "",
+        email: user?.email || "",
+        profileImage: user?.photo_url || photoUrl || null,
+      });
     }
   };
 
@@ -189,6 +228,9 @@ const ProfileAndSocialSettings = () => {
   const inputClass =
     "w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all";
 
+  // Get the current photo URL to display
+  const currentPhotoUrl = user?.photo_url || photoUrl || formData.profileImage;
+
   return (
     <div className="p-4 mb-18 max-w-4xl mx-auto min-h-screen overflow-y-auto space-y-8">
       {/* Message Display */}
@@ -215,8 +257,8 @@ const ProfileAndSocialSettings = () => {
             <div className="w-24 h-24 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center overflow-hidden">
               {imageUploading ? (
                 <Loader2 className="w-8 h-8 text-white animate-spin" />
-              ) : photoUrl ? (
-                <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
+              ) : currentPhotoUrl ? (
+                <img src={currentPhotoUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
                 <User className="w-12 h-12 text-white" />
               )}
@@ -233,7 +275,7 @@ const ProfileAndSocialSettings = () => {
             </label>
           </div>
 
-          {photoUrl && (
+          {currentPhotoUrl && (
             <button
               onClick={handleDeleteImage}
               disabled={imageUploading}
@@ -271,10 +313,10 @@ const ProfileAndSocialSettings = () => {
         <div className="flex justify-end gap-2 pt-4">
           <button
             onClick={() => {
-              setIsEditing(!isEditing);
               if (isEditing) {
-                // Reset form data when canceling
-                loadUserProfile();
+                handleCancel();
+              } else {
+                setIsEditing(true);
               }
             }}
             disabled={isLoading}

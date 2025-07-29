@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { ChatMessage } from "./ChatMessage";
@@ -16,16 +16,25 @@ export const ChatArea = ({ onToggleSidebar, onSendMessage }) => {
     setDisplayMessages(messages);
   }, [messages]);
 
+  // Scroll to bottom function
+  const scrollToBottom = useCallback(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
+
   // Scroll to bottom on new messages or loading state
   useEffect(() => {
-    const scrollToBottom = () => {
-      if (bottomRef.current) {
-        bottomRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    };
-
     scrollToBottom();
-  }, [displayMessages, loading]);
+  }, [displayMessages, loading, scrollToBottom]);
+
+  // Handle word-by-word scrolling during AI typing
+  const handleWordAdded = useCallback(() => {
+    // Use a small delay to ensure the DOM has updated
+    setTimeout(() => {
+      scrollToBottom();
+    }, 10);
+  }, [scrollToBottom]);
 
   const handleSendMessage = (userMessage) => {
     const userMessageObj = {
@@ -60,7 +69,12 @@ export const ChatArea = ({ onToggleSidebar, onSendMessage }) => {
       <div className="flex-1 overflow-y-auto pb-40 lg:pb-80 pt-8 lg:pt-24 bg-slate-50">
         <div className="max-w-4xl mx-auto px-2 sm:px-0">
           {displayMessages.map((message, index) => (
-            <ChatMessage key={index} message={message} isUser={message.role === "user"} />
+            <ChatMessage
+              key={index}
+              message={message}
+              isUser={message.role === "user"}
+              onWordAdded={message.role !== "user" ? handleWordAdded : undefined}
+            />
           ))}
 
           {/* AI is thinking */}
