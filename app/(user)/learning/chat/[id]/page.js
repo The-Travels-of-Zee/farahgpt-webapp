@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { ChatSidebar } from "@/components/CourseChat/ChatSidebar";
 import { ChatArea } from "@/components/CourseChat/ChatArea";
-import { useChatStorage } from "@/hooks/useChatStorage";
+// import { useChatStorage } from "@/hooks/useChatStorage";
 import { v4 as uuidv4 } from "uuid";
 
 const INITIAL_MESSAGE = {
@@ -22,7 +22,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
 
   // Use the chat storage hook
-  const chatStorage = useChatStorage();
+  // const chatStorage = useChatStorage();
   const {
     createNewSession,
     switchToSession,
