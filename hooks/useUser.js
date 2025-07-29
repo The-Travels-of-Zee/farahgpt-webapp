@@ -7,7 +7,7 @@ export const useUser = () => {
 
   // Helper function to refresh user data
   const refreshUser = async (userId) => {
-    if (!userId) return;
+    if (!userId) return { success: false, error: "User ID is required" };
 
     try {
       // Import the server action dynamically
@@ -18,8 +18,7 @@ export const useUser = () => {
         // Force update the store with fresh data
         const { setUser } = useUserStore.getState();
         setUser(result.data);
-
-        console.log("User data refreshed successfully");
+        console.log("User data refreshed successfully", result.data);
         return result;
       } else {
         console.error("Failed to refresh user data:", result.error);
@@ -105,6 +104,9 @@ export const useUser = () => {
     displayName: store.getUserDisplayName(),
     photoUrl: store.getUserPhotoUrl(),
     currentUser: store.getCurrentUser(),
+    // hasFeature: store.hasFeature,
+    getQueryLimit: store.getQueryLimit(),
+    getChatHistoryLimit: store.getChatHistoryLimit(),
   };
 };
 

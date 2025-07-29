@@ -19,7 +19,7 @@ export default function AuthCallbackPage() {
           const { role } = result;
 
           // Role-based routing
-          if (role === "instructor") {
+          if (role === "instructor" || role === "both") {
             router.push("/instructor/dashboard");
           } else {
             router.push("/");

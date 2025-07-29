@@ -212,7 +212,7 @@ const ProfileAndSocialSettings = () => {
         {/* Profile Picture */}
         <div className="flex items-center space-x-6">
           <div className="relative">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center overflow-hidden">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center overflow-hidden">
               {imageUploading ? (
                 <Loader2 className="w-8 h-8 text-white animate-spin" />
               ) : photoUrl ? (
@@ -248,8 +248,8 @@ const ProfileAndSocialSettings = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
             { name: "fullName", label: "Full Name" },
-            { name: "email", label: "Email", type: "email" },
-          ].map(({ name, label, type = "text" }) => (
+            { name: "email", label: "Email", type: "email", disabled: true }, // Email is read-only
+          ].map(({ name, label, type = "text", disabled }) => (
             <div key={name}>
               <label className="text-sm font-medium text-gray-700 mb-1 block">{label}</label>
               <input
@@ -257,8 +257,10 @@ const ProfileAndSocialSettings = () => {
                 type={type}
                 value={formData[name]}
                 onChange={handleInputChange}
-                disabled={!isEditing}
-                className={`${inputClass} ${!isEditing ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                disabled={disabled || !isEditing}
+                className={`${inputClass} ${!isEditing ? "bg-gray-100 cursor-not-allowed" : ""} ${
+                  disabled ? "cursor-not-allowed" : ""
+                }`}
                 placeholder={label}
               />
             </div>

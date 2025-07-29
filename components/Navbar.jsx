@@ -27,9 +27,9 @@ import useUserStore from "@/store/userStore";
 import useUser from "@/hooks/useUser";
 
 const Navbar = () => {
-  const { isPremium } = useUserStore();
   const pageURL = usePathname();
-  const { user, isLoggedIn, login, logout } = useUserStore();
+  const { user, isLoggedIn, role, login, isPremium, logout } = useUser();
+  console.log("Store Role:", role);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
@@ -101,68 +101,24 @@ const Navbar = () => {
     );
   };
 
-  // Navigation items with route protection
-  const navigationItems = [
-    {
-      icon: User,
-      label: "My Dashboard",
-      href: "/instructor/dashboard",
-      authRequired: true,
-      premiumRequired: false,
-    },
-    {
-      icon: BookOpen,
-      label: "My learning",
-      href: "/learning",
-      authRequired: true,
-      premiumRequired: true,
-    },
-    {
-      icon: Star,
-      label: "Saved Messages",
-      href: "/saved-messages",
-      authRequired: true,
-      premiumRequired: false,
-    },
-    {
-      icon: Settings,
-      label: "Account Settings",
-      href: "/user/account-settings",
-      authRequired: true,
-      premiumRequired: false,
-    },
-  ];
-
-  const dropdownLinks = [
-    {
-      icon: User,
-      label: "My Dashboard",
-      href: "/instructor/dashboard",
-      authRequired: true,
-      premiumRequired: false,
-    },
-    {
-      icon: BookOpen,
-      label: "My learning",
-      href: "/learning",
-      authRequired: true,
-      premiumRequired: true,
-    },
-    {
-      icon: Star,
-      label: "Saved Messages",
-      href: "/saved-messages",
-      authRequired: true,
-      premiumRequired: false,
-    },
-    {
-      icon: Settings,
-      label: "Account Settings",
-      href: "/user/account-settings",
-      authRequired: true,
-      premiumRequired: false,
-    },
-  ];
+  // Role-based navigation configuration
+  const roleBasedLinks = {
+    both: [
+      { icon: User, label: "My Dashboard", href: "/instructor/dashboard", authRequired: true },
+      { icon: BookOpen, label: "My Learning", href: "/learning", authRequired: true, premiumRequired: true },
+      { icon: Star, label: "Saved Messages", href: "/saved-messages", authRequired: true },
+      { icon: Settings, label: "Account Settings", href: "/user/account-settings", authRequired: true },
+    ],
+    instructor: [
+      { icon: User, label: "My Dashboard", href: "/instructor/dashboard", authRequired: true },
+      { icon: Settings, label: "Account Settings", href: "/user/account-settings", authRequired: true },
+    ],
+    user: [
+      { icon: BookOpen, label: "My Learning", href: "/learning", authRequired: true, premiumRequired: true },
+      { icon: Star, label: "Saved Messages", href: "/saved-messages", authRequired: true },
+      { icon: Settings, label: "Account Settings", href: "/user/account-settings", authRequired: true },
+    ],
+  };
 
   // Render navigation item with appropriate styling and icons
   const renderNavItem = (item, isMobile = false) => {
@@ -197,6 +153,8 @@ const Navbar = () => {
       </ProtectedLink>
     );
   };
+
+  const currentLinks = roleBasedLinks[role] || [];
 
   return (
     <nav
@@ -288,19 +246,21 @@ const Navbar = () => {
                         </div>
 
                         <div className="py-2">
-                          <ProtectedLink href="/instructor/course-upload" authRequired={true} className="block">
-                            <Button
-                              className="bg-gradient-to-r ml-4 mb-2 from-(--primary-light) to-secondary text-white"
-                              size="md"
+                          {(role === "instructor" || role === "both") && (
+                            <ProtectedLink
+                              href="/instructor/course-upload"
+                              authRequired={true}
+                              className="block px-4 py-2"
                             >
-                              Create Course
-                            </Button>
-                          </ProtectedLink>
+                              <Button className="bg-gradient-to-r from-(--primary-light) to-secondary text-white w-full">
+                                Create Course
+                              </Button>
+                            </ProtectedLink>
+                          )}
+                          {currentLinks.map((item) => renderNavItem(item, false))}
 
-                          {dropdownLinks.map((item) => renderNavItem(item, false))}
-
-                          {!isPremium && (
-                            <div className="px-4 py-2 border-t border-gray-100 mt-2">
+                          {(role === "user" || role === "both") && !isPremium && (
+                            <div className="pt-2">
                               <button
                                 onClick={() => router.push("/plans")}
                                 className="flex min-w-max items-center px-3 py-2 text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md hover:from-amber-600 hover:to-orange-600 transition-colors"
@@ -404,36 +364,35 @@ const Navbar = () => {
             </div>
             <div className="px-4 py-4 space-y-4">
               {isLoggedIn && (
-                <ProtectedLink href="/instructor/course-upload" authRequired={true} className="block">
-                  <Button className="bg-gradient-to-r mb-2 from-(--primary-light) to-secondary text-white" size="md">
-                    Create Course
-                  </Button>
-                </ProtectedLink>
-              )}
-
-              {navigationItems.map((item) => renderNavItem(item, true))}
-
-              {isLoggedIn && !isPremium && (
-                <div className="pt-2">
-                  <button
-                    onClick={() => router.push("/plans")}
-                    className="flex min-w-max items-center px-3 py-2 text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md hover:from-amber-600 hover:to-orange-600 transition-colors"
+                <>
+                  {(role === "instructor" || role === "both") && (
+                    <ProtectedLink href="/instructor/course-upload" authRequired={true} className="block mb-3">
+                      <Button className="bg-gradient-to-r from-(--primary-light) to-secondary text-white mix-w-max">
+                        Create Course
+                      </Button>
+                    </ProtectedLink>
+                  )}
+                  {currentLinks.map((item) => renderNavItem(item, true))}
+                  {(role === "user" || role === "both") && !isPremium && (
+                    <div className="pt-2">
+                      <button
+                        onClick={() => router.push("/plans")}
+                        className="flex min-w-max items-center px-3 py-2 text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md hover:from-amber-600 hover:to-orange-600 transition-colors"
+                      >
+                        <Crown className="h-4 w-4 mr-2" />
+                        Upgrade to Premium
+                      </button>
+                    </div>
+                  )}
+                  <motion.button
+                    onClick={handleLogout}
+                    className="flex items-center w-full pt-2 border-t border-gray-100 text-red-600 hover:bg-red-50 transition-colors"
+                    whileHover={{ x: 0 }}
                   >
-                    <Crown className="h-4 w-4 mr-2" />
-                    Upgrade to Premium
-                  </button>
-                </div>
-              )}
-
-              {isLoggedIn && (
-                <motion.button
-                  onClick={handleLogout}
-                  className="flex items-center w-full pt-2 border-t border-gray-100 text-red-600 hover:bg-red-50 transition-colors"
-                  whileHover={{ x: 0 }}
-                >
-                  <LogOut className="h-4 w-4 mr-3" />
-                  Sign Out
-                </motion.button>
+                    <LogOut className="h-4 w-4 mr-3" />
+                    Sign Out
+                  </motion.button>
+                </>
               )}
 
               {!isLoggedIn && (
