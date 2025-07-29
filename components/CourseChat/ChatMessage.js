@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import Markdown from "react-markdown";
 
-export const ChatMessage = ({ message, isUser = true, isLoading = false }) => {
+export const ChatMessage = ({ message, isUser = true, isLoading = false, onWordAdded }) => {
   const [isSaved, setIsSaved] = useState(false);
-  const [displayedWords, setDisplayedWords] = useState([]);
+  const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
   // Check if message is already saved
@@ -17,30 +18,43 @@ export const ChatMessage = ({ message, isUser = true, isLoading = false }) => {
     }
   }, [message.content, message.time, isUser]);
 
-  // Word-by-word fade-in animation
+  // Character-by-character or word-by-word animation that preserves markdown
   useEffect(() => {
     if (!isUser && message?.content && !isLoading) {
-      const words = message.content.split(" ");
-      setDisplayedWords([]);
+      const fullText = message.content;
+      const words = fullText.split(" ");
+      setDisplayedText("");
       setIsTyping(true);
 
-      let index = 0;
+      let currentWordIndex = 0;
+      let displayedWords = [];
+
       const interval = setInterval(() => {
-        setDisplayedWords((prev) => [...prev, words[index]]);
-        index++;
-        if (index >= words.length) {
+        displayedWords.push(words[currentWordIndex]);
+        const newText = displayedWords.join(" ");
+        setDisplayedText(newText);
+
+        // Notify parent component that content was updated
+        if (onWordAdded) {
+          onWordAdded();
+        }
+
+        currentWordIndex++;
+        if (currentWordIndex >= words.length) {
           clearInterval(interval);
           setIsTyping(false);
         }
-      }, 60); // Faster speed (adjust if needed)
+      }, 60); // Adjust speed as needed
 
       return () => clearInterval(interval);
     } else {
       // For user messages or loading state, show full message instantly
-      setDisplayedWords(message.content.split(" "));
+      if (message?.content) {
+        setDisplayedText(message.content);
+      }
       setIsTyping(false);
     }
-  }, [message.content, isUser, isLoading]);
+  }, [message.content, isUser, isLoading, onWordAdded]);
 
   const toggleSave = () => {
     if (isUser || isLoading) return;
@@ -102,26 +116,54 @@ export const ChatMessage = ({ message, isUser = true, isLoading = false }) => {
           )}
         </div>
 
-        <div
+        <article
           className={`p-2.5 sm:p-3 rounded-lg break-words ${
-            isUser ? "bg-primary text-white ml-auto" : "bg-white border border-slate-200"
+            isUser ? "bg-primary text-white ml-auto" : ""
           }`}
         >
-          <p className="text-sm sm:text-base leading-relaxed flex flex-wrap">
-            {displayedWords.map((word, index) => (
-              <motion.span
-                key={index}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
-                className="mr-1"
-              >
-                {word}
-              </motion.span>
-            ))}
-            {/* {isTyping && <motion.span className="animate-pulse ml-1">|</motion.span>} */}
-          </p>
-        </div>
+          {isUser ? (
+            // For user messages, render as plain text without markdown
+            <p className="text-sm sm:text-base leading-relaxed m-0">{displayedText}</p>
+          ) : (
+            // For AI messages, render with markdown and proper styling
+            <div
+              className={`
+              prose prose-slate prose-sm sm:prose-base max-w-none
+              prose-headings:text-slate-800 
+              prose-headings:font-semibold
+              prose-h1:text-2xl prose-h1:mb-6 prose-h1:text-emerald-700
+              prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:text-emerald-600 prose-h2:border-b prose-h2:border-emerald-100 prose-h2:pb-2
+              prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-h3:text-slate-700
+              prose-h4:text-base prose-h4:mt-4 prose-h4:mb-2 prose-h4:text-slate-600
+              prose-p:text-slate-600 prose-p:leading-relaxed prose-p:mb-4 prose-p:mt-0
+              prose-strong:text-slate-800 prose-strong:font-semibold
+              prose-em:text-slate-700
+              prose-ul:my-4 prose-ul:text-slate-600
+              prose-ol:my-4 prose-ol:text-slate-600
+              prose-li:my-1 prose-li:leading-relaxed
+              prose-li:marker:text-emerald-500
+              prose-blockquote:border-l-4 prose-blockquote:border-emerald-200 prose-blockquote:bg-emerald-50/50 prose-blockquote:py-3 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-blockquote:my-4
+              prose-blockquote:text-slate-700 prose-blockquote:italic
+              prose-code:bg-slate-100 prose-code:text-emerald-700 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-medium
+              prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:my-4
+              prose-a:text-emerald-600 prose-a:font-medium prose-a:no-underline hover:prose-a:text-emerald-700 hover:prose-a:underline prose-a:transition-colors
+              prose-table:border-collapse prose-table:border prose-table:border-slate-200 prose-table:rounded-lg prose-table:overflow-hidden prose-table:my-4
+              prose-th:bg-emerald-50 prose-th:text-emerald-800 prose-th:font-semibold prose-th:p-3 prose-th:border prose-th:border-slate-200
+              prose-td:p-3 prose-td:border prose-td:border-slate-200 prose-td:text-slate-600
+              prose-hr:border-emerald-100 prose-hr:my-8
+            `}
+            >
+              <Markdown>{displayedText}</Markdown>
+              {isTyping && (
+                <motion.span
+                  className="inline-block w-2 h-5 bg-emerald-500 ml-1 animate-pulse"
+                  animate={{ opacity: [1, 0] }}
+                  transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
+                />
+              )}
+            </div>
+          )}
+        </article>
       </div>
     </motion.div>
   );

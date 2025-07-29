@@ -28,8 +28,8 @@ import useUser from "@/hooks/useUser";
 
 const Navbar = () => {
   const pageURL = usePathname();
-  const { user, isLoggedIn, role, login, isPremium, logout } = useUser();
-  console.log("Store Role:", role);
+  const { user, isLoggedIn, role, isPremium, logout } = useUser();
+  // console.log("Store Role:", role);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
@@ -183,7 +183,7 @@ const Navbar = () => {
           {isLoggedIn && pathname === "/instructor/dashboard" && (
             <div className="hidden md:block ml-4">
               <h2 className="text-lg font-medium text-gray-900">
-                Welcome back, {user.name.split(" ")[0]}!
+                Welcome back, {user?.name.split(" ")[0]}!
                 {isPremium && <Crown className="inline h-4 w-4 ml-1 text-amber-500" />}
               </h2>
               <p className="text-sm text-gray-600">Here's what's happening with your courses today.</p>
@@ -231,8 +231,8 @@ const Navbar = () => {
                         <div className="px-4 py-3 border-b border-gray-100">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                              <p className="text-sm text-gray-500">{user.email}</p>
+                              <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                              <p className="text-sm text-gray-500">{user?.email}</p>
                             </div>
                           </div>
                           {isPremium && (
@@ -263,7 +263,7 @@ const Navbar = () => {
                             <div className="pt-2">
                               <button
                                 onClick={() => router.push("/plans")}
-                                className="flex min-w-max items-center px-3 py-2 text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md hover:from-amber-600 hover:to-orange-600 transition-colors"
+                                className="flex ml-3 min-w-max items-center px-3 py-2 text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-md hover:from-amber-600 hover:to-orange-600 transition-colors"
                               >
                                 <Crown className="h-4 w-4 mr-2" />
                                 Upgrade to Premium
@@ -349,8 +349,8 @@ const Navbar = () => {
             <div className="px-4 py-3 border-b border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-md font-medium text-gray-900">{user.name}</p>
-                  <p className="text-md text-gray-500">{user.email}</p>
+                  <p className="text-md font-medium text-gray-900">{user?.name}</p>
+                  <p className="text-md text-gray-500">{user?.email}</p>
                 </div>
               </div>
               {isPremium && (

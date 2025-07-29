@@ -1,5 +1,4 @@
 // hooks/useUser.js
-import { useEffect } from "react";
 import useUserStore from "@/store/userStore";
 
 export const useUser = () => {
@@ -15,9 +14,16 @@ export const useUser = () => {
       const result = await getUserProfile(userId);
 
       if (result.success) {
-        // Force update the store with fresh data
-        const { setUser } = useUserStore.getState();
-        setUser(result.data);
+        // Update the store with fresh data - this will trigger reactivity
+        const { setUser, setRole } = useUserStore.getState();
+
+        if (result.data.user) {
+          setUser(result.data.user);
+        }
+        if (result.data.role) {
+          setRole(result.data.role);
+        }
+
         console.log("User data refreshed successfully", result.data);
         return result;
       } else {
@@ -37,8 +43,10 @@ export const useUser = () => {
       const result = await updateUserProfile(userId, profileData);
 
       if (result.success) {
-        // The server action already updates the store, but let's ensure it's fresh
-        await refreshUser(userId);
+        // Update the store with the returned data
+        const { setUser } = useUserStore.getState();
+        setUser(result.data);
+
         console.log("Profile updated successfully");
         return result;
       } else {
@@ -57,8 +65,10 @@ export const useUser = () => {
       const result = await uploadAction(userId, imageFile);
 
       if (result.success) {
-        // Ensure fresh data after upload
-        await refreshUser(userId);
+        // Update the store with the returned data
+        const { setUser } = useUserStore.getState();
+        setUser(result.data);
+
         console.log("Profile picture uploaded successfully");
         return result;
       } else {
@@ -77,8 +87,10 @@ export const useUser = () => {
       const result = await deleteAction(userId);
 
       if (result.success) {
-        // Ensure fresh data after deletion
-        await refreshUser(userId);
+        // Update the store with the returned data
+        const { setUser } = useUserStore.getState();
+        setUser(result.data);
+
         console.log("Profile picture deleted successfully");
         return result;
       } else {
@@ -104,7 +116,7 @@ export const useUser = () => {
     displayName: store.getUserDisplayName(),
     photoUrl: store.getUserPhotoUrl(),
     currentUser: store.getCurrentUser(),
-    // hasFeature: store.hasFeature,
+    hasFeature: store.hasFeature,
     getQueryLimit: store.getQueryLimit(),
     getChatHistoryLimit: store.getChatHistoryLimit(),
   };
