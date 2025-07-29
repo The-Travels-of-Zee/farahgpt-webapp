@@ -146,7 +146,7 @@ const Main = () => {
       console.error("Error loading subscription status:", error);
     }
   };
-  console.log(isPremium);
+  // console.log(isPremium);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 

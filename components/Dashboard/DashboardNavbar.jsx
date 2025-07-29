@@ -50,7 +50,7 @@ const DashboardNavbar = () => {
     { icon: User, label: "My Dashboard", href: "/instructor/dashboard" },
     { icon: BookOpen, label: "My Learning", href: "/learning" },
     // { icon: Award, label: "My Certificates", href: "/dashboard" },
-    { icon: Settings, label: "Account Settings", href: "/instructor/account-settings" },
+    { icon: Settings, label: "Account Settings", href: "/user/account-settings" },
   ];
   return (
     <motion.header
@@ -74,7 +74,7 @@ const DashboardNavbar = () => {
 
             {isLoggedIn && (
               <div className="hidden md:block ml-4">
-                <h2 className="text-lg font-medium text-gray-900">Welcome back, {user.name.split(" ")[0]}!</h2>
+                <h2 className="text-lg font-medium text-gray-900">Welcome back, {user.name.split(" ")[0]}!</h2>d
                 <p className="text-sm text-gray-600">Here's what's happening with your courses today.</p>
               </div>
             )}
@@ -118,7 +118,7 @@ const DashboardNavbar = () => {
                 </motion.button> */}
                 <NotificationDropdown />
                 {/* Settings */}
-                <Link href="/instructor/account-settings">
+                <Link href="/user/account-settings">
                   <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
                     <Settings className="h-6 w-6" />
                   </button>
